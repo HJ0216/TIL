@@ -1,9 +1,9 @@
-### Today I learned
+# Today I learned
 
 ## Category
 
-# Machine Learning
+### Machine Learning
 
-# Jave
+### Jave
 
-# SQL
+### SQL
