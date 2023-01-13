@@ -1,9 +1,3 @@
 # Today I learned
 
-## Category
-
-### Machine Learning
-
-### Jave
-
-### SQL
+## 230113
