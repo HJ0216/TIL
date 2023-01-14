@@ -14,3 +14,4 @@
 
 ### Linux
 - [리눅스(Linux) 공부 시작하기](https://hj0216.tistory.com/6)
+- [리눅스(Linux) 기초 강좌 30강 모음](https://hj0216.tistory.com/7)
