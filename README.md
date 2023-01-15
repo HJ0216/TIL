@@ -11,7 +11,7 @@
 ### AI
 - [Practice for AI Learning Model Construction](https://hj0216.tistory.com/3)
 - [ANN Model Construction](https://hj0216.tistory.com/5)
-- [Types of Artificial Neural Networks and DNN Model Construction](https://hj0216.tistory.com/9)
+- [Types of Artificial Neural Networks](https://hj0216.tistory.com/9)
 
 
 <br/>
