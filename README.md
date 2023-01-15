@@ -7,9 +7,9 @@
 
 <br/>
 
-### Machine Learning
-- [Machine Learning Model Construction을 위한 준비](https://hj0216.tistory.com/3)
-- [Machine Learning Basic Model Construction](https://hj0216.tistory.com/5)
+### AI
+- [Practice for AI Learning Model Construction](https://hj0216.tistory.com/3)
+- [ANN Model Construction](https://hj0216.tistory.com/5)
 - [Neural Network의 종류와 DNN Model Construction](https://hj0216.tistory.com/9)
 
 <br/>
