@@ -26,3 +26,8 @@
 ### Github
 - [Github에서 폴더 이름 변경](https://hj0216.tistory.com/10)
 
+
+<br/>
+
+### Git
+- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
