@@ -35,3 +35,6 @@
 - [[해결 방법] fatal: not a git repository (or any of the parent directories): .git](https://hj0216.tistory.com/12)
 - [[해결 방법] Permission denied](https://hj0216.tistory.com/13)
 - [[해결 방법] Another git process seems to be running in this repository](https://hj0216.tistory.com/15)
+- [[해결 방법] this operation must be run in a work tree](https://hj0216.tistory.com/16)
+
+
