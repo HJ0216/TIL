@@ -25,6 +25,12 @@
 
 <br/>
 
+### OracleSQL
+- [Oracle SQL 강의 - 01강 학습 안내(SQL, DB, DBMS의 의미와 필요성)](https://hj0216.tistory.com/18)
+
+
+<br/>
+
 ### Github
 - [Github에서 폴더 이름 변경](https://hj0216.tistory.com/10)
 
