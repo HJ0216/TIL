@@ -23,6 +23,7 @@
 - [리눅스(Linux) 공부 시작하기](https://hj0216.tistory.com/6)
 - [리눅스 기초 30강 시리즈 - 01강 CentOS7 설치](https://hj0216.tistory.com/7)
 - [리눅스 기초 30강 시리즈 - 02강 리눅스 원격 접속](https://hj0216.tistory.com/17)
+- [리눅스 기초 30강 시리즈 - 03강 Putty 환경 설정](https://hj0216.tistory.com/20)
 
 
 <br/>
