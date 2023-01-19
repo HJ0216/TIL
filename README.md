@@ -27,6 +27,7 @@
 - [리눅스 기초 30강 시리즈 - 02강 리눅스 원격 접속](https://hj0216.tistory.com/17)
 - [리눅스 기초 30강 시리즈 - 03강 Putty 환경 설정](https://hj0216.tistory.com/20)
 - [리눅스 기초 30강 시리즈 - 04강 기본 명령어](https://hj0216.tistory.com/21)
+- [리눅스 기초 30강 시리즈 - 05강 명령 프롬프트](https://hj0216.tistory.com/26)
 
 
 <br/>
