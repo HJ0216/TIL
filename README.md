@@ -20,6 +20,7 @@
 - [ANN Model Construction](https://hj0216.tistory.com/5)
 - [Types of Artificial Neural Networks](https://hj0216.tistory.com/9)
 - [Hyper-parameter Tuning](https://hj0216.tistory.com/28)
+- [MultiLayer Perceptron](https://hj0216.tistory.com/29)
 
 
 
