@@ -21,6 +21,7 @@
 - [Types of Artificial Neural Networks](https://hj0216.tistory.com/9)
 - [Hyper-parameter Tuning](https://hj0216.tistory.com/28)
 - [MultiLayer Perceptron](https://hj0216.tistory.com/29)
+- [Scalar, Vector, Matirx, Tensor](https://hj0216.tistory.com/30)
 
 
 
