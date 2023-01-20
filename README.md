@@ -8,6 +8,8 @@
 - [230117_TIL](https://hj0216.tistory.com/19)
 - [230118_TIL](https://hj0216.tistory.com/22)
 - [230119_TIL](https://hj0216.tistory.com/25)
+- [230120_TIL](https://hj0216.tistory.com/27)
+
 
 
 <br/>
