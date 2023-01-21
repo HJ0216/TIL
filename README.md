@@ -22,6 +22,7 @@
 - [Hyper-parameter Tuning](https://hj0216.tistory.com/28)
 - [MultiLayer Perceptron](https://hj0216.tistory.com/29)
 - [Scalar, Vector, Matirx, Tensor](https://hj0216.tistory.com/30)
+- [Split training data and test data](https://hj0216.tistory.com/31)
 
 
 
