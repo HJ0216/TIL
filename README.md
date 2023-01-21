@@ -27,6 +27,7 @@
 - [Matplotlib: Scatter and plot](https://hj0216.tistory.com/32)
 - [Model Performance Indicator](https://hj0216.tistory.com/33)
 - [Envirnment Settings for GPU usage](https://hj0216.tistory.com/34)
+- [Pandas Package and Missing Value Handling](https://hj0216.tistory.com/36)
 
 
 
