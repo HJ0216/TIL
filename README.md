@@ -23,6 +23,7 @@
 - [MultiLayer Perceptron](https://hj0216.tistory.com/29)
 - [Scalar, Vector, Matirx, Tensor](https://hj0216.tistory.com/30)
 - [Split training data and test data](https://hj0216.tistory.com/31)
+- [Matplotlib: Scatter and plot](https://hj0216.tistory.com/32)
 
 
 
