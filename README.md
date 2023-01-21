@@ -25,6 +25,7 @@
 - [Split training data and test data](https://hj0216.tistory.com/31)
 - [Matplotlib: Scatter and plot](https://hj0216.tistory.com/32)
 - [Model Performance Indicator](https://hj0216.tistory.com/33)
+- [Envirnment Settings for GPU usage](https://hj0216.tistory.com/34)
 
 
 
