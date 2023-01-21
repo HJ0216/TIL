@@ -1,4 +1,4 @@
-# matplot_scatter.py
+# matplotlib_scatter_and_plot.py
 
 import numpy as np
 
