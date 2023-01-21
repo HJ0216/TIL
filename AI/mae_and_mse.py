@@ -29,7 +29,7 @@ model.add(Dense(1))
 
 
 # 3. compile and train
-model.compile(loss='mae', optimizer='adam', metrics=['mse'])
+model.compile(loss='mae', optimizer='adam', metrics=['mse']) # metrics를 활용한 여러 지표 확인
 model.fit(x_train, y_train, epochs=128, batch_size=5)
 
 
