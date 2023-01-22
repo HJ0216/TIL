@@ -31,7 +31,7 @@
 - [Pandas Package and Missing Value Handling](https://hj0216.tistory.com/36)
 - [Activation Function](https://hj0216.tistory.com/42)
 - [Validation Data](https://hj0216.tistory.com/43)
-
+- [Handling overfitting: EarlyStopping](https://hj0216.tistory.com/44)
 
 
 <br/>
