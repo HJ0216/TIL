@@ -68,4 +68,4 @@
 - [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
 - [[해결 방법] error: failed to push some refs to 'https://github.com/'](https://hj0216.tistory.com/38)
 - [[해결 방법] fatal: refusing to merge unrelated histories](https://hj0216.tistory.com/40)
-
+- [Git Bash를 이용한 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
