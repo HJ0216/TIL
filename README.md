@@ -67,4 +67,5 @@
 - [[해결 방법] fatal: The current branch main has no upstream branch](https://hj0216.tistory.com/24)
 - [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
 - [[해결 방법] error: failed to push some refs to 'https://github.com/'](https://hj0216.tistory.com/38)
+- [[해결 방법] fatal: refusing to merge unrelated histories](https://hj0216.tistory.com/40)
 
