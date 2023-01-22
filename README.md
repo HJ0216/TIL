@@ -32,6 +32,7 @@
 - [Activation Function](https://hj0216.tistory.com/42)
 - [Validation Data](https://hj0216.tistory.com/43)
 - [Handling overfitting: EarlyStopping](https://hj0216.tistory.com/44)
+- [Classification](https://hj0216.tistory.com/45)
 
 
 <br/>
