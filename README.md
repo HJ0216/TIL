@@ -65,4 +65,6 @@
 - [[해결 방법] this operation must be run in a work tree](https://hj0216.tistory.com/16)
 - [[해결 방법] fetal: bad source](https://hj0216.tistory.com/23)
 - [[해결 방법] fatal: The current branch main has no upstream branch](https://hj0216.tistory.com/24)
+- [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
+
 
