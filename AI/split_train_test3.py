@@ -26,11 +26,13 @@ test_size: 전체 Data 중 test로 사용할 test set 비율
 train_size: 1 - test_size (생략 가능)
 random_state: 입력 시, 함수 수행 시 마다 결과가 바뀌지 않음
 * 같은 데이터로 계속 훈련을 해줘야하므로 random_state를 입력해줘야 함
-shuffle: split 시, ra- data 셔플 여부(Default = True)
+shuffle: split 시, raw data 셔플 여부(Default = True)
+shuffle 사용 시, 자료의 치우침 방지
 stratify: 해당 Data 비율 유지
 Ex. data = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1]
 0의 비율: 70%, 1의 비율: 30%
 stratify=Y로 설정 시, TestSet과 TrainSet에서 0의 비율과 1의 비율을 Data와 동일하게 유지
+data(y)가 분류형 데이터일 경우만 사용 가능(비율 유지 기능이므로)
 '''
 
 
