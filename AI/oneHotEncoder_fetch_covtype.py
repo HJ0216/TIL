@@ -17,15 +17,20 @@ x = datasets.data # (581012, 54)
 y = datasets['target'] # (581012,)
 
 y = y.reshape(581012, 1)
-# 문제: OneHotEncoder는 Matrix 2차원만 입력받음
-# 해결: data(y)를 reshape
+# 문제1: ValueError: Expected 2D array, got 1D array instead: array=[5 5 2 ... 3]
+# OneHotEncoder는 Matrix 2차원만 입력받음
+# 해결1: Matrix형태로 reshape → reshape: y = y.reshape(581012, 1)
 
 ohe = OneHotEncoder()
 ohe.fit(y)
 y = ohe.transform(y)
+print(type(y)) # <class 'scipy.sparse._csr.csr_matrix'>
 y = y.toarray()
-# 문제: TypeError: A sparse matrix was passed, but dense data is required.
-# 해결: Use X.toarray() to convert to a dense numpy array.
+print(type(y)) # <class 'numpy.ndarray'>
+# 문제2: TypeError: A sparse matrix was passed, but dense data is required.
+# train_test_splite를 사용할 수 있는 자료구조: numpy.ndarray
+# OneHotEncoding 후 자료구조: scipy.sparse._csr.csr_matrix
+# 해결2: Use X.toarray() to convert to a dense numpy array.→ y = y.toarray()
 
 x_train, x_test, y_train, y_test = train_test_split(
     x,y,
