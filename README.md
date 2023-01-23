@@ -50,6 +50,7 @@
 - [리눅스 기초 30강 시리즈 - 06강 디렉토리 이해 - HOME](https://hj0216.tistory.com/49)
 - [리눅스 기초 30강 시리즈 - 07강 디렉토리 내용 보기](https://hj0216.tistory.com/50)
 - [리눅스 기초 30강 시리즈 - 08강 도움말 보기](https://hj0216.tistory.com/51)
+- [리눅스 기초 30강 시리즈 - 09강 디렉토리 생성(mkdir) 삭제(rmdir)](https://hj0216.tistory.com/52)
 
 
 
