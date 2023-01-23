@@ -31,7 +31,7 @@ np.delete(array, idx, axis)
 np.delete(a, 1, axis=1)과 같이 축을 지정: 축을 따라 지정한 인덱스의 서브어레이를 제거한 어레이를 반환
 
 np.delete 참조: 
-to_categorical_fetch_covtype_delete.py
+numpy_delete.py
 
 '''
 
