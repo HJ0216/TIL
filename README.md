@@ -34,6 +34,7 @@
 - [Validation Data](https://hj0216.tistory.com/43)
 - [Handling overfitting: EarlyStopping](https://hj0216.tistory.com/44)
 - [Classification and One-Hot Encoding](https://hj0216.tistory.com/45)
+- [Classification Model Construction](https://hj0216.tistory.com/48)
 - [Pandas pkg and Numpy pkg](https://hj0216.tistory.com/47)
 
 
