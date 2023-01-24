@@ -1,4 +1,4 @@
-# save_model_and_weight.py
+# save_model_and_weights.py
 
 import numpy as np
 
@@ -77,7 +77,7 @@ print("R2: ", r2)
 
 '''
 Result
-RMSE:  4.60305594170595
-R2:  0.7378618798976347
+RMSE:  4.122959900727362
+R2:  0.7896919500228364
 
 '''
