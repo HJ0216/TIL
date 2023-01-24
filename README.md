@@ -37,6 +37,8 @@
 - [Classification Model Construction](https://hj0216.tistory.com/48)
 - [Pandas pkg and Numpy pkg](https://hj0216.tistory.com/47)
 - [Data Preprocessing: StandardScaler, MinMaxScaler](https://hj0216.tistory.com/54)
+- [CNN Model Construction](https://hj0216.tistory.com/56)
+
 
 
 <br/>
