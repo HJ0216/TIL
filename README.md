@@ -62,6 +62,8 @@
 
 ### OracleSQL
 - [Oracle SQL 강의 - 01강 학습 안내(SQL, DB, DBMS의 의미와 필요성)](https://hj0216.tistory.com/18)
+- [Oracle SQL 강의 - 02강 오라클 DBMS 18c XE 설치하기](https://hj0216.tistory.com/58)
+
 
 
 <br/>
