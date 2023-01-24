@@ -58,7 +58,7 @@
 - [리눅스 기초 30강 시리즈 - 11강 디렉토리 구조](https://hj0216.tistory.com/59)
 - [리눅스 기초 30강 시리즈 - 12강 경로 이동(cd) 절대경로/상대경로](https://hj0216.tistory.com/60)
 - [리눅스 기초 30강 시리즈 - 13강 파일 복사(cp) 삭제(rm)](https://hj0216.tistory.com/61)
-
+- [리눅스 기초 30강 시리즈 - 14강 이동(mv) 이름 바꾸기(rename)](https://hj0216.tistory.com/62)
 
 
 <br/>
