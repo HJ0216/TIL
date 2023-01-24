@@ -56,6 +56,7 @@
 - [리눅스 기초 30강 시리즈 - 09강 디렉토리 생성(mkdir) 삭제(rmdir)](https://hj0216.tistory.com/52)
 - [리눅스 기초 30강 시리즈 - 10강 파일 내용 보기(cat/nl/more/less)](https://hj0216.tistory.com/53)
 - [리눅스 기초 30강 시리즈 - 11강 디렉토리 구조](https://hj0216.tistory.com/59)
+- [리눅스 기초 30강 시리즈 - 12강 경로 이동(cd) 절대경로/상대경로](https://hj0216.tistory.com/60)
 
 
 
