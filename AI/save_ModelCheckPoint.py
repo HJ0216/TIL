@@ -1,4 +1,4 @@
-# save_ModelCheckPoint_boston.py
+# save_ModelCheckPoint.py
 
 import numpy as np
 
@@ -52,12 +52,12 @@ modelCheckPoint = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1,
 # 가중치 및 모델 저장 확장자: h5
 # ModelCheckPoint 저장 확장자: hdf5
 
-hist = model.fit(x_train, y_train,
-          epochs=512,
-          batch_size=16,
-          validation_split=0.2,
-          callbacks=[earlyStopping, modelCheckPoint],
-          verbose=1)
+model.fit(x_train, y_train,
+   epochs=512,
+   batch_size=16,
+   validation_split=0.2,
+   callbacks=[earlyStopping, modelCheckPoint],
+   verbose=1)
 
 '''
 epochs=512
