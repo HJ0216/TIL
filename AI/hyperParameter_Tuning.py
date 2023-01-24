@@ -24,8 +24,12 @@ model.add(Dense(1))
 model.summary()
 '''
 summray
-node를 random하게 추출하여 훈련을 수행 -> 과적합 문제 보완
-summary는 dropout된 node를 나누지 않음 -> # param에 영향 X
+Total params: 7,041
+Trainable params: 7,041
+Non-trainable params: 0
+
+dropout: node를 random하게 추출하여 훈련을 수행 -> 과적합 문제 보완
+summary는 dropout된 node를 나누지 않음 -> # params에 영향 X
 '''
 
 # 3. Complile, training에서의 HyperParameter_Tuning: optimizer, epochs, batch_size
