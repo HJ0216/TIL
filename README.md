@@ -64,7 +64,8 @@
 - [리눅스 기초 30강 시리즈 - 14강 이동(mv) 이름 바꾸기(rename)](https://hj0216.tistory.com/62)
 - [리눅스 기초 30강 시리즈 - 15강 자주하는 실수 3가지](https://hj0216.tistory.com/63)
 - [리눅스 기초 30강 시리즈 - 16강 패키지 관리(rpm/yum)](https://hj0216.tistory.com/68)
-
+- [리눅스 기초 30강 시리즈 - 17강 vim 편집기](https://hj0216.tistory.com/69)
+- 
 
 <br/>
 
