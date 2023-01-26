@@ -1,7 +1,6 @@
 # dnn_with_cnn_data1.py
 
 import numpy as np
-import datetime
 
 from tensorflow.keras.datasets import mnist, cifar10, cifar100, fashion_mnist
 from tensorflow.keras.models import Sequential
@@ -43,19 +42,16 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 
 earlyStopping = EarlyStopping(monitor='val_loss', mode='min', patience=32, restore_best_weights=True, verbose=1)
 
-date = datetime.datetime.now()
-date = date.strftime("%m%d_%H%M")
-
 modelCheckPoint = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1,
                                    save_best_only=True,
-                                   filepath='dnn_with_cnn_data_MCP.hdf5')
+                                   filepath='dnn_with_cnn_data1_MCP.hdf5')
 
 model.fit(x_train, y_train, epochs=256, batch_size=32,
                     validation_split=0.2,
                     callbacks=[earlyStopping, modelCheckPoint],
                     verbose=1)
 
-model.save(path+'dnn_with_cnn_data_save_model.h5')
+model.save(path+'dnn_with_cnn_data1_save_model.h5')
 
 
 # 4. evaluate and predict
@@ -71,7 +67,7 @@ loss:  0.16121244430541992
 acc:  0.9692999720573425
 
 Result(DNN)
-loss:  0.0832737535238266
-acc:  0.9746000170707703
+loss:  0.08280020207166672
+acc:  0.9758999943733215
 
 '''
