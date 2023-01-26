@@ -104,20 +104,18 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 
 earlyStopping = EarlyStopping(monitor='val_loss', mode='min', patience=32, restore_best_weights=True, verbose=1)
 
-date = datetime.datetime.now()
-date = date.strftime("%m%d_%H%M")
 
 modelCheckPoint = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1,
                                    save_best_only=True,
-                                   filepath=filepath + 'k35_1_' + date + '_' + filename)
+                                   filepath='cnn_conv2D_maxPooling2D.hdf5')
 
 
-model.fit(x_train, y_train, epochs=64, batch_size=512,
+model.fit(x_train, y_train, epochs=256, batch_size=128,
                     validation_split=0.2,
                     callbacks=[earlyStopping, modelCheckPoint],
                     verbose=1)
 
-model.save(path+'keras35_1_padding_maxpool_save_model.h5')
+model.save(path+'cnn_conv2D_maxPooling2D_save_model.h5')
 
 
 # 4. evaluate and predict
@@ -128,24 +126,8 @@ print("acc: ", result[1])
 
 
 '''
-Result(2*2, with padding)
-loss:  0.16121244430541992
-acc:  0.9692999720573425
-
-Result(3*3, with padding)
-loss:  0.14477087557315826
-acc:  0.9781000018119812
-
-Result(2*2, without padding)
-loss:  0.13609696924686432
-acc:  0.9739999771118164
-
-Result(3*3, without padding)
-loss:  2.301159620285034
-acc:  0.11349999904632568
-
-Result(3*3, with padding, maxpooling)
-loss:  0.04873143881559372
-acc:  0.9861000180244446
+Result
+loss:  0.049012500792741776
+acc:  0.9872999787330627
 
 '''
