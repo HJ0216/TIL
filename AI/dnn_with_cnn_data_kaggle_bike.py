@@ -25,10 +25,10 @@ x = train_csv.drop(['casual', 'registered', 'count'], axis=1)
 y = train_csv['count']
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y,
-    shuffle=True,
-    train_size=0.7,
-    random_state=123
+    x, y,
+    shuffle=True,
+    train_size=0.7,
+    random_state=123
 )
 
 # scaler = StandardScaler()
@@ -91,21 +91,21 @@ Non-trainable params: 0
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 
 earlyStopping = EarlyStopping(monitor='val_loss', mode='min', patience=32,
-                              restore_best_weights=True,
-                              verbose=1)
+                            restore_best_weights=True,
+                            verbose=1)
 
 modelCheckPoint = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1,
-                                   save_best_only=True,
-                                   filepath='MCP/keras39_5_kaggle_bike_MCP.hdf5')
+                                save_best_only=True,
+                                filepath='MCP/dnn_with_cnn_data_kaggle_bike_MCP.hdf5')
 
 model.fit(x_train, y_train,
-          epochs=256,
-          batch_size=64,
-          validation_split=0.2,
-          callbacks=[earlyStopping, modelCheckPoint],
-          verbose=1)
+epochs=256,
+batch_size=64,
+validation_split=0.2,
+        callbacks=[earlyStopping, modelCheckPoint],
+        verbose=1)
 
-model.save(path2+'keras39_5_kaggle_bike_save_model.h5') # 가중치 및 모델 세이브
+model.save(path2+'dnn_with_cnn_data_kaggle_bike_save_model.h5') # 가중치 및 모델 세이브
 
 
 # 4. evaluate and predict
@@ -113,11 +113,12 @@ loss = model.evaluate(x_test, y_test)
 y_predict = model.predict(x_test)
 
 def RMSE (y_test, y_predict):
-    return np.sqrt(mean_squared_error(y_test, y_predict))
+    return np.sqrt(mean_squared_error(y_test, y_predict))
 print("RMSE: ", RMSE(y_test, y_predict))
 
 r2 = r2_score(y_test, y_predict)
 print("R2: ", r2)
+
 
 # for submission
 test_csv = test_csv.reshape(6493, 4, 2, 1)
@@ -128,12 +129,12 @@ submission.to_csv(path+'sampleSubmission_0126.csv')
 
 '''
 Result(DNN)
-RMSE:  150.45157752219103
-R2:  0.30323941332889803
+RMSE: 150.45157752219103
+R2: 0.30323941332889803
 
 * 이미지가 아닌 데이터는 CNN이 좋은가 DNN이 좋은가
 Result(CNN)
-RMSE:  151.84623477201092
-R2:  0.2902618673099654
+RMSE:  148.61880664878348
+R2:  0.32011161149341427
 
 '''
