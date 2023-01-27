@@ -3,7 +3,7 @@
 import numpy as np
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, SimpleRNN, LSTM, Dropout
+from tensorflow.keras.layers import Dense, SimpleRNN, LSTM, GRU, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 
@@ -39,6 +39,7 @@ model.add(LSTM(units=64,
 # RNN, LSTM, GRU: input_dim=3 -> output_dim=2 / # (N,3,1) -> (N, 64)
 # return_sequences = True: (None, 3, 64) input_dim만 units로 변화
 model.add(SimpleRNN(units=64))
+# model.add(GRU(units=64))
 # ValueError: Input 0 of layer "lstm_1" is incompatible with the layer: expected ndim=3, found ndim=2. Full shape received: (None, 64)
 # return sequence=True 처리 시, shape이 유지되므로 RNN Model 연이어 사용 가능
 model.add(Dense(64, activation='relu'))
