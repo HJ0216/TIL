@@ -44,7 +44,7 @@
 - [CNN Model Construction](https://hj0216.tistory.com/56)
 - [Save model and weights](https://hj0216.tistory.com/57)
 - [CNN Model Construction2](https://hj0216.tistory.com/67)
-
+- [RNN Model Construction](https://hj0216.tistory.com/72)
 
 <br/>
 
