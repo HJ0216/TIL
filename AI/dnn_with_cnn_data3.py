@@ -1,4 +1,4 @@
-# dnn_with_dnn_data3.py
+# dnn_with_cnn_data3.py
 
 import numpy as np
 
