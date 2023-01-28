@@ -17,6 +17,7 @@
 - [230126_TIL](https://hj0216.tistory.com/66)
 - [230127_TIL](https://hj0216.tistory.com/71)
 - [230128_TIL](https://hj0216.tistory.com/73)
+- [230129_TIL](https://hj0216.tistory.com/75)
 
 
 <br/>
