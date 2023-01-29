@@ -48,6 +48,7 @@
 - [RNN Model Construction](https://hj0216.tistory.com/72)
 - [[Project] Stock price prediction using Ensemble model](https://hj0216.tistory.com/74)
 - [[Warning] Allocation of ... exceeds 10% of free system memory](https://hj0216.tistory.com/76)
+- [LSTM, Bidirectional, Conv1D](https://hj0216.tistory.com/77)
 
 
 
