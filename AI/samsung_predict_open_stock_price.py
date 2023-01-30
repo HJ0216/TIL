@@ -1,4 +1,5 @@
 # samsung_predict_open_stock_price.py
+# For Detail: https://hj0216.tistory.com/74
 
 import pandas as pd
 import numpy as np
