@@ -1,8 +1,8 @@
-# ensemble_model.py
+# ensemble_model1.py
 
 import numpy as np
 
-x1_datasets = np.array([range(100), range(301, 401)]).transpose()
+x1_datasets = np.array([range(100), range(301, 401)]).transpose() # .transpose() = .T
 print(x1_datasets.shape) # (100, 2)
 print(x1_datasets)
 '''
@@ -34,7 +34,7 @@ from tensorflow.keras.layers import Dense, Input
 
 # 2-1. Model_1
 input1 = Input(shape=(2,))
-dense1 = Dense(11, activation='relu', name='ds11')(input1) # summary에서 별칭
+dense1 = Dense(11, activation='relu', name='ds11')(input1) # name: summary에서 별칭
 dense2 = Dense(12, activation='relu', name='ds12')(dense1)
 dense3 = Dense(13, activation='relu', name='ds13')(dense2)
 output1 = Dense(11, activation='relu', name='ds14')(dense3)
@@ -48,6 +48,7 @@ output2 = Dense(23, activation='linear', name='ds23')(dense22)
 # 2-3. Model_merge
 from tensorflow.keras.layers import concatenate
 merge1 = concatenate([output1, output2], name='mg1')
+# merge1 = Concatenate()([output1, output2], name='mg1')
 merge2 = Dense(12, activation='relu', name='mg2')(merge1)
 merge3 = Dense(13, name='mg3')(merge2)
 last_output = Dense(1, name='last')(merge3)
