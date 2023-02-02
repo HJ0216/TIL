@@ -1,5 +1,3 @@
-package basic;
-
 public class Coversion {
 
 	public static void main(String[] args) {
