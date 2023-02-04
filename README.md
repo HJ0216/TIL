@@ -95,6 +95,7 @@
 - [리눅스 기초 30강 시리즈 - 23강 하드 링크 심볼릭 링크](https://hj0216.tistory.com/92)
 - [리눅스 기초 30강 시리즈 - 24강 명령어 별칭(alias)](https://hj0216.tistory.com/93)
 - [리눅스 기초 30강 시리즈 - 25강 명령어 역사(history)](https://hj0216.tistory.com/94)
+- [리눅스 기초 30강 시리즈 - 26강 bash - 1](https://hj0216.tistory.com/95)
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
 
 
