@@ -70,6 +70,9 @@
 
 ### Linux
 - [리눅스(Linux) 공부 시작하기](https://hj0216.tistory.com/6)
+<details>
+<summary>Linux_Basics_Lecture</summary>
+
 - [리눅스 기초 30강 시리즈 - 01강 CentOS7 설치](https://hj0216.tistory.com/7)
 - [리눅스 기초 30강 시리즈 - 02강 리눅스 원격 접속](https://hj0216.tistory.com/17)
 - [리눅스 기초 30강 시리즈 - 03강 Putty 환경 설정](https://hj0216.tistory.com/20)
@@ -97,6 +100,9 @@
 - [리눅스 기초 30강 시리즈 - 25강 명령어 역사(history)](https://hj0216.tistory.com/94)
 - [리눅스 기초 30강 시리즈 - 26강 bash - 1](https://hj0216.tistory.com/95)
 - [리눅스 기초 30강 시리즈 - 27강 bash - 2](https://hj0216.tistory.com/96)
+- [리눅스 기초 30강 시리즈 - 28강 bash - 3](https://hj0216.tistory.com/97)
+</details>
+
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
 
 
