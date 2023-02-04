@@ -63,6 +63,7 @@
 - [[Warning] Allocation of ... exceeds 10% of free system memory](https://hj0216.tistory.com/76)
 - [LSTM, Bidirectional, Conv1D](https://hj0216.tistory.com/77)
 - [Ensemble Model](https://hj0216.tistory.com/80)
+- [ImageDataGenerator](https://hj0216.tistory.com/100)
 
 
 
