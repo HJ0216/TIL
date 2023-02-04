@@ -101,7 +101,7 @@
 - [리눅스 기초 30강 시리즈 - 26강 bash - 1](https://hj0216.tistory.com/95)
 - [리눅스 기초 30강 시리즈 - 27강 bash - 2](https://hj0216.tistory.com/96)
 - [리눅스 기초 30강 시리즈 - 28강 bash - 3](https://hj0216.tistory.com/97)
-- [리눅스 기초 30강 시리즈 - 29강 출력 내용 저장a](https://hj0216.tistory.com/98)
+- [리눅스 기초 30강 시리즈 - 29강 출력 내용 저장](https://hj0216.tistory.com/98)
 </details>
 
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
