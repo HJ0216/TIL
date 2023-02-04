@@ -81,6 +81,7 @@
 - [리눅스 기초 30강 시리즈 - 17강 vim 편집기](https://hj0216.tistory.com/69)
 - [리눅스 기초 30강 시리즈 - 18강 C언어코딩(gcc)](https://hj0216.tistory.com/70)
 - [리눅스 기초 30강 시리즈 - 19강 ftp client 사용법](https://hj0216.tistory.com/86)
+- [리눅스 기초 30강 시리즈 - 20강 압축(gzip/xz/tar)](https://hj0216.tistory.com/87)
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
 
 
