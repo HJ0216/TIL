@@ -91,6 +91,7 @@
 - [리눅스 기초 30강 시리즈 - 19강 ftp client 사용법](https://hj0216.tistory.com/86)
 - [리눅스 기초 30강 시리즈 - 20강 압축(gzip/xz/tar)](https://hj0216.tistory.com/87)
 - [리눅스 기초 30강 시리즈 - 21강 권한의 이해](https://hj0216.tistory.com/88)
+- [리눅스 기초 30강 시리즈 - 22강 파일 분류](https://hj0216.tistory.com/91)
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
 
 
@@ -126,14 +127,20 @@
 
 
 ### Git
-- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
+<details>
+<summary>How_to_fix_Errors</summary>
+
 - [[해결 방법] fatal: not a git repository (or any of the parent directories): .git](https://hj0216.tistory.com/12)
 - [[해결 방법] Permission denied](https://hj0216.tistory.com/13)
 - [[해결 방법] Another git process seems to be running in this repository](https://hj0216.tistory.com/15)
 - [[해결 방법] this operation must be run in a work tree](https://hj0216.tistory.com/16)
 - [[해결 방법] fetal: bad source](https://hj0216.tistory.com/23)
 - [[해결 방법] fatal: The current branch main has no upstream branch](https://hj0216.tistory.com/24)
-- [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
 - [[해결 방법] error: failed to push some refs to 'https://github.com/'](https://hj0216.tistory.com/38)
 - [[해결 방법] fatal: refusing to merge unrelated histories](https://hj0216.tistory.com/40)
+</details>
+
+- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
+- [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
 - [Git Bash를 이용한 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
+
