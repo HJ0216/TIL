@@ -82,6 +82,7 @@
 - [리눅스 기초 30강 시리즈 - 18강 C언어코딩(gcc)](https://hj0216.tistory.com/70)
 - [리눅스 기초 30강 시리즈 - 19강 ftp client 사용법](https://hj0216.tistory.com/86)
 - [리눅스 기초 30강 시리즈 - 20강 압축(gzip/xz/tar)](https://hj0216.tistory.com/87)
+- [리눅스 기초 30강 시리즈 - 21강 권한의 이해](https://hj0216.tistory.com/88)
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
 
 
