@@ -93,6 +93,7 @@
 - [리눅스 기초 30강 시리즈 - 21강 권한의 이해](https://hj0216.tistory.com/88)
 - [리눅스 기초 30강 시리즈 - 22강 파일 분류](https://hj0216.tistory.com/91)
 - [리눅스 기초 30강 시리즈 - 23강 하드 링크 심볼릭 링크](https://hj0216.tistory.com/92)
+- [리눅스 기초 30강 시리즈 - 24강 명령어 별칭(alias)](https://hj0216.tistory.com/93)
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
 
 
