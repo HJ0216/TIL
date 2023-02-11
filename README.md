@@ -126,6 +126,7 @@
 <summary>How_to_fix_Errors</summary>
 
 - [[해결 방법] Cannot store to char array because ... is null](https://hj0216.tistory.com/108)
+- [[해결 방법] The local variable a may not have been initialized](https://hj0216.tistory.com/109)
 </details>
 
 
