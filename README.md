@@ -139,11 +139,14 @@
 
 
 ### OracleSQL
+<details>
+<summary>OracleSQL_Basics_Lecture</summary>
+
 - [Oracle SQL 강의 - 01강 학습 안내(SQL, DB, DBMS의 의미와 필요성)](https://hj0216.tistory.com/18)
 - [Oracle SQL 강의 - 02강 오라클 DBMS 18c XE 설치하기](https://hj0216.tistory.com/58)
 - [Oracle SQL 강의 - 03강 SQL Developer 설치하기](https://hj0216.tistory.com/65)
-
-
+- [Oracle SQL 강의 - 04강 오라클 PDB 서버에 접속하기](https://hj0216.tistory.com/110)
+</details>
 
 <br/>
 
