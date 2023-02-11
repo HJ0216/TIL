@@ -119,8 +119,12 @@
 
 
 ### Java
+<details>
+<summary>Java_Basics_Lecture</summary>
+
 - [[자바의 정석_기초편] Chapter02. 변수(Variable)](https://hj0216.tistory.com/85)
 - [[자바의 정석_기초편] Chapter03. 연산자(Operator)](https://hj0216.tistory.com/90)
+</details>
 
 <details>
 <summary>How_to_fix_Errors</summary>
