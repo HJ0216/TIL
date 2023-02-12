@@ -168,6 +168,7 @@
 - [[해결 방법] Cannot store to char array because ... is null](https://hj0216.tistory.com/108)
 - [[해결 방법] The local variable a may not have been initialized](https://hj0216.tistory.com/109)
 - [[해결 방법] Variable cannot be resolved to a variable](https://hj0216.tistory.com/111)
+- [[해결 방법] Resource leak: '...' is never closed](https://hj0216.tistory.com/114)
 </details>
 
 
