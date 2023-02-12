@@ -2,7 +2,7 @@
 
 ### TIL
 <details>
-<summary>2301_TIL</summary>
+<summary>230113~230131_TIL</summary>
 
 - [230113_TIL](https://hj0216.tistory.com/2)  
 - [230114_TIL](https://hj0216.tistory.com/4)
@@ -26,7 +26,7 @@
 </details>
 
 <details>
-<summary>2302_TIL</summary>
+<summary>230201~_TIL</summary>
 
 - [230201_TIL](https://hj0216.tistory.com/82)
 - [230202_TIL](https://hj0216.tistory.com/83)
@@ -47,34 +47,64 @@
 
 
 ### AI
+<details>
+<summary>Basic_Steps</summary>
+
 - [Practice for AI Learning Model Construction](https://hj0216.tistory.com/3)
-- [ANN Model Construction](https://hj0216.tistory.com/5)
-- [Types of Artificial Neural Networks](https://hj0216.tistory.com/9)
-- [Hyper-parameter Tuning](https://hj0216.tistory.com/28)
-- [MultiLayer Perceptron](https://hj0216.tistory.com/29)
 - [Scalar, Vector, Matirx, Tensor](https://hj0216.tistory.com/30)
-- [Split training data and test data](https://hj0216.tistory.com/31)
-- [Matplotlib: Scatter and plot](https://hj0216.tistory.com/32)
-- [Model Performance Indicator](https://hj0216.tistory.com/33)
-- [Envirnment Settings for GPU usage](https://hj0216.tistory.com/34)
-- [Pandas Package and Missing Value Handling](https://hj0216.tistory.com/36)
-- [Activation Function](https://hj0216.tistory.com/42)
-- [Validation Data](https://hj0216.tistory.com/43)
-- [Handling overfitting: EarlyStopping](https://hj0216.tistory.com/44)
-- [Classification and One-Hot Encoding](https://hj0216.tistory.com/45)
-- [Classification Model Construction](https://hj0216.tistory.com/48)
 - [Pandas pkg and Numpy pkg](https://hj0216.tistory.com/47)
-- [Data Preprocessing: StandardScaler, MinMaxScaler](https://hj0216.tistory.com/54)
+</details>
+
+<details>
+<summary>Data_Preprocessing</summary>
+
+- [Split training data and test data](https://hj0216.tistory.com/31)
+- [Pandas Package and Missing Value Handling](https://hj0216.tistory.com/36)
+- [Classification and One-Hot Encoding](https://hj0216.tistory.com/45)
+- [ImageDataGenerator](https://hj0216.tistory.com/100)
+</details>
+
+
+<details>
+<summary>Model_Construction</summary>
+
+- [Types of Artificial Neural Networks](https://hj0216.tistory.com/9)
+- [ANN Model Construction](https://hj0216.tistory.com/5)
+- [MultiLayer Perceptron](https://hj0216.tistory.com/29)
+- [Classification Model Construction](https://hj0216.tistory.com/48)
 - [CNN Model Construction](https://hj0216.tistory.com/56)
-- [Save model and weights](https://hj0216.tistory.com/57)
 - [CNN Model Construction2](https://hj0216.tistory.com/67)
 - [RNN Model Construction](https://hj0216.tistory.com/72)
-- [[Project] Stock price prediction using Ensemble model](https://hj0216.tistory.com/74)
-- [[Warning] Allocation of ... exceeds 10% of free system memory](https://hj0216.tistory.com/76)
 - [LSTM, Bidirectional, Conv1D](https://hj0216.tistory.com/77)
 - [Ensemble Model](https://hj0216.tistory.com/80)
-- [ImageDataGenerator](https://hj0216.tistory.com/100)
+</details>
 
+
+<details>
+<summary>Improving_Model_Performance</summary>
+
+- [Model Performance Indicator](https://hj0216.tistory.com/33)
+- [Hyper-parameter Tuning](https://hj0216.tistory.com/28)
+- [Activation Function](https://hj0216.tistory.com/42)
+- [Data Preprocessing: StandardScaler, MinMaxScaler](https://hj0216.tistory.com/54)
+- [Validation Data](https://hj0216.tistory.com/43)
+- [Handling Overfitting: EarlyStopping](https://hj0216.tistory.com/44)
+</details>
+
+<details>
+<summary>Others</summary>
+
+- [Environment Settings for GPU usage](https://hj0216.tistory.com/34)
+- [Matplotlib: Scatter and plot](https://hj0216.tistory.com/32)
+- [Save model and weights](https://hj0216.tistory.com/57)
+- [[Warning] Allocation of ... exceeds 10% of free system memory](https://hj0216.tistory.com/76)
+</details>
+
+<details>
+<summary>Project</summary>
+
+- [[Project] Stock price prediction using Ensemble model](https://hj0216.tistory.com/74)
+</details>
 
 
 <br/>
