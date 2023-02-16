@@ -177,6 +177,7 @@
 - [[해결 방법] Unhandled exception type ParseException](https://hj0216.tistory.com/116)
 - [[해결 방법] Type mismatch: cannot convert from int to char](https://hj0216.tistory.com/120)
 - [[해결 방법] java.util.ConcurrentModificationException](https://hj0216.tistory.com/121)
+- [[해결 방법] java.util.IllegalFormatPrecisionException: 2](https://hj0216.tistory.com/123)
 </details>
 
 
