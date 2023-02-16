@@ -174,6 +174,7 @@
 - [[해결 방법] Variable cannot be resolved to a variable](https://hj0216.tistory.com/111)
 - [[해결 방법] Resource leak: '...' is never closed](https://hj0216.tistory.com/114)
 - [[해결 방법] Unhandled exception type ParseException](https://hj0216.tistory.com/116)
+- [[해결 방법] Type mismatch: cannot convert from int to char](https://hj0216.tistory.com/120)
 </details>
 
 
