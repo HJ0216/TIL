@@ -152,8 +152,12 @@
 - [리눅스 기초 30강 시리즈 - 30강 설치 후 할 일](https://hj0216.tistory.com/101)
 </details>
 
-- [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
+<details>
+<summary>Linux_Master_Level2</summary>
 
+- [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
+- [[Certificate] Linux Master Level2 (220903_1)](https://hj0216.tistory.com/126)
+</details>
 
 
 <br/>
