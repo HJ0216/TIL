@@ -205,6 +205,7 @@
 - [Oracle SQL 강의 - 03강 SQL Developer 설치하기](https://hj0216.tistory.com/65)
 - [Oracle SQL 강의 - 04강 오라클 PDB 서버에 접속하기](https://hj0216.tistory.com/110)
 - [Oracle SQL 강의 - 05강 수업용 사용자와 데이터베이스 생성하기](https://hj0216.tistory.com/113)
+- [Oracle SQL 강의 - 06강 MEMBER 테이블 생성하기](https://hj0216.tistory.com/132)
 </details>
 
 <br/>
