@@ -208,6 +208,7 @@
 - [Oracle SQL 강의 - 04강 오라클 PDB 서버에 접속하기](https://hj0216.tistory.com/110)
 - [Oracle SQL 강의 - 05강 수업용 사용자와 데이터베이스 생성하기](https://hj0216.tistory.com/113)
 - [Oracle SQL 강의 - 06강 MEMBER 테이블 생성하기](https://hj0216.tistory.com/132)
+- [Oracle SQL 강의 - 07강 오라클 데이터 형식 #1 (문자 형식)](https://hj0216.tistory.com/135)
 </details>
 
 <br/>
