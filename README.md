@@ -213,6 +213,7 @@
 - [Oracle SQL 강의 - 05강 수업용 사용자와 데이터베이스 생성하기](https://hj0216.tistory.com/113)
 - [Oracle SQL 강의 - 06강 MEMBER 테이블 생성하기](https://hj0216.tistory.com/132)
 - [Oracle SQL 강의 - 07강 오라클 데이터 형식 #1 (문자 형식)](https://hj0216.tistory.com/135)
+- [Oracle SQL 강의 - 08강 오라클 데이터 형식 #2 (숫자,날짜 형식)](https://hj0216.tistory.com/141)
 </details>
 
 <br/>
