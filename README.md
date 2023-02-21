@@ -196,6 +196,7 @@
 - [[해결 방법] java.lang.ArrayIndexOutOfBoundsException](https://hj0216.tistory.com/131)
 - [[해결 방법] Cannot invoke getClass() on the primitive type double](https://hj0216.tistory.com/136)
 - [[해결 방법] java.sql.SQLException: 부적합한 열 인덱스](https://hj0216.tistory.com/142)
+- [[해결 방법] java.lang.ClassNotFoundException: oracle.jdbc.driver.OracleDriver](https://hj0216.tistory.com/143)
 </details>
 
 
