@@ -260,6 +260,7 @@
 - [[BaekJoon] 2557번 Hello World 문제풀이 (Success)](https://hj0216.tistory.com/138)
 - [[BaekJoon] 1000번 A+B 문제풀이 (Success)](https://hj0216.tistory.com/139)
 - [[BaekJoon] 1001번 A-B 문제풀이 (Success)](https://hj0216.tistory.com/144)
+- [[BaekJoon] 2588번 곱셈 문제풀이 (Success)](https://hj0216.tistory.com/147)
 </details>
 
 
