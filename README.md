@@ -222,6 +222,7 @@
 - [Oracle SQL 강의 - 07강 오라클 데이터 형식 #1 (문자 형식)](https://hj0216.tistory.com/135)
 - [Oracle SQL 강의 - 08강 오라클 데이터 형식 #2 (숫자,날짜 형식)](https://hj0216.tistory.com/141)
 - [Oracle SQL 강의 - 09강 테이블 수정하기(ALTER TABLE)](https://hj0216.tistory.com/151)
+- [Oracle SQL 강의 - 10강 SQL 쿼리 연습을 테이블 준비하기](https://hj0216.tistory.com/153)
 </details>
 
 <br/>
