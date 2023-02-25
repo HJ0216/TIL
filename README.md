@@ -232,7 +232,8 @@
 
 
 ### Github
-- [Github에서 폴더 이름 변경](https://hj0216.tistory.com/10)
+- [[Github] Rename a Folder](https://hj0216.tistory.com/10)
+- [[Github] Repository Short Description Setting](https://hj0216.tistory.com/158)
 
 
 
@@ -253,8 +254,8 @@
 - [[해결 방법] fatal: refusing to merge unrelated histories](https://hj0216.tistory.com/40)
 </details>
 
-- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
 - [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
+- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
 - [Git Bash를 이용한 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
 
 
