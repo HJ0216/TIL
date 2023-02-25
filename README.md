@@ -53,6 +53,7 @@
 - [230223_TIL](https://hj0216.tistory.com/148)
 - [230224_TIL](https://hj0216.tistory.com/152)
 - [230225_TIL](https://hj0216.tistory.com/156)
+- [230226_TIL](https://hj0216.tistory.com/161)
 </details>
 
 
@@ -243,6 +244,10 @@
 
 
 ### Git
+- [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
+- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
+- [Git Bash를 이용한 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
+
 <details>
 <summary>How_to_fix_Errors</summary>
 
@@ -256,9 +261,6 @@
 - [[해결 방법] fatal: refusing to merge unrelated histories](https://hj0216.tistory.com/40)
 </details>
 
-- [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
-- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
-- [Git Bash를 이용한 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
 
 
 
