@@ -232,6 +232,12 @@
 - [Oracle SQL 강의 - 11강 데이터 조작하기 #2 (UPDATE/DELETE)](https://hj0216.tistory.com/162)
 </details>
 
+<details>
+<summary>How_to_fix_Errors</summary>
+
+- [[해결 방법] ORA-30076: 발췌 소스에 발췌 필트가 부적당합니다](https://hj0216.tistory.com/164)
+</details>
+
 <br/>
 
 
