@@ -240,6 +240,7 @@
 <summary>How_to_fix_Errors</summary>
 
 - [[해결 방법] ORA-30076: 발췌 소스에 발췌 필트가 부적당합니다](https://hj0216.tistory.com/164)
+- [[해결 방법] ORA-00979: GROUP BY 표현식이 아닙니다](https://hj0216.tistory.com/170)
 </details>
 
 <br/>
