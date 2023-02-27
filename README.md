@@ -289,9 +289,10 @@
 - [[BaekJoon] 1000번 A+B 문제풀이 (Success)](https://hj0216.tistory.com/139)
 - [[BaekJoon] 1001번 A-B 문제풀이 (Success)](https://hj0216.tistory.com/144)
 - [[BaekJoon] 2588번 곱셈 문제풀이 (Success)](https://hj0216.tistory.com/147)
-- [[BaekJoon] 10998번 곱셈 문제풀이 (Success)](https://hj0216.tistory.com/150)
+- [[BaekJoon] 10998번 A*B 문제풀이 (Success)](https://hj0216.tistory.com/150)
 - [[BaekJoon] 10172번 개 문제풀이 (Success)](https://hj0216.tistory.com/155)
 - [[BaekJoon] 10926번 ??! 문제풀이 (Success)](https://hj0216.tistory.com/163)
+- [[BaekJoon] 2292번 벌집 문제풀이 (Success)](https://hj0216.tistory.com/173)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 </details>
 
