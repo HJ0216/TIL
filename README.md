@@ -242,6 +242,7 @@
 - [[해결 방법] ORA-30076: 발췌 소스에 발췌 필트가 부적당합니다](https://hj0216.tistory.com/164)
 - [[해결 방법] ORA-00979: GROUP BY 표현식이 아닙니다](https://hj0216.tistory.com/170)
 - [[해결 방법] ORA-00934: 그룹 함수는 허가되지 않습니다](https://hj0216.tistory.com/171)
+- [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
 </details>
 
 <br/>
