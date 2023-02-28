@@ -245,6 +245,7 @@
 - [[해결 방법] ORA-00934: 그룹 함수는 허가되지 않습니다](https://hj0216.tistory.com/171)
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
 - [[해결 방법] ORA-00936: 누락된 표현식](https://hj0216.tistory.com/174)
+- [[해결 방법] ORA-01748: 열명 그 자체만 사용할 수 있습니다](https://hj0216.tistory.com/176)
 </details>
 
 <br/>
