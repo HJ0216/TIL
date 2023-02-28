@@ -246,6 +246,7 @@
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
 - [[해결 방법] ORA-00936: 누락된 표현식](https://hj0216.tistory.com/174)
 - [[해결 방법] ORA-01748: 열명 그 자체만 사용할 수 있습니다](https://hj0216.tistory.com/176)
+- [[해결 방법] ORA-25154: USING 절의 열 부분은 식별자를 가질 수 없음](https://hj0216.tistory.com/177)
 </details>
 
 <br/>
