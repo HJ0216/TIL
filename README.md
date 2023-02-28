@@ -235,6 +235,7 @@
 - [Oracle SQL 강의 - 11강 데이터 조작하기 #1 (INSERT/SELECT)](https://hj0216.tistory.com/157)
 - [Oracle SQL 강의 - 12강 데이터 조작하기 #2 (UPDATE/DELETE)](https://hj0216.tistory.com/162)
 - [Oracle SQL 강의 - 13강 Transaction 처리를 위한 Commit/RollBack](https://hj0216.tistory.com/169)
+- [Oracle SQL 강의 - 14강 연산을 통한 데이터 조회 (산술 연산자)](https://hj0216.tistory.com/178)
 </details>
 
 <details>
