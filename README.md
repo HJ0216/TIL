@@ -185,6 +185,7 @@
 - [[Certificate] Linux Master Level2 (210911_1-40)](https://hj0216.tistory.com/165)
 - [[Certificate] Linux Master Level2 (210911_41-80)](https://hj0216.tistory.com/166)
 - [[Certificate] Linux Master Level2 (210313_1-40)](https://hj0216.tistory.com/181)
+- [[Certificate] Linux Master Level2 (210313_41-80)](https://hj0216.tistory.com/182)
 </details>
 
 
