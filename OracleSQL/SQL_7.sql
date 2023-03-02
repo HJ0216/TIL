@@ -1,0 +1,14 @@
+CREATE TABLE MEMBER
+(
+    ID       VARCHAR2(50),
+    PWD      NVARCHAR2(50),
+    NAME     NVARCHAR2(50),
+    GENDER   NCHAR(2), --NCHAR(2): 4byte, CHAR(2 CHAR): 6byte
+    AGE      NUMBER,
+    BIRTHDAY CHAR(10),
+    PHONE    CHAR(13),
+    REGDATE  DATE
+    
+);
+
+DROP TABLE MEMBER;
