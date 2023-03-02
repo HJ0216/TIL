@@ -1,0 +1,14 @@
+-- 조회수가 0, 1, 2인 게시글을 조회
+SELECT * FROM NOTICE WHERE HIT=0 OR HIT=1 OR HIT=2;
+-- 연속되지 않은 경우 사용
+SELECT * FROM NOTICE WHERE HIT>=0 AND HIT<3;
+-- 경계값이 포함되지 않을 경우 사용
+SELECT * FROM NOTICE WHERE HIT BETWEEN 0 AND 2;
+-- BETWEEN A AND B: A와 B 포함
+
+-- 조회수가 0, 2, 7인 게시글을 조회
+SELECT * FROM NOTICE WHERE HIT=0 OR HIT=2 OR HIT=7;
+SELECT * FROM NOTICE WHERE HIT IN (0, 2, 7);
+
+-- 조회수가 0, 2, 7이 아닌 게시글을 조회
+SELECT * FROM NOTICE WHERE HIT NOT IN (0, 2, 7);
