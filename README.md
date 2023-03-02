@@ -311,6 +311,7 @@
 - [[BaekJoon] 10926번 ??! 문제풀이 (Success)](https://hj0216.tistory.com/163)
 - [[BaekJoon] 2292번 벌집 문제풀이 (Success)](https://hj0216.tistory.com/173)
 - [[BaekJoon] 18108번 1998년생인 내가 태국에서는 2541년생?! 문제풀이 (Success)](https://hj0216.tistory.com/179)
+- [[BaekJoon] 1085번 직사각형에서 탈출 문제풀이 (Success)](https://hj0216.tistory.com/187)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 </details>
 
