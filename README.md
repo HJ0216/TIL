@@ -262,6 +262,7 @@
 - [[해결 방법] ORA-25154: USING 절의 열 부분은 식별자를 가질 수 없음](https://hj0216.tistory.com/177)
 - [[해결 방법] ORA-00933: SQL 명령어가 올바르게 종료되지 않았습니다](https://hj0216.tistory.com/184)
 - [[해결방법] HIDDEN COLUMN ROWNUM 조회 문제](https://hj0216.tistory.com/189)
+- [[해결 방법] ORA-01789: 질의 블록은 부정확한 수의 결과 열을 가지고 있습니다](https://hj0216.tistory.com/190)
 </details>
 
 <br/>
