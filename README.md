@@ -250,6 +250,7 @@
 - [Oracle SQL 강의 - 13강 Transaction 처리를 위한 Commit/RollBack](https://hj0216.tistory.com/169)
 - [Oracle SQL 강의 - 14강 연산을 통한 데이터 조회 (산술 연산자)](https://hj0216.tistory.com/178)
 - [Oracle SQL 강의 - 15강 비교연산자(=,!=,^=,...)](https://hj0216.tistory.com/188)
+- [Oracle SQL 강의 - 16강 관계연산자(AND, OR, BETWEEN, IN)](https://hj0216.tistory.com/195)
 </details>
 
 <details>
