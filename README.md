@@ -259,6 +259,7 @@
 - [Oracle SQL 강의 - 15강 비교연산자(=,!=,^=,...)](https://hj0216.tistory.com/188)
 - [Oracle SQL 강의 - 16강 관계연산자(AND, OR, BETWEEN, IN)](https://hj0216.tistory.com/195)
 - [Oracle SQL 강의 - 17강 패턴 비교 연산자(LIKE, %, _ )](https://hj0216.tistory.com/202)
+- [Oracle SQL 강의 - 18강 정규식을 이용한 패턴 비교(REGEX_LIKE)](https://hj0216.tistory.com/210)
 </details>
 
 <details>
