@@ -269,6 +269,7 @@
 - [[해결 방법] ORA-01400: NULL을 TABLE 안에 삽입할 수 없습니다](https://hj0216.tistory.com/194)
 - [[해결 방법] ORA-00937: 단일 그룹의 그룹 함수가 아닙니다](https://hj0216.tistory.com/196)
 - [[해결 방법] ORA-01468: outer-join된 테이블은 1개만 지정할 수 있습니다](https://hj0216.tistory.com/198)
+- [[해결 방법] ORA-02437: (TABLE_PK)을 검증할 수 없습니다 - 잘못된 기본 키입니다](https://hj0216.tistory.com/199)
 </details>
 
 <br/>
