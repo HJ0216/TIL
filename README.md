@@ -266,24 +266,25 @@
 <details>
 <summary>How_to_fix_Errors</summary>
 
-- [[해결 방법] ORA-30076: 발췌 소스에 발췌 필트가 부적당합니다](https://hj0216.tistory.com/164)
-- [[해결 방법] ORA-00979: GROUP BY 표현식이 아닙니다](https://hj0216.tistory.com/170)
-- [[해결 방법] ORA-00934: 그룹 함수는 허가되지 않습니다](https://hj0216.tistory.com/171)
+- [[해결 방법] ORA-00913: 값의 수가 너무 많습니다](https://hj0216.tistory.com/215)
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
-- [[해결 방법] ORA-00936: 누락된 표현식](https://hj0216.tistory.com/174)
-- [[해결 방법] ORA-01748: 열명 그 자체만 사용할 수 있습니다](https://hj0216.tistory.com/176)
-- [[해결 방법] ORA-25154: USING 절의 열 부분은 식별자를 가질 수 없음](https://hj0216.tistory.com/177)
 - [[해결 방법] ORA-00933: SQL 명령어가 올바르게 종료되지 않았습니다](https://hj0216.tistory.com/184)
-- [[해결방법] HIDDEN COLUMN ROWNUM 조회 문제](https://hj0216.tistory.com/189)
-- [[해결 방법] ORA-01789: 질의 블록은 부정확한 수의 결과 열을 가지고 있습니다](https://hj0216.tistory.com/190)
-- [[해결 방법] ORA-01400: NULL을 TABLE 안에 삽입할 수 없습니다](https://hj0216.tistory.com/194)
+- [[해결 방법] ORA-00934: 그룹 함수는 허가되지 않습니다](https://hj0216.tistory.com/171)
+- [[해결 방법] ORA-00936: 누락된 표현식](https://hj0216.tistory.com/174)
 - [[해결 방법] ORA-00937: 단일 그룹의 그룹 함수가 아닙니다](https://hj0216.tistory.com/196)
-- [[해결 방법] ORA-01468: outer-join된 테이블은 1개만 지정할 수 있습니다](https://hj0216.tistory.com/198)
-- [[해결 방법] ORA-02437: (TABLE_PK)을 검증할 수 없습니다 - 잘못된 기본 키입니다](https://hj0216.tistory.com/199)
+- [[해결 방법] ORA-00979: GROUP BY 표현식이 아닙니다](https://hj0216.tistory.com/170)
 - [[해결 방법] ORA-00984: 열을 사용할 수 없습니다](https://hj0216.tistory.com/200)
+- [[해결 방법] ORA-01400: NULL을 TABLE 안에 삽입할 수 없습니다](https://hj0216.tistory.com/194)
+- [[해결 방법] ORA-01468: outer-join된 테이블은 1개만 지정할 수 있습니다](https://hj0216.tistory.com/198)
+- [[해결 방법] ORA-01748: 열명 그 자체만 사용할 수 있습니다](https://hj0216.tistory.com/176)
+- [[해결 방법] ORA-01789: 질의 블록은 부정확한 수의 결과 열을 가지고 있습니다](https://hj0216.tistory.com/190)
+- [[해결 방법] ORA-02290: 체크 제약조건이 위배되었습니다](https://hj0216.tistory.com/213)
 - [[해결 방법] ORA-02291: 무결성 제약조건이 위배되었습니다- 부모 키가 없습니다](https://hj0216.tistory.com/211)
 - [[해결 방법] ORA-02292: 무결성 제약조건이 위배되었습니다- 자식 레코드가 발견되었습니다](https://hj0216.tistory.com/212)
-- [[해결 방법] ORA-02290: 체크 제약조건이 위배되었습니다](https://hj0216.tistory.com/213)
+- [[해결 방법] ORA-02437: (TABLE_PK)을 검증할 수 없습니다 - 잘못된 기본 키입니다](https://hj0216.tistory.com/199)
+- [[해결 방법] ORA-25154: USING 절의 열 부분은 식별자를 가질 수 없음](https://hj0216.tistory.com/177)
+- [[해결 방법] ORA-30076: 발췌 소스에 발췌 필트가 부적당합니다](https://hj0216.tistory.com/164)
+- [[해결 방법] HIDDEN COLUMN ROWNUM 조회 문제](https://hj0216.tistory.com/189)
 </details>
 
 <br/>
