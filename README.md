@@ -262,6 +262,7 @@
 - [Oracle SQL 강의 - 16강 관계연산자(AND, OR, BETWEEN, IN)](https://hj0216.tistory.com/195)
 - [Oracle SQL 강의 - 17강 패턴 비교 연산자(LIKE, %, _ )](https://hj0216.tistory.com/202)
 - [Oracle SQL 강의 - 18강 정규식을 이용한 패턴 비교(REGEX_LIKE)](https://hj0216.tistory.com/210)
+- [Oracle SQL 강의 - 19강 문자열 비교를 위한 정규식(^\D\w+@...)](https://hj0216.tistory.com/218)
 </details>
 
 <details>
