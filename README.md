@@ -280,6 +280,7 @@
 - [[해결 방법] ORA-00979: GROUP BY 표현식이 아닙니다](https://hj0216.tistory.com/170)
 - [[해결 방법] ORA-00984: 열을 사용할 수 없습니다](https://hj0216.tistory.com/200)
 - [[해결 방법] ORA-01400: NULL을 TABLE 안에 삽입할 수 없습니다](https://hj0216.tistory.com/194)
+- [[해결 방법] ORA-01402: 뷰의 WITH CHECK OPTION의 조건에 위배 됩니다](https://hj0216.tistory.com/224)
 - [[해결 방법] ORA-01468: outer-join된 테이블은 1개만 지정할 수 있습니다](https://hj0216.tistory.com/198)
 - [[해결 방법] ORA-01748: 열명 그 자체만 사용할 수 있습니다](https://hj0216.tistory.com/176)
 - [[해결 방법] ORA-01789: 질의 블록은 부정확한 수의 결과 열을 가지고 있습니다](https://hj0216.tistory.com/190)
