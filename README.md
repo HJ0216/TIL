@@ -270,6 +270,7 @@
 <summary>How_to_fix_Errors</summary>
 
 - [[해결 방법] ORA-00001: 무결성 제약 조건에 위배됩니다](https://hj0216.tistory.com/219)
+- [[해결 방법] ORA-00904: "...": 부적합한 식별자](https://hj0216.tistory.com/223)
 - [[해결 방법] ORA-00913: 값의 수가 너무 많습니다](https://hj0216.tistory.com/215)
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
 - [[해결 방법] ORA-00933: SQL 명령어가 올바르게 종료되지 않았습니다](https://hj0216.tistory.com/184)
