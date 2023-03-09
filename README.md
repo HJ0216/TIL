@@ -268,6 +268,7 @@
 - [Oracle SQL 강의 - 19강 문자열 비교를 위한 정규식(^\D\w+@...)](https://hj0216.tistory.com/218)
 - [Oracle SQL 강의 - 20강 ROWNUM 그리고 행 제한하기](https://hj0216.tistory.com/225)
 - [Oracle SQL 강의 - 21강 중복 값 제거하기 DISTINCT](https://hj0216.tistory.com/229)
+- [Oracle SQL 강의 - 22강 중간요약과 함수 단원 안내](https://hj0216.tistory.com/234)
 </details>
 
 <details>
