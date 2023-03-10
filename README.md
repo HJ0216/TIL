@@ -302,6 +302,7 @@
 - [[해결 방법] ORA-30076: 발췌 소스에 발췌 필트가 부적당합니다](https://hj0216.tistory.com/164)
 - [[해결 방법] ORA-42399: 읽기 전용 뷰에서는 DML 작업을 수행할 수 없습니다](https://hj0216.tistory.com/230)
 - [[해결 방법] HIDDEN COLUMN ROWNUM 조회 문제](https://hj0216.tistory.com/189)
+- [[해결 방법] COLUMN ALIAS 부적합 식별자 문제](https://hj0216.tistory.com/238)
 </details>
 
 <br/>
