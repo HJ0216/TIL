@@ -362,6 +362,7 @@
 - [[BaekJoon] 10430번 나머지 문제풀이 (Success)](https://hj0216.tistory.com/227)
 - [[BaekJoon] 10171번 고양이 문제풀이 (Success)](https://hj0216.tistory.com/232)
 - [[BaekJoon] 10869번 사칙연산 문제풀이 (Success)](https://hj0216.tistory.com/235)
+- [[BaekJoon] 1330번 두 수 비교하기 문제풀이 (Success)](https://hj0216.tistory.com/239)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
