@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice 03_2</title>
+</head>
+<body>
+    <!--
+        form tag: HTML의 form을 구성하는 tag
+        form: HTML에서 사용자와 상호작용해서 정보를 입력받고 서버로 전송하기 위한 양식
+    -->
+    <form name="form1" action="https://naver.com" method="get">
+        <table border="1">
+            <tr>
+                <td><input type="text" name="R1C1" value="R1C1"></td>
+                <!--name을 지정해주지 않을 경우, value가 query param으로 넘어가지 않음-->
+                <td><input type="text" name="R1C2" value="R1C2"></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="R2C1"></td>
+                <td><input type="text" value="R2C2"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="submit"></td>
+            </tr>
+
+        </table>
+    </form>
+    
+    <form name="form2" action="https://naver.com" method="post">
+        <table border="1">
+            <tr>
+                <td><input type="text" value="R1C1"></td>
+                <td><input type="text" value="R1C2"></td>
+            </tr>
+            <tr>
+                <td><input type="text" value="R2C1"></td>
+                <td><input type="text" value="R2C2"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="submit"></td>
+            </tr>
+
+        </table>
+    </form>
+    <hr/>
+
+
+    <!--
+        input tag: form tag 안에서 ID와 PWD 등 입력받는 요소 생성 시 사용하는 tag
+                   필수: type, 선택: name, value
+    -->
+    <input type="text" name="text" value="Enter the text">
+    <hr/>
+
+
+    <!--
+        label tag: form tag 안에서 사용하는 attribute에 이름을 부여할 때 사용
+                   label tag 클릭 시, 해당 attribute로 이동-->
+    <label>
+        password
+        <input type="password">
+    </label>
+    <hr/>
+
+
+    <!--fieldset tag: form tag안에서 사용하는 그룹화 tag로 그룹별로 테두리 생성-->
+    <form>
+        <fieldset>
+            <legend>기본 정보</legend>
+            <label>ID <input type="text"></label><br/>
+            <label>PWD <input type="password"></label>
+        </fieldset>
+    </form>
+    <hr/>
+
+
+    <!--textarea tag: 입력 내용이 여러줄일 경우 사용-->
+    <textarea placeholder="안녕하세요"></textarea>
+    <hr/>
+
+
+    <!--
+        select tag: 콤보박스 생성
+        option tag: 콤보박스 옵션 추가
+        optgroup tag: 콤보박스 옵션 그룹화
+    -->
+    <form>
+        <select>
+            <optgroup label="서울1">
+                <option value="강북구">강북구</option>
+                <option value="강남구">강남구</option>
+                <option value="서초구">서초구</option>
+            </optgroup>
+            <optgroup label="서울2">
+                <option value="중구">중구</option>
+                <option value="광진구">광진구</option>
+                <option value="성동구">성동구</option>
+            </optgroup>
+        </select>
+    </form>
+    <hr/>
+
+
+    <!--button tag: input tag에서 type attribute value로 지정한 것과 동일-->
+    <button type="종류">버튼 내용</button>
+    <hr/>
+
+
+    <!--
+        폼 관련 tag에 사용할 수 있는 추가 속성
+        <input/textarea/select/button disabled>: 비활성화
+        <readonly>: 읽기 전용
+        <input/textarea maxlenght="number">: 입력 글자수 제한
+        <checkbox/radio checked>: 기본 선택값
+        <input/textarea placeholder>: 입력에 대한 가이드라인 안내
+    -->
+
+
+    <!--
+        table tag: 표 생성
+        caption tag: 표 제목 지정
+        tr tag: 행 생성
+        th tag: 열 제목 생성
+        td tag: 열 생성
+        rowspan: 행 병합
+        colspan: 열 병합
+    -->
+
+    <table border="2">
+        <caption>음료 주문 내역</caption>
+        <tr>
+            <th>번호</th>
+            <th>상품명</th>
+            <th>수량</th>
+            <th>가격</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>콜라</td>
+            <td>1개</td>
+            <td>1,500원</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>사이다</td>
+            <td>2개</td>
+            <td>1,000원</td>
+        </tr>
+
+    </table>
+    <hr/>
+
+
+    <table border="1">
+        <tr>
+            <th>번호</th>
+            <th>상품명</th>
+            <th>수량</th>
+            <th>가격</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>콜라</td>
+            <td>1개</td>
+            <td>1,500원</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>사이다</td>
+            <td>2개</td>
+            <td rowspan="2">1,000원</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>닥터페퍼</td>
+            <td>3개</td>
+        </tr>
+        <tr>
+            <td>총 금액</td>
+            <td colspan="3">6,500원</td>
+        </tr>
+
+    </table>
+    <hr/>
+
+
+    <!--
+        thead: table 내 행을 묶어서 그룹화, head 영역
+        tfoot: table 내 행을 묶어서 그룹화, foot 영역
+        tbody: table 내 행을 묶어서 그룹화, body 영역
+        반드시, thead tfoot tbody 순서 유지
+        (tbody보다 tfoot이 먼저 위치한 이유는 정보전달의 신속성을 위해)
+        tr을 사용하지 않더라도 행으로 인식됨
+    -->
+    <table border="1">
+        <thead>
+            <th>thead</th>
+            <td>thead</td>
+        </thead>
+        <tfoot>
+            <th>tfoot</th>
+            <td>tfoot</td>
+        </tfoot>
+        <tbody>
+            <th>tbody</th>
+            <td>tbody</td>
+        </tbody>
+    </table>
+    <hr/>
+
+
+    <!--
+        table에는 tr tag로 행을 그룹화할 수 있으나 td로 열을 그룹화 할 수 없으므로 tag로 정의하여 사용
+        col tag: 하나의 열을 그룹화
+        colgroup span tag: 2개 이상의 열을 그룹화
+        scope: 표의 내용을 음성화할 때 전달을 효과적으로 하기 위한 요소
+               th tag에 대한 데이터가 행 또는 열 중 어느 것으로 이뤄져있는지를 안내
+    -->
+    <table border="1">
+        <caption>표 제목</caption>
+        <colgroup>
+            <col width="25%" span="2" style="background-color: deepskyblue;"
+            <col width="50%">
+        </colgroup>
+        
+        <tr>
+            <th scope="col">구분</th>
+            <th scope="col">열제목</th>
+            <th scope="col">열제목</th>
+        </tr>
+        <tr>
+            <th scope="row">행제목</th>
+            <td>내용</td>
+            <td>내용</td>
+        </tr>
+        <tr>
+            <th scope="row">행제목</th>
+            <td>내용</td>
+            <td>내용</td>
+        </tr>
+    </table>
+    <hr/>
+
+
+    <!--
+        audio tag: audio 삽입
+        video tag: video 삽입
+        source tag: audio/video tag에서 resource 경로와 미디어 타입을 명시하는데 사용
+    -->
+    <audio src="오디오 파일 경로" controls></audio>
+    <video src="비디오 파일 경로" controls></video>
+    <audio controls><source src="파일 경로" type="미디어 타입"></audio>
+    <video controls><source src="파일 경로" type="미디어 타입"></video>
+    <hr/>
+
+
+    <!--
+        semantic tag: div tag에 의미를 부여한 tag
+        header tag: 웹 페이지에서 header 영역을 구분
+        nav tag: 웹 페이지에서 내부의 다른 영역이나 외부를 연결하는 링크 영역을 구분
+        section tag: 웹 페이지에서 논리적으로 관련있는 내용 영역을 구분
+        article tag: 웹 페이지에서 독립적인 영역을 구분
+        aside tag: 웹 페이지에서 주력 내용이나 독립적인 내용으로 보기 어려워 article tag나 section tag로 구분할 수 없을 때 사용
+        footer tag: 웹페이지에서 footer 영역을 구분
+        main tag: 웹 페이지에서 주요 내용을 지정
+    -->
+
+
+    <!--
+        class attribute: 여러 개의 태그에 동일한 속성을 지정할 때 각각의 태그에 동일한 이름의 class를 지정하여 사용
+        id attribute: 부모 태그와 관계없이 개별적으로 스타일을 적용하려고 할 때 사용
+        하나의 tag에 id는 한 번만 선언할 수 있지만, class는 중복 선언 가능
+        style attribute: CSS 코드를 인라인으로 작성 시 사용
+        title attribute: attribute에 추가 정보를 넣을 때 사용, 마우스를 올릴 시 툴팁 표시
+                <p class="red-color">빨간색</p>
+    -->
+    <p class="red-color">빨간색</p>
+    <h1 id="title">타이틀</h1>
+    <p title="툴팁 발생">이 텍스트에 마우스를 올려보세요.</p>
+    <hr/>
+
+
+</body>
+</html>
