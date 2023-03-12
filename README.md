@@ -274,6 +274,7 @@
 - [Oracle SQL 강의 - 22강 중간요약과 함수 단원 안내](https://hj0216.tistory.com/234)
 - [Oracle SQL 강의 - 23강 문자열 내장 함수 #1](https://hj0216.tistory.com/236)
 - [Oracle SQL 강의 - 24강 문자열 내장 함수 #2](https://hj0216.tistory.com/240)
+- [Oracle SQL 강의 - 25강 숫자 내장 함수(ABS/SIGN/ROUND/TRUNC/CEIL/FLOOR)](https://hj0216.tistory.com/244)
 </details>
 
 <details>
