@@ -276,6 +276,7 @@
 - [Oracle SQL 강의 - 23강 문자열 내장 함수 #1](https://hj0216.tistory.com/236)
 - [Oracle SQL 강의 - 24강 문자열 내장 함수 #2](https://hj0216.tistory.com/240)
 - [Oracle SQL 강의 - 25강 숫자 내장 함수(ABS/SIGN/ROUND/TRUNC/CEIL/FLOOR)](https://hj0216.tistory.com/244)
+- [Oracle SQL 강의 - 26강 날짜 함수(SYSDATE/CURRENT_DATE/SYSTIMESTAMP/CURRENT_...)](https://hj0216.tistory.com/248)
 </details>
 
 <details>
