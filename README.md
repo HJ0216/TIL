@@ -374,6 +374,7 @@
 - [[BaekJoon] 9498번 시험 성적 문제풀이 (Success)](https://hj0216.tistory.com/242)
 - [[BaekJoon] 2753번 윤년 문제풀이 (Success)](https://hj0216.tistory.com/247)
 - [[BaekJoon] 14681번 사분면 고르기 문제풀이 (Success)](https://hj0216.tistory.com/249)
+- [BaekJoon] 2884번 알람 시계 문제풀이 (Success)](https://hj0216.tistory.com/252)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
