@@ -281,6 +281,8 @@
 - [Oracle SQL 강의 - 25강 숫자 내장 함수(ABS/SIGN/ROUND/TRUNC/CEIL/FLOOR)](https://hj0216.tistory.com/244)
 - [Oracle SQL 강의 - 26강 날짜 함수(SYSDATE/CURRENT_DATE/SYSTIMESTAMP/CURRENT_...)](https://hj0216.tistory.com/248)
 - [Oracle SQL 강의 - 27강 형식 변환 함수(TO_DATE/TO_CHAR/TO_NUMBER/TO_TIMESTAMP)](https://hj0216.tistory.com/251)
+- [Oracle SQL 강의 - 28강 NULL 관련 함수(NVL/NVL2/NULLIF)와 DECODE 함수](https://hj0216.tistory.com/254)
+- [Oracle SQL 강의 - 29강 SELECT 구절과 정렬(ORDER BY)](https://hj0216.tistory.com/257)
 </details>
 
 <details>
