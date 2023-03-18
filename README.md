@@ -188,7 +188,7 @@
 </details>
 
 <details>
-<summary>Linux_Master_Level2</summary>
+<summary>Certificate_Linux_Master_Level2</summary>
 
 - [[Certificate] Linux Master Level2](https://hj0216.tistory.com/81)
 - [[Certificate] Linux Master Level2 (221210_1-40)](https://hj0216.tistory.com/137)
@@ -289,6 +289,7 @@
 - [Oracle SQL 강의 - 31강 HAVING 절](https://hj0216.tistory.com/262)
 </details>
 
+
 <details>
 <summary>How_to_fix_Errors</summary>
 
@@ -320,6 +321,17 @@
 - [[해결 방법] HIDDEN COLUMN ROWNUM 조회 문제](https://hj0216.tistory.com/189)
 - [[해결 방법] COLUMN ALIAS 부적합 식별자 문제](https://hj0216.tistory.com/238)
 </details>
+
+
+<details>
+<summary>Certificate_SQLD</summary>
+
+- [[Certificate] SQLD (220528_45)](https://hj0216.tistory.com/265)
+- [[Certificate] SQLD (201129_39)](https://hj0216.tistory.com/264)
+- [[Certificate] SQLD (200906_38)](https://hj0216.tistory.com/266)
+- [[Certificate] SQLD (200530_37)](https://hj0216.tistory.com/267)
+</details>
+
 
 <br/>
 
