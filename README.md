@@ -285,6 +285,7 @@
 - [Oracle SQL 강의 - 28강 NULL 관련 함수(NVL/NVL2/NULLIF)와 DECODE 함수](https://hj0216.tistory.com/254)
 - [Oracle SQL 강의 - 29강 SELECT 구절과 정렬(ORDER BY)](https://hj0216.tistory.com/257)
 - [Oracle SQL 강의 - 30강 집계 함수와 GROUP BY](https://hj0216.tistory.com/260)
+- [Oracle SQL 강의 - 31강 HAVING 절](https://hj0216.tistory.com/262)
 </details>
 
 <details>
