@@ -383,6 +383,7 @@
 - [[BaekJoon] 2884번 알람 시계 문제풀이 (Success)](https://hj0216.tistory.com/252)
 - [[BaekJoon] 2525번 오븐 시계 문제풀이 (Success)](https://hj0216.tistory.com/255)
 - [[BaekJoon] 2480번 주사위 세개 문제풀이 (Success)](https://hj0216.tistory.com/258)
+- [[BaekJoon] 2739번 구구단 문제풀이 (Success)](https://hj0216.tistory.com/261)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
