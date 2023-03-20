@@ -289,6 +289,7 @@
 - [Oracle SQL 강의 - 30강 집계 함수와 GROUP BY](https://hj0216.tistory.com/260)
 - [Oracle SQL 강의 - 31강 HAVING 절](https://hj0216.tistory.com/262)
 - [Oracle SQL 강의 - 32강 ROW_NUMBER(), RANK(), DENSE_RANK()](https://hj0216.tistory.com/270)
+- [Oracle SQL 강의 - 33강 부조회(서브쿼리)](https://hj0216.tistory.com/272)
 </details>
 
 
