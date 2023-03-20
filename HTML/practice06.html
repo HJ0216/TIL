@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice06</title>
+<style>
+    div {
+        color:red;
+        /*부모:div 자식:p / 상속: 부모 tag에 걸린 속성이 자식 tag에도 적용*/
+    }
+    p#font {/*id: #, class: .*/
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 20px;
+        font-weight: 900; /*font-weight: 숫자 표기법*/
+        font-weight: lighter; /*font-weight: 키워드 표기법*/
+        font-style: italic; /*font-style: normal(기본), italic(이탤릭), oblique(기울임)*/
+        font-variant: small-caps; /*영문자를 크기가 작은 대문자로 변환*/
+        color:darkcyan;
+        text-align: right; /*정렬: center(중앙), justify(양쪽)*/
+        text-decoration: line-through;
+        /*text-decoration:
+        line-through(취소선),
+        overline(위쪽에 선긋기),
+        none(밑줄 없음: 하이퍼링크에서 밑줄 제거)*/
+        letter-spacing: 10px; /*글자 간격*/
+        line-height: 50px; /*줄 간격*/
+    }
+    div#box {
+        width: 300px; /*content, padding, border, margin 제외*/
+        padding: 25px; /*content와 border 간격*/
+        border: 25px solid navy; /*content와 padding을 감싸는 테두리*/
+        margin: 25px; /*테두리와 이웃하는 요소사이의 간격*/
+    }
+    p#block {
+        display: inline; /*display: block, inline 변경*/
+    }
+    span#inline {
+        display: block;
+    }
+    div#bg1 {
+        background-color: bisque;
+        width: 100px;
+        height: 100px;
+    }
+    div#bg2 {
+        background-image: url("image/naver.png");
+        background-repeat: no-repeat;/*repeat-x, repeat-y*/
+        width: 500px;
+        height: 100px;
+    }
+    div#bg3 {
+        background-image: url("image/sysdate.jpg");
+        background-size: contain;/*지정된 bg 사이즈에 따라 image size 조절  */
+        width: 100px;
+        height: 100px;
+    }
+    div#bg4 {
+        border: 1px solid salmon;
+        background-image: url("image/naver.png");
+        background-repeat: no-repeat;
+        background-position: 50% 100px; /*bg 요소 위치 지정*/
+        width: 300px;
+        height: 300px;
+    }
+    div#bg5 {
+        display: inline-block;
+        border: 1px solid dodgerblue;
+        background-image: url("image/naver.png");
+        background-attachment: scroll; /*내부 스크롤, 외부 스크롤 시 고정*/
+        overflow: auto; /*height에 비해 overflow일 경우, scroll bar 생성*/
+        width: 200px;
+        height: 100px;
+        margin-right: 10px;
+    }
+    div#bg6 {
+        display: inline-block;
+        border: 1px solid dodgerblue;
+        background-image: url("image/naver.png");
+        background-attachment: local; /*내부 스크롤 시, 이동*/
+        overflow: auto;
+        width: 200px;
+        height: 100px;        
+        margin-right: 10px;
+    }
+    div#bg7 {
+        display: inline-block;
+        border: 1px solid dodgerblue;
+        background-image: url("image/naver.png");
+        background-attachment: fixed;/*외부 스크롤 시, 이동*/
+        overflow: auto;
+        width: 200px;
+        height: 100px;        
+    }
+
+</style>
+</head>
+<body>
+
+    <div><p>상속</p></div>
+    <hr/>
+
+    <p style="color:bisque;">색깔 표현법: 이름</p>
+    <p style="color:#DD5577">색깔 표현법: HEX</p>
+    <p style="color: rgb(100, 50, 150)">색깔 표현법: RGB</p>
+    <p style="color: rgba(100, 50, 150, 0.5)">색깔 표현법: RGBA(RGB + 투명도)</p>
+    <hr/>
+
+
+    <p id="font">
+        Font<br/>
+        Font
+    </p>
+    <hr/>
+
+
+    <div id="box">Box Model</div>
+    <hr/>
+
+
+    <p id="block">block attribute: p, div</p>
+    block2
+    <span id="inline">inline attribute: span, strong</span>
+    inline2
+    <hr/>
+
+    <div id="bg1"></div>
+    <div id="bg2"></div>
+    <div id="bg3"></div>
+    <div id="bg4"></div>
+    <div id="bg5">
+        <span>scroll</span><br/>
+        <span>scroll</span><br/>
+        <span>scroll</span><br/>
+        <span>scroll</span><br/>
+        <span>scroll</span><br/>
+    </div>
+
+    <div id="bg6">
+        <span>local</span><br/>
+        <span>local</span><br/>
+        <span>local</span><br/>
+        <span>local</span><br/>
+        <span>local</span><br/>
+    </div>
+
+    <div id="bg7">
+        <span>fixed</span><br/>
+        <span>fixed</span><br/>
+        <span>fixed</span><br/>
+        <span>fixed</span><br/>
+        <span>fixed</span><br/>
+    </div>
+    <hr/>
+
+</body>
+</html>
