@@ -294,6 +294,7 @@
 - [Oracle SQL 강의 - 33강 부조회(서브쿼리)](https://hj0216.tistory.com/272)
 - [Oracle SQL 강의 - 34강 INNER 조인(JOIN)](https://hj0216.tistory.com/275)
 - [Oracle SQL 강의 - 35강 LEFT/RIGHT/FULL 아웃터 조인(OUTER JOIN)](https://hj0216.tistory.com/279)
+- [Oracle SQL 강의 - 36강 OUTER JOIN을 이용한 게시글 목록 조회](https://hj0216.tistory.com/281)
 </details>
 
 
