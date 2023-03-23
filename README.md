@@ -408,7 +408,8 @@
 - [[BaekJoon] 2501번 약수 구하기 문제풀이 (Success)](https://hj0216.tistory.com/268)
 - [[BaekJoon] 10950번 A+B-3 문제풀이 (Success)](https://hj0216.tistory.com/271)
 - [[BaekJoon] 8393번 합 문제풀이 (Success)](https://hj0216.tistory.com/274)
-- [[BaekJoon] 10807번 개수 세기 문제풀이 (Success)](https://hj0216.tistory.com/274)
+- [[BaekJoon] 10807번 개수 세기 문제풀이 (Success)](https://hj0216.tistory.com/277)
+- [[BaekJoon] 27866번 문자와 문자열 문제풀이 (Success)](https://hj0216.tistory.com/280)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
