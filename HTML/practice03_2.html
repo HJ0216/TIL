@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Practice 03_2</title>
 </head>
-<body>
-    <!--
-        form tag: HTML의 form을 구성하는 tag
+<br>
+    <!--form tag: HTML의 form을 구성하는 tag
         form: HTML에서 사용자와 상호작용해서 정보를 입력받고 서버로 전송하기 위한 양식
+        action: 입력받은 값을 전송할 서버의 URL 주소
+        method: 입력받은 값을 서버에 전송할 때 방식(get or post)
     -->
+
     <form name="form1" action="https://naver.com" method="get">
         <table border="1">
             <tr>
@@ -28,6 +30,7 @@
 
         </table>
     </form>
+
     
     <form name="form2" action="https://naver.com" method="post">
         <table border="1">
@@ -48,48 +51,133 @@
     <hr/>
 
 
-    <!--
-        input tag: form tag 안에서 ID와 PWD 등 입력받는 요소 생성 시 사용하는 tag
-                   필수: type, 선택: name, value
+    <!--input tag: form tag 안에서 ID와 PWD 등 입력받는 요소 생성 시 사용하는 tag
+        필수: type, 선택: name, value
+        name: <form>이 입력요소를 서버로 전송할 때 name 속성값으로 전달
+        value: 입력요소의 초기값 설정
     -->
-    <input type="text" name="text" value="Enter the text">
+    다양한 input type<br/>
+    input type="text": 한 줄 텍스트를 입력할 수 있는 요소 생성<br/>
+    <input type="text"/><br/><br/>
+    
+    input type="password": 비밀번호를 입력할 수 있는 요소 생성<br/>
+    <input type="password"/><br/><br/>
+
+    input type="tel": 전화번호 형식을 입력할 수 있는 요소 생성<br/>
+    <input type="tel"/><br/><br/>
+
+    input type="number": 숫자만 입력할 수 있는 요소 생성<br/>
+    <input type="number"/><br/><br/>
+
+    input type="url": url 주소 형식을 입력할 수 있는 요소 생성<br/>
+    <input type="url"/><br/><br/>
+
+    input type="search": 검색용 텍스트를 입력할 수 있는 요소 생성<br/>
+    <input type="search"/><br/><br/>
+
+    input type="email": 이메일 형식을 입력할 수 있는 요소 생성<br/>
+    <input type="email"/><br/><br/>
+
+    input type="checkbox": 체크박스 요소 생성<br/>
+    <input type="checkbox"/><br/><br/>
+
+    input type="radio": 라디오버튼 요소 생성<br/>
+    <input type="radio"/><br/><br/>
+
+    input type="file": 파일 업로드 요소 생성<br/>
+    <input type="file"/><br/><br/>
+
+    input type="button": 버튼 요소 생성<br/>
+    <input type="button"/><br/><br/>
+
+    input type="image": 이미지로 버튼 요소 생성(src 속성 사용 O, alt는 사용 X)<br/>
+    <input type="image" src="./image/naver.png"/><br/><br/>
+
+    input type="hidden": 사용자 눈에 보이지 않는 입력 요소 생성<br/>
+    <input type="hidden"/><br/><br/>
+
+    input type="date": 연, 월, 일을 선택할 수 있는 입력요소를 생성<br/>
+    <input type="date"/><br/><br/>
+
+    input type="datetime-local": 연, 월, 일, 시, 분을 선택할 수 있는 요소 생성<br/>
+    <input type="datetime-local"/><br/><br/>
+
+    input type="month": 연, 월을 선택할 수 있는 요소 생성<br/>
+    <input type="month"/><br/><br/>
+
+    input type="week": 연, 주차를 선택할 수 있는 요소 생성<br/>
+    <input type="week"/><br/><br/>
+
+    input type="time": 시간을 선택할 수 있는 요소 생성<br/>
+    <input type="time"/><br/><br/>
+
+    input type="range": 숫자 범위를 선택할 수 있는 슬라이드 요소를 생성<br/>
+    <input type="range"/><br/><br/>
+
+    input type="color": 색상을 선택할 수 있는 요소 생성<br/>
+    <input type="color"/><br/><br/>
+
+    input type="summit": 폼 전송 역할을 하는 버튼 요소 생성<br/>
+    <input type="summit"/><br/><br/>
+
+    input type="reset": 폼 요소에 사용자가 입력한 값을 초기화하는 버튼 요소 생성<br/>
+    <input type="reset"/><br/><br/>
+
     <hr/>
 
 
-    <!--
-        label tag: form tag 안에서 사용하는 attribute에 이름을 부여할 때 사용
-                   label tag 클릭 시, 해당 attribute로 이동-->
+    <!--<label>: <form>안에서 상호작용 요소에 이름을 부여할 때 사용
+        <label> 클릭 시, 해당 input type content로 이동-->
+    <!--묵시적인 방법: <label>안에 <input> 기재-->
     <label>
         password
         <input type="password">
     </label>
+    <br/>
+    <!--명시적인 방법: <label>의 for 속성에 <input> id 기재-->
+        <label for="txt">text</label>    
+        <input type="text" id="txt">
     <hr/>
 
 
-    <!--fieldset tag: form tag안에서 사용하는 그룹화 tag로 그룹별로 테두리 생성-->
+    <!--<fieldset>: form tag안에서 사용하는 그룹화 tag로 그룹별로 테두리 생성
+        <legend>: <fielfset> 안에서 그룹 이름 부여 -->
+    
     <form>
         <fieldset>
             <legend>기본 정보</legend>
-            <label>ID <input type="text"></label><br/>
-            <label>PWD <input type="password"></label>
+            <p><label>ID <input type="text"></label><br/></p>
+            <p><label>PWD <input type="password"></label></p>
+        </fieldset>
+        <fieldset>
+            <legend>선택 정보</legend>
+            <p>
+                <label for="age">나이</label>
+                <input type="number" id="age">
+            </p>
+            <p>
+                <label for="recommander">추천인</label>
+                <input type="text" id="recommander">
+            </p>
         </fieldset>
     </form>
     <hr/>
 
 
     <!--textarea tag: 입력 내용이 여러줄일 경우 사용-->
+    
     <textarea placeholder="안녕하세요"></textarea>
     <hr/>
 
 
-    <!--
-        select tag: 콤보박스 생성
-        option tag: 콤보박스 옵션 추가
-        optgroup tag: 콤보박스 옵션 그룹화
+    <!--<select>: 콤보박스 생성
+        <option>: 콤보박스 옵션 추가, value="서버에 전송할 값", content: web에 표시할 값(value 생략 시, content가 서버에 전송됨)
+        <optgroup>: 콤보박스 옵션 그룹화
     -->
+
     <form>
         <select>
-            <optgroup label="서울1">
+            <optgroup label="서울1"><!--<optgroup> 사용 시, label을 통한 그룹명 지정-->
                 <option value="강북구">강북구</option>
                 <option value="강남구">강남구</option>
                 <option value="서초구">서초구</option>
@@ -101,33 +189,46 @@
             </optgroup>
         </select>
     </form>
+    <br/>
+
+
+    <!--size: 화면에 노출되는 항목수 지정, 생략 시 항목 1개 표시
+        multiple: 여러 항목 동시 선택
+        selected: 기본 선택 항목 변경-->
+
+    <select name="tech" id="tech" size="3" multiple>
+        <option value="java">java</option>
+        <option value="python">python</option>
+        <option value="js">js</option>
+        <option value="css">css</option>
+        <option value="html" selected>html</option>
+    </select>
     <hr/>
 
 
-    <!--button tag: input tag에서 type attribute value로 지정한 것과 동일-->
+    <!--<button>: <input>에서 type attribute value로 지정한 것과 동일
+        단, <button> input_button과 달리 시작 종료 tag가 있어서 content 작성 가능-->
+    
     <button type="종류">버튼 내용</button>
     <hr/>
 
 
-    <!--
-        폼 관련 tag에 사용할 수 있는 추가 속성
+    <!--폼 관련 tag에 사용할 수 있는 추가 속성
         <input/textarea/select/button disabled>: 비활성화
         <readonly>: 읽기 전용
-        <input/textarea maxlenght="number">: 입력 글자수 제한
+        * disabled는 <form>에 의해 서버에 전송되지 않지만, readonly는 전송됨
+        <input/textarea maxlength="number">: 입력 글자수 제한
         <checkbox/radio checked>: 기본 선택값
-        <input/textarea placeholder>: 입력에 대한 가이드라인 안내
-    -->
+        <input/textarea placeholder>: 입력에 대한 가이드라인 안내-->
 
 
-    <!--
-        table tag: 표 생성
+    <!--table tag: 표의 틀 생성, 표 관련 태그는 모두 table 내부에 작성 필수
         caption tag: 표 제목 지정
         tr tag: 행 생성
         th tag: 열 제목 생성
         td tag: 열 생성
         rowspan: 행 병합
-        colspan: 열 병합
-    -->
+        colspan: 열 병합-->
 
     <table border="2">
         <caption>음료 주문 내역</caption>
@@ -152,7 +253,6 @@
 
     </table>
     <hr/>
-
 
     <table border="1">
         <tr>
@@ -187,15 +287,13 @@
     <hr/>
 
 
-    <!--
-        thead: table 내 행을 묶어서 그룹화, head 영역
-        tfoot: table 내 행을 묶어서 그룹화, foot 영역
+    <!--thead: table 내 행을 묶어서 그룹화, head 영역, 1번만 사용 가능, <th>로 열 생성
+        tfoot: table 내 행을 묶어서 그룹화, foot 영역, 1번만 사용 가능
         tbody: table 내 행을 묶어서 그룹화, body 영역
-        반드시, thead tfoot tbody 순서 유지
-        (tbody보다 tfoot이 먼저 위치한 이유는 정보전달의 신속성을 위해)
-        tr을 사용하지 않더라도 행으로 인식됨
-    -->
-    <table border="1">
+        반드시, thead tfoot tbody 순서 유지 (tbody보다 tfoot이 먼저 위치한 이유는 정보전달의 신속성을 위해)
+        tr을 사용하지 않더라도 행으로 인식됨-->
+
+        <table border="1">
         <thead>
             <th>thead</th>
             <td>thead</td>
@@ -212,13 +310,14 @@
     <hr/>
 
 
-    <!--
-        table에는 tr tag로 행을 그룹화할 수 있으나 td로 열을 그룹화 할 수 없으므로 tag로 정의하여 사용
+    <!--table에는 tr tag로 행을 그룹화할 수 있으나 td로 열을 그룹화 할 수 없으므로 tag로 정의하여 사용
         col tag: 하나의 열을 그룹화
-        colgroup span tag: 2개 이상의 열을 그룹화
-        scope: 표의 내용을 음성화할 때 전달을 효과적으로 하기 위한 요소
-               th tag에 대한 데이터가 행 또는 열 중 어느 것으로 이뤄져있는지를 안내
-    -->
+        colgroup span tag: 2개 이상의 열을 그룹화, span="그룹화할 열 개수"
+        <caption>보다 늦게, <tr>보다 먼저 선언
+        <col> or <colgroup span> 사용 시, 총 열의 개수와 일치해야 함
+        
+        scope 속성: <th>에만 사용 ㄱ능하며 제목을 나타내는 셀의 범위 지정-->
+    
     <table border="1">
         <caption>표 제목</caption>
         <colgroup>
@@ -245,38 +344,42 @@
     <hr/>
 
 
-    <!--
-        audio tag: audio 삽입
-        video tag: video 삽입
+    <!--audio tag: audio 삽입, controls: 컨트롤 패널이 웹 브라우저에 노출되도록 함
+        video tag: video 삽입, controls: 컨트롤 패널이 웹 브라우저에 노출되도록 함
         source tag: audio/video tag에서 resource 경로와 미디어 타입을 명시하는데 사용
-    -->
+        웹 브라우저 별 지원 타입에 따라 단계적 설계가 가능하여 source code를 사용하는 것이 좋음-->
+    
     <audio src="오디오 파일 경로" controls></audio>
     <video src="비디오 파일 경로" controls></video>
-    <audio controls><source src="파일 경로" type="미디어 타입"></audio>
-    <video controls><source src="파일 경로" type="미디어 타입"></video>
+    <audio controls>
+        <source src="파일 경로" type="미디어 타입1">
+        <source src="파일 경로" type="미디어 타입2">
+        지원하지 않는 웹 브라우저입니다.
+    </audio>
     <hr/>
 
 
-    <!--
-        semantic tag: div tag에 의미를 부여한 tag
+    <!--semantic tag: div tag에 의미를 부여한 tag, tag의 이름만으로 용도나 역할에 대한 의미가 명확한 tag
         header tag: 웹 페이지에서 header 영역을 구분
         nav tag: 웹 페이지에서 내부의 다른 영역이나 외부를 연결하는 링크 영역을 구분
-        section tag: 웹 페이지에서 논리적으로 관련있는 내용 영역을 구분
-        article tag: 웹 페이지에서 독립적인 영역을 구분
+        section tag: 웹 페이지 안에서 논리적으로 관련있는 내용 영역을 구분, 제목을 나타내는 <hn>를 포함
+        article tag: 어떤 웹 페이지에서든 독립적으로 사용될 수 있는 영역을 구분
         aside tag: 웹 페이지에서 주력 내용이나 독립적인 내용으로 보기 어려워 article tag나 section tag로 구분할 수 없을 때 사용
         footer tag: 웹페이지에서 footer 영역을 구분
         main tag: 웹 페이지에서 주요 내용을 지정
     -->
 
 
-    <!--
+    <!--Global attributes: tag 종류에 상관없이 모든 태그에서 공통으로 사용할 수 있는 속성
         class attribute: 여러 개의 태그에 동일한 속성을 지정할 때 각각의 태그에 동일한 이름의 class를 지정하여 사용
         id attribute: 부모 태그와 관계없이 개별적으로 스타일을 적용하려고 할 때 사용
         하나의 tag에 id는 한 번만 선언할 수 있지만, class는 중복 선언 가능
         style attribute: CSS 코드를 인라인으로 작성 시 사용
         title attribute: attribute에 추가 정보를 넣을 때 사용, 마우스를 올릴 시 툴팁 표시
-                <p class="red-color">빨간색</p>
+        hidden attribute: 요소를 화면에서 감축
     -->
+
+    <p class="red-color">빨간색</p>
     <p class="red-color">빨간색</p>
     <h1 id="title">타이틀</h1>
     <p title="툴팁 발생">이 텍스트에 마우스를 올려보세요.</p>
