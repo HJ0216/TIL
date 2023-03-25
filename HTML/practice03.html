@@ -9,8 +9,8 @@
 <body>
     
     <!--
-        hn tag: 제목 또는 주제 표현
-        h1이 가장 큰 사이즈
+    hn tag: 제목 또는 주제 표현, 검색 엔진에서의 키워드로 인식
+    h1이 가장 큰 사이즈
     -->
     <h1>Heading level 1</h1>
     <h2>Heading level 2</h2>
@@ -47,29 +47,34 @@
     <blockquote cite="https://naver.com">
         <p>문단 인용문</p>
     </blockquote>
+    <!--<blockquote>는 반드시 한개 이상의 <p>를 포함해야 하며, <p> content에는 <blockquote>를 포함할 수 없음-->
     <hr/>
 
 
     <!--q tag: 문장에서의 짧은 인용구-->
-    <q cite="https://naver.com">짧은 인용구</q>
+    <p>
+        <q cite="https://naver.com">짧은 인용구</q> 표시
+    </p>
     <hr/>
 
 
-    <ins>추가된 텍스트</ins>
-    <del>취소된 텍스트</del>
+    <ins>추가된 텍스트임을 나타내는 ins tag</ins>
+    <del>취소된 텍스트임을 나타내는 del tag</del>
     <hr/>
 
 
-    <sub>아래 첨자</sub>
-    <sup>위 첨자</sup>
+    <p>아래 첨자를 표시하는 <sub>sub tag</sub></p>
+    <p>H<sub>2</sub>O: water</p>
+    <p>위 첨자를 표시하는 <sup>sup tag</sup></p>
+    <p>4<sup>2</sup>=16</p>
     <hr/>
 
 
-    <!--
-        div tag: block attribute, in-line attribute를 묶을 때 사용
-                 block attribute: web browser의 공간 유무에 상관없이 div tag나 p tag처럼 사용할 때마다 줄 바꿈되는 tag
-                 in-line attribute: a tag, span tag 등 공간이 부족할 때만 줄 바꿈되는 tag
+    <!--div tag: block attribute, in-line attribute를 묶을 때 사용 ▶ HTML 구조 명확화
+        block attribute: web browser의 공간 유무에 상관없이 div tag나 p tag처럼 사용할 때마다 줄 바꿈되는 tag
+        in-line attribute: a tag, span tag 등 공간이 부족할 때만 줄 바꿈되는 tag
     -->
+    
     <div>
         <p>영화 소개</p>
         <p>페이지</p>
@@ -82,25 +87,18 @@
 
 
     <!--span tag: in-line attribute를 그룹으로 묶을 때 사용
-                   CSS에서 span tag를 활용하여 스타일을 따로 적용할 수 있음-->
+        CSS에서 span tag를 활용하여 스타일을 따로 적용할 수 있음-->
+
     <div>
         <p>영화 소개</p>
-        <p>이번 영화의 <span>하이라이트는</span> 바로 이 장면입니다.</p>
+        <p>이번 영화의 <span style="color: cornflowerblue;">하이라이트는</span> 바로 이 장면입니다.</p>
     </div>
     <hr/>
 
 
-    <!--
-        div tag 종료 후 한 줄이 block으로 인식되므로 자동 줄 바꿈이 되지만,
-        span tag는 in-line으로 인식되어 종료되어도 자동 줄 바꿈이 되지 않음
-        block 요소: --------------------block----------------------------
-        --------------------------block----------------------------------
-        --------------------------block----------------------------------
-        in-line 요소: -----in-line----- -----in-line----- ----in-line----
-    -->
+    <!--<ul>: 비 순서형 목록 생성
+        <li>: 목록 내용 구성-->
 
-
-    <!--ul + li tag: 비 순서형 목록 생성-->
     <h1>판매중인 과일 목록</h1>
     <ul>
         <li>사과</li>
@@ -110,7 +108,8 @@
     <hr/>
 
 
-    <!--ol + li tag: 순서형 목록 생성-->
+    <!--<ol>: 순서형 목록 생성
+        <li>: 목록 내용 구성-->
     <h1>판매중인 과일 목록</h1>
     <ol>
         <li>사과</li>
@@ -120,7 +119,10 @@
     <hr/>
 
 
-    <!--dl + dt + dd tag: 정의형 목록-->
+    <!--<dl>: 정의형 목록 생성
+        <dt>: 용어 제목
+        <dd>: 용어 설명-->
+    
     <dl>
         <dt>용어1</dt>
         <dd>용어1에 대한 설명</dd>
@@ -129,35 +131,45 @@
     </dl>
     <hr/>
 
+    <!--a tag: link 걸기
+        <a>에 연결할 대상 주소가 불분명할 경우, "#(최상단으로 이동)"을 href 속성값으로 기재-->
 
-    <!--a tag: link 걸기-->
-    <a href="https://naver.com">네이버</a>
+    <a href="https://naver.com" target="_blank" title="네이버">네이버</a>
+    <!--<a target="_blank">: 새 창으로 열기-->
     <hr/>
 
 
-    <!--
-        img tag: image 삽입
-                 alt: 이미지를 불러올 수 없을 경우, 해당 이미지 안내
-                 종료 tag가 없을 경우에는 시작 tag에 /를 함께 작성
+    <!--img tag: image 삽입
+        src 경로 기준: web browser에서 실행되는 HTML 파일 위치 기준(./ 생략 가능)
+        alt: 삽입하고자하는 이미지에 대한 설명
+        종료 tag가 없을 경우에는 시작 tag에 /를 함께 작성
     -->
+
     <img src="./image/naver.png" alt="naver logo"/>
     <hr/>
 
 
     <!--a tag와 img tag를 이용하여, image에 link 걸기-->
+
     <a href="https://naver.com">
         <img src="./image/naver.png" alt="naver logo"/>
     </a>
     <hr/>
 
 
-    <!--strong tag: 글자 강조-->
-    <strong>중요한 글자</strong>
+    <!--strong tag: 글자 강조
+        중첩 사용 가능, 효과는 동일하지만 구조적으로 더 중요한 부분임을 강조-->
+
+    <p>이 구역은 <strong>관계자 외 출입금지</strong> 입니다.</p>
+    <p>이 구역은 <strong>관계자 외 <strong>출입금지</strong></strong> 입니다.</p>
     <hr/>
 
 
-    <!--em tag: 기울임 글자-->
-    <em>기울여진 글자</em>
+    <!--em tag: 기울린 글꼴로 강조되는 글자
+            중첩 사용 가능, 효과는 동일하지만 구조적으로 더 중요한 부분임을 강조-->
+
+    <p>이 구역은 <em>관계자 외 출입금지</em> 입니다.</p>
+    <p>이 구역은 <em>관계자 외 <em>출입금지</em></em> 입니다.</p>
 
 
 </body>
