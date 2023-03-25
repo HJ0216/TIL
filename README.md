@@ -301,6 +301,7 @@
 - [Oracle SQL 강의 - 36강 OUTER JOIN을 이용한 게시글 목록 조회](https://hj0216.tistory.com/281)
 - [Oracle SQL 강의 - 37강 SELF JOIN](https://hj0216.tistory.com/285)
 - [Oracle SQL 강의 - 38강 오라클 OLD JOIN](https://hj0216.tistory.com/287)
+- [Oracle SQL 강의 - 39강 유니온(UNION)](https://hj0216.tistory.com/290)
 </details>
 
 
