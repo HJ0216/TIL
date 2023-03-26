@@ -347,8 +347,19 @@
 - [[Certificate] SQLD (200906_38)](https://hj0216.tistory.com/266)
 - [[Certificate] SQLD (200530_37)](https://hj0216.tistory.com/267)
 </details>
+<br/>
 
 
+### JavaScript
+<details>
+<summary>How_to_fix_Errors</summary>
+
+- [[해결 방법] SyntaxError: Identifier '...' has already been declared](https://hj0216.tistory.com/292)
+- [[해결 방법] Cannot access '...' before initialization](https://hj0216.tistory.com/293)
+- [[해결 방법] TypeError: Assignment to constant variable](https://hj0216.tistory.com/294)
+- [[해결 방법] Missing initializer in const declaration](https://hj0216.tistory.com/295)
+- [[해결 방법] SyntaxError: Unexpected token 'const'](https://hj0216.tistory.com/296)
+</details>
 <br/>
 
 
