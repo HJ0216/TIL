@@ -435,6 +435,7 @@
 - [[BaekJoon] 25304번 영수증 문제풀이 (Success)](https://hj0216.tistory.com/283)
 - [[BaekJoon] 25314번 코딩은 체육과목 입니다 문제풀이 (Success)](https://hj0216.tistory.com/286)
 - [[BaekJoon] 11021번 A+B-7 문제풀이 (Success)](https://hj0216.tistory.com/289)
+- [[BaekJoon] 15552번 빠른 A+B 문제풀이 (Success)](https://hj0216.tistory.com/300)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
