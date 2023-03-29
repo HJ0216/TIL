@@ -89,6 +89,7 @@
 - [230326_TIL](https://hj0216.tistory.com/291)
 - [230327_TIL](https://hj0216.tistory.com/297)
 - [230328_TIL](https://hj0216.tistory.com/303)
+- [230329_TIL](https://hj0216.tistory.com/306)
 </details>
 
 
@@ -307,6 +308,7 @@
 - [Oracle SQL 강의 - 39강 유니온(UNION)](https://hj0216.tistory.com/290)
 - [Oracle SQL 강의 - 40강 View(뷰)의 의미와 생성방법](https://hj0216.tistory.com/299)
 - [Oracle SQL 강의 - 41강 데이터 딕셔너리](https://hj0216.tistory.com/302)
+- [Oracle SQL 강의 - 42강 도메인 제약조건](https://hj0216.tistory.com/305)
 </details>
 
 
@@ -440,6 +442,7 @@
 - [[BaekJoon] 11021번 A+B-7 문제풀이 (Success)](https://hj0216.tistory.com/289)
 - [[BaekJoon] 15552번 빠른 A+B 문제풀이 (Success)](https://hj0216.tistory.com/300)
 - [[BaekJoon] 11022번 A+B-8 문제풀이 (Success)](https://hj0216.tistory.com/301)
+- [[BaekJoon] 2438번 별 찍기 - 1 문제풀이 (Success)](https://hj0216.tistory.com/304)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
