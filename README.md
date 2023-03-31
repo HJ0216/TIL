@@ -91,7 +91,7 @@
 - [230328_TIL](https://hj0216.tistory.com/303)
 - [230329_TIL](https://hj0216.tistory.com/306)
 - [230330_TIL](https://hj0216.tistory.com/307)
-- [230330_TIL](https://hj0216.tistory.com/310)
+- [230331_TIL](https://hj0216.tistory.com/310)
 </details>
 
 
@@ -312,6 +312,7 @@
 - [Oracle SQL 강의 - 41강 데이터 딕셔너리](https://hj0216.tistory.com/302)
 - [Oracle SQL 강의 - 42강 도메인 제약조건](https://hj0216.tistory.com/305)
 - [Oracle SQL 강의 - 43강 체크 제약조건](https://hj0216.tistory.com/309)
+- [Oracle SQL 강의 - 44강 정규식을 이용한 체크 제약조건](https://hj0216.tistory.com/311)
 </details>
 
 
@@ -447,6 +448,7 @@
 - [[BaekJoon] 11022번 A+B-8 문제풀이 (Success)](https://hj0216.tistory.com/301)
 - [[BaekJoon] 2438번 별 찍기 - 1 문제풀이 (Success)](https://hj0216.tistory.com/304)
 - [[BaekJoon] 2439번 별 찍기 - 2 문제풀이 (Success)](https://hj0216.tistory.com/308)
+- [[BaekJoon] 10952번 A + B - 5 문제풀이 (Success)](https://hj0216.tistory.com/312)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
