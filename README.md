@@ -59,7 +59,7 @@
 </details>
 
 <details>
-<summary>230301~_TIL</summary>
+<summary>230301~230331_TIL</summary>
 
 - [230301_TIL](https://hj0216.tistory.com/180)
 - [230302_TIL](https://hj0216.tistory.com/186)
@@ -95,6 +95,10 @@
 </details>
 
 
+<details>
+<summary>230401~_TIL</summary>
+
+</details>
 
 <br/>
 
@@ -254,6 +258,7 @@
 - [[해결 방법] java.io.InvalidClassException](https://hj0216.tistory.com/125)
 - [[해결 방법] java.lang.ArrayIndexOutOfBoundsException](https://hj0216.tistory.com/131)
 - [[해결 방법] Cannot invoke getClass() on the primitive type double](https://hj0216.tistory.com/136)
+- [[해결 방법] java.util.NoSuchElementException](https://hj0216.tistory.com/313)
 - [[해결 방법] java.sql.SQLException: 부적합한 열 인덱스](https://hj0216.tistory.com/142)
 - [[해결 방법] java.lang.ClassNotFoundException: oracle.jdbc.driver.OracleDriver](https://hj0216.tistory.com/143)
 - [[해결방법] Type '...' already exists with same name but different case.](https://hj0216.tistory.com/149)
