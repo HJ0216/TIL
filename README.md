@@ -395,8 +395,9 @@
 
 ### Git
 - [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
-- [GitBash를 이용한 Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
-- [Git Bash를 이용한 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
+- [[Git Bash] Github 기존 Repository와 Local PC 연결](https://hj0216.tistory.com/321)
+- [[GitBash] Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
+- [[Git Bash] 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
 
 <details>
 <summary>How_to_fix_Errors</summary>
