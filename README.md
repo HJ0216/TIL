@@ -247,24 +247,24 @@
 <details>
 <summary>How_to_fix_Errors</summary>
 
+- [[해결 방법] Cannot invoke getClass() on the primitive type double](https://hj0216.tistory.com/136)
 - [[해결 방법] Cannot store to char array because ... is null](https://hj0216.tistory.com/108)
-- [[해결 방법] The local variable a may not have been initialized](https://hj0216.tistory.com/109)
-- [[해결 방법] Variable cannot be resolved to a variable](https://hj0216.tistory.com/111)
-- [[해결 방법] Resource leak: '...' is never closed](https://hj0216.tistory.com/114)
-- [[해결 방법] Unhandled exception type ParseException](https://hj0216.tistory.com/116)
-- [[해결 방법] Type mismatch: cannot convert from int to char](https://hj0216.tistory.com/120)
 - [[해결 방법] java.util.ConcurrentModificationException](https://hj0216.tistory.com/121)
 - [[해결 방법] java.util.IllegalFormatPrecisionException: 2](https://hj0216.tistory.com/123)
 - [[해결 방법] java.io.NotSerializableException](https://hj0216.tistory.com/124)
 - [[해결 방법] java.io.InvalidClassException](https://hj0216.tistory.com/125)
 - [[해결 방법] java.lang.ArrayIndexOutOfBoundsException](https://hj0216.tistory.com/131)
-- [[해결 방법] Cannot invoke getClass() on the primitive type double](https://hj0216.tistory.com/136)
 - [[해결 방법] java.util.NoSuchElementException](https://hj0216.tistory.com/313)
 - [[해결 방법] java.lang.NumberFormatException](https://hj0216.tistory.com/319)
-- [[해결 방법] java.sql.SQLException: 부적합한 열 인덱스](https://hj0216.tistory.com/142)
 - [[해결 방법] java.lang.ClassNotFoundException: oracle.jdbc.driver.OracleDriver](https://hj0216.tistory.com/143)
-- [[해결방법] Type '...' already exists with same name but different case.](https://hj0216.tistory.com/149)
-- [[해결방법] Server Tomcat v9.0 Server at localhost failed to start.](https://hj0216.tistory.com/154)
+- [[해결 방법] java.sql.SQLException: 부적합한 열 인덱스](https://hj0216.tistory.com/142)
+- [[해결 방법] Resource leak: '...' is never closed](https://hj0216.tistory.com/114)
+- [[해결 방법] The local variable a may not have been initialized](https://hj0216.tistory.com/109)
+- [[해결 방법] Type mismatch: cannot convert from int to char](https://hj0216.tistory.com/120)
+- [[해결 방법] Type '...' already exists with same name but different case.](https://hj0216.tistory.com/149)
+- [[해결 방법] Unhandled exception type ParseException](https://hj0216.tistory.com/116)
+- [[해결 방법] Server Tomcat v9.0 Server at localhost failed to start.](https://hj0216.tistory.com/154)
+- [[해결 방법] Variable cannot be resolved to a variable](https://hj0216.tistory.com/111)
 </details>
 
 
@@ -373,14 +373,14 @@
 <details>
 <summary>How_to_fix_Errors</summary>
 
-- [[해결 방법] SyntaxError: Identifier '...' has already been declared](https://hj0216.tistory.com/292)
 - [[해결 방법] Uncaught ReferenceError: Cannot access '...' before initialization](https://hj0216.tistory.com/293)
-- [[해결 방법] TypeError: Assignment to constant variable](https://hj0216.tistory.com/294)
-- [[해결 방법] SyntaxError: Missing initializer in const declaration](https://hj0216.tistory.com/295)
-- [[해결 방법] SyntaxError: Unexpected token 'const'](https://hj0216.tistory.com/296)
 - [[해결 방법] Uncaught ReferenceError: Invalid left-hand side expression in postfix operation](https://hj0216.tistory.com/298)
-- [[해결 방법] Uncaught TypeError: Cannot set properties of null](https://hj0216.tistory.com/322)
 - [[해결 방법] Uncaught ReferenceError: ... is not defined](https://hj0216.tistory.com/323)
+- [[해결 방법] Uncaught SyntaxError: Identifier '...' has already been declared](https://hj0216.tistory.com/292)
+- [[해결 방법] Uncaught SyntaxError: Missing initializer in const declaration](https://hj0216.tistory.com/295)
+- [[해결 방법] Uncaught SyntaxError: Unexpected token 'const'](https://hj0216.tistory.com/296)
+- [[해결 방법] Uncaught TypeError: Assignment to constant variable](https://hj0216.tistory.com/294)
+- [[해결 방법] Uncaught TypeError: Cannot set properties of null](https://hj0216.tistory.com/322)
 </details>
 <br/>
 
@@ -403,14 +403,14 @@
 <details>
 <summary>How_to_fix_Errors</summary>
 
-- [[해결 방법] fatal: not a git repository (or any of the parent directories): .git](https://hj0216.tistory.com/12)
-- [[해결 방법] Permission denied](https://hj0216.tistory.com/13)
 - [[해결 방법] Another git process seems to be running in this repository](https://hj0216.tistory.com/15)
-- [[해결 방법] this operation must be run in a work tree](https://hj0216.tistory.com/16)
-- [[해결 방법] fetal: bad source](https://hj0216.tistory.com/23)
-- [[해결 방법] fatal: The current branch main has no upstream branch](https://hj0216.tistory.com/24)
 - [[해결 방법] error: failed to push some refs to 'https://github.com/'](https://hj0216.tistory.com/38)
+- [[해결 방법] fetal: bad source](https://hj0216.tistory.com/23)
+- [[해결 방법] fatal: not a git repository (or any of the parent directories): .git](https://hj0216.tistory.com/12)
 - [[해결 방법] fatal: refusing to merge unrelated histories](https://hj0216.tistory.com/40)
+- [[해결 방법] fatal: The current branch main has no upstream branch](https://hj0216.tistory.com/24)
+- [[해결 방법] Permission denied](https://hj0216.tistory.com/13)
+- [[해결 방법] this operation must be run in a work tree](https://hj0216.tistory.com/16)
 </details>
 
 
