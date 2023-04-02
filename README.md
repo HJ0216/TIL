@@ -99,6 +99,7 @@
 <summary>230401~_TIL</summary>
 
 - [230401_TIL](https://hj0216.tistory.com/316)
+- [230402_TIL](https://hj0216.tistory.com/317)
 </details>
 
 <br/>
@@ -202,7 +203,7 @@
 - [리눅스 기초 30강 시리즈 - 27강 bash - 2](https://hj0216.tistory.com/96)
 - [리눅스 기초 30강 시리즈 - 28강 bash - 3](https://hj0216.tistory.com/97)
 - [리눅스 기초 30강 시리즈 - 29강 출력 내용 저장](https://hj0216.tistory.com/98)
-- [리눅스 기초 30강 시리즈 - 30강 설치 후 할 일](https://hj0216.tistory.com/101)
+- [[완강] 리눅스 기초 30강 시리즈 - 30강 설치 후 할 일](https://hj0216.tistory.com/101)
 </details>
 
 <details>
@@ -321,6 +322,7 @@
 - [Oracle SQL 강의 - 43강 체크 제약조건](https://hj0216.tistory.com/309)
 - [Oracle SQL 강의 - 44강 정규식을 이용한 체크 제약조건](https://hj0216.tistory.com/311)
 - [Oracle SQL 강의 - 45강 Entity 제약조건(Primary Key, Unique)](https://hj0216.tistory.com/314)
+- [[완강] Oracle SQL 강의 - 46강 시퀀스(Sequence)](https://hj0216.tistory.com/318)
 </details>
 
 
@@ -456,8 +458,9 @@
 - [[BaekJoon] 11022번 A+B-8 문제풀이 (Success)](https://hj0216.tistory.com/301)
 - [[BaekJoon] 2438번 별 찍기 - 1 문제풀이 (Success)](https://hj0216.tistory.com/304)
 - [[BaekJoon] 2439번 별 찍기 - 2 문제풀이 (Success)](https://hj0216.tistory.com/308)
-- [[BaekJoon] 10952번 A + B - 5 문제풀이 (Success)](https://hj0216.tistory.com/312)
+- [[BaekJoon] 10952번 A+B - 5 문제풀이 (Success)](https://hj0216.tistory.com/312)
 - [[BaekJoon] 10951번 A+B - 4 문제풀이 (Success)](https://hj0216.tistory.com/315)
+- [[BaekJoon] 10818번 최소, 최소 문제풀이 (Success)](https://hj0216.tistory.com/320)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
