@@ -260,6 +260,7 @@
 - [[해결 방법] java.lang.ArrayIndexOutOfBoundsException](https://hj0216.tistory.com/131)
 - [[해결 방법] Cannot invoke getClass() on the primitive type double](https://hj0216.tistory.com/136)
 - [[해결 방법] java.util.NoSuchElementException](https://hj0216.tistory.com/313)
+- [[해결 방법] java.lang.NumberFormatException](https://hj0216.tistory.com/319)
 - [[해결 방법] java.sql.SQLException: 부적합한 열 인덱스](https://hj0216.tistory.com/142)
 - [[해결 방법] java.lang.ClassNotFoundException: oracle.jdbc.driver.OracleDriver](https://hj0216.tistory.com/143)
 - [[해결방법] Type '...' already exists with same name but different case.](https://hj0216.tistory.com/149)
