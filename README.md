@@ -379,6 +379,7 @@
 - [[해결 방법] Missing initializer in const declaration](https://hj0216.tistory.com/295)
 - [[해결 방법] SyntaxError: Unexpected token 'const'](https://hj0216.tistory.com/296)
 - [[해결 방법] Invalid left-hand side expression in postfix operation](https://hj0216.tistory.com/298)
+- [[해결 방법] Cannot set properties of null](https://hj0216.tistory.com/322)
 </details>
 <br/>
 
