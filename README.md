@@ -100,6 +100,7 @@
 
 - [230401_TIL](https://hj0216.tistory.com/316)
 - [230402_TIL](https://hj0216.tistory.com/317)
+- [230403_TIL](https://hj0216.tistory.com/325)
 </details>
 
 <br/>
@@ -242,6 +243,7 @@
 
 - [[자바의 정석_기초편] Chapter02. 변수(Variable)](https://hj0216.tistory.com/85)
 - [[자바의 정석_기초편] Chapter03. 연산자(Operator)](https://hj0216.tistory.com/90)
+- [[자바의 정석_기초편] Chapter04. 조건문(If)과 반복문(While, For)_1](https://hj0216.tistory.com/324)
 </details>
 
 <details>
@@ -397,7 +399,7 @@
 ### Git
 - [Git 설치 및 초기 설정](https://hj0216.tistory.com/39)
 - [[Git Bash] Github 기존 Repository와 Local PC 연결](https://hj0216.tistory.com/321)
-- [[GitBash] Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
+- [[Git Bash] Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
 - [[Git Bash] 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
 
 <details>
@@ -463,6 +465,7 @@
 - [[BaekJoon] 10952번 A+B - 5 문제풀이 (Success)](https://hj0216.tistory.com/312)
 - [[BaekJoon] 10951번 A+B - 4 문제풀이 (Success)](https://hj0216.tistory.com/315)
 - [[BaekJoon] 10818번 최소, 최소 문제풀이 (Success)](https://hj0216.tistory.com/320)
+- [[BaekJoon] 2750번 수 정렬 문제풀이 (Success)](https://hj0216.tistory.com/326)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
