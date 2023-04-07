@@ -104,6 +104,7 @@
 - [230404_TIL](https://hj0216.tistory.com/327)
 - [230405_TIL](https://hj0216.tistory.com/332)
 - [230406_TIL](https://hj0216.tistory.com/333)
+- [230407_TIL](https://hj0216.tistory.com/336)
 </details>
 
 <br/>
@@ -250,6 +251,7 @@
 - [[자바의 정석_기초편] Chapter04. 조건문(If)과 반복문(While, For)_2](https://hj0216.tistory.com/328)
 - [[자바의 정석_기초편] Chapter05. 배열(Array)_1](https://hj0216.tistory.com/330)
 - [[자바의 정석_기초편] Chapter05. 배열(Array)_2](https://hj0216.tistory.com/334)
+- [[자바의 정석_기초편] Chapter06. 객체지향 언어(Object Oriented Language)_1](https://hj0216.tistory.com/337)
 </details>
 
 <details>
@@ -475,6 +477,7 @@
 - [[BaekJoon] 10871번 X보다 작은 수 정렬 문제풀이](https://hj0216.tistory.com/329)
 - [[BaekJoon] 10818번 최소, 최대 문제풀이 (Success)](https://hj0216.tistory.com/331)
 - [[BaekJoon] 2562번 최댓값 문제풀이 (Success)](https://hj0216.tistory.com/335)
+- [[BaekJoon] 5597번 과제 안 내신 분..? 문제풀이 (Success)](https://hj0216.tistory.com/338)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
