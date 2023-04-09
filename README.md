@@ -360,6 +360,7 @@
 - [[해결 방법] ORA-00904: "...": 부적합한 식별자](https://hj0216.tistory.com/223)
 - [[해결 방법] ORA-00913: 값의 수가 너무 많습니다](https://hj0216.tistory.com/215)
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
+- [[해결 방법] ORA-00927: 누락된 등호](https://hj0216.tistory.com/348)
 - [[해결 방법] ORA-00933: SQL 명령어가 올바르게 종료되지 않았습니다](https://hj0216.tistory.com/184)
 - [[해결 방법] ORA-00934: 그룹 함수는 허가되지 않습니다](https://hj0216.tistory.com/171)
 - [[해결 방법] ORA-00936: 누락된 표현식](https://hj0216.tistory.com/174)
