@@ -273,6 +273,7 @@
 - [[해결 방법] java.lang.ClassNotFoundException: oracle.jdbc.driver.OracleDriver](https://hj0216.tistory.com/143)
 - [[해결 방법] java.sql.SQLException: 부적합한 열 인덱스](https://hj0216.tistory.com/142)
 - [[해결 방법] Resource leak: '...' is never closed](https://hj0216.tistory.com/114)
+- [[해결 방법] The method is ambiguous for the type Class](https://hj0216.tistory.com/346)
 - [[해결 방법] The local variable a may not have been initialized](https://hj0216.tistory.com/109)
 - [[해결 방법] Type mismatch: cannot convert from int to char](https://hj0216.tistory.com/120)
 - [[해결 방법] Type '...' already exists with same name but different case.](https://hj0216.tistory.com/149)
