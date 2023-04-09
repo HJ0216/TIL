@@ -292,6 +292,7 @@
 <summary>How_to_fix_Errors</summary>
 
 - [[해결 방법] No default constructor found](https://hj0216.tistory.com/340)
+- [[해결 방법] nested exception is java.lang.NullPointerException](https://hj0216.tistory.com/347)
 </details>
 
 
