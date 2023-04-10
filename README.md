@@ -107,6 +107,7 @@
 - [230407_TIL](https://hj0216.tistory.com/336)
 - [230408_TIL](https://hj0216.tistory.com/342)
 - [230409_TIL](https://hj0216.tistory.com/344)
+- [230410_TIL](https://hj0216.tistory.com/351)
 </details>
 
 <br/>
@@ -256,6 +257,7 @@
 - [[자바의 정석_기초편] Chapter06. 객체지향 언어(Object Oriented Language)_1](https://hj0216.tistory.com/337)
 - [[자바의 정석_기초편] Chapter06. 객체지향 언어(Object Oriented Language)_2](https://hj0216.tistory.com/341)
 - [[자바의 정석_기초편] Chapter06. 객체지향 언어(Object Oriented Language)_3](https://hj0216.tistory.com/345)
+- [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_1](https://hj0216.tistory.com/349)
 </details>
 
 <details>
@@ -499,6 +501,7 @@
 - [[BaekJoon] 5597번 과제 안 내신 분..? 문제풀이 (Success)](https://hj0216.tistory.com/338)
 - [[BaekJoon] 3052번 나머지 문제풀이 (Success)](https://hj0216.tistory.com/341)
 - [[BaekJoon] 1546번 평균 문제풀이 (Success)](https://hj0216.tistory.com/343)
+- [[BaekJoon] 10813번 공 바꾸기 문제풀이 (Success)](https://hj0216.tistory.com/350)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
