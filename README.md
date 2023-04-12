@@ -108,6 +108,8 @@
 - [230408_TIL](https://hj0216.tistory.com/342)
 - [230409_TIL](https://hj0216.tistory.com/344)
 - [230410_TIL](https://hj0216.tistory.com/351)
+- [230411_TIL](https://hj0216.tistory.com/352)
+- [230412_TIL](https://hj0216.tistory.com/354)
 </details>
 
 <br/>
@@ -502,6 +504,8 @@
 - [[BaekJoon] 3052번 나머지 문제풀이 (Success)](https://hj0216.tistory.com/341)
 - [[BaekJoon] 1546번 평균 문제풀이 (Success)](https://hj0216.tistory.com/343)
 - [[BaekJoon] 10813번 공 바꾸기 문제풀이 (Success)](https://hj0216.tistory.com/350)
+- [[BaekJoon] 10810번 공 넣기 문제풀이 (Success)](https://hj0216.tistory.com/353)
+- [[BaekJoon] 2743번 단어 길이 재기 문제풀이 (Success)](https://hj0216.tistory.com/355)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
