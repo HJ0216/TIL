@@ -112,6 +112,7 @@
 - [230412_TIL](https://hj0216.tistory.com/354)
 - [230413_TIL](https://hj0216.tistory.com/357)
 - [230414_TIL](https://hj0216.tistory.com/358)
+- [230415_TIL](https://hj0216.tistory.com/360)
 </details>
 
 <br/>
@@ -366,6 +367,7 @@
 - [[해결 방법] ORA-00904: "...": 부적합한 식별자](https://hj0216.tistory.com/223)
 - [[해결 방법] ORA-00913: 값의 수가 너무 많습니다](https://hj0216.tistory.com/215)
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
+- [[해결 방법] ORA-00925: INTO 키워드가 누락되었습니다](https://hj0216.tistory.com/362)
 - [[해결 방법] ORA-00927: 누락된 등호](https://hj0216.tistory.com/348)
 - [[해결 방법] ORA-00933: SQL 명령어가 올바르게 종료되지 않았습니다](https://hj0216.tistory.com/184)
 - [[해결 방법] ORA-00934: 그룹 함수는 허가되지 않습니다](https://hj0216.tistory.com/171)
@@ -510,6 +512,7 @@
 - [[BaekJoon] 2743번 단어 길이 재기 문제풀이 (Success)](https://hj0216.tistory.com/355)
 - [[BaekJoon] 9086번 문자열 문제풀이 (Success)](https://hj0216.tistory.com/356)
 - [[BaekJoon] 11654번 아스키 코드 문제풀이 (Success)](https://hj0216.tistory.com/359)
+- [[BaekJoon] 11720번 숫자의 합 문제풀이 (Success)](https://hj0216.tistory.com/361)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
