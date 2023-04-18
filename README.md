@@ -115,6 +115,7 @@
 - [230415_TIL](https://hj0216.tistory.com/360)
 - [230416_TIL](https://hj0216.tistory.com/363)
 - [230417_TIL](https://hj0216.tistory.com/365)
+- [230418_TIL](https://hj0216.tistory.com/367)
 </details>
 
 <br/>
@@ -517,6 +518,7 @@
 - [[BaekJoon] 11720번 숫자의 합 문제풀이 (Success)](https://hj0216.tistory.com/361)
 - [[BaekJoon] 24262번 알고리즘 수업 문제풀이 (Success)](https://hj0216.tistory.com/364)
 - [[BaekJoon] 10809번 알파벳 찾기 문제풀이 (Success)](https://hj0216.tistory.com/366)
+- [[BaekJoon] 10811번 바구니 뒤집기 문제풀이 (Success)](https://hj0216.tistory.com/368)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
