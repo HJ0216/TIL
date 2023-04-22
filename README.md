@@ -119,6 +119,7 @@
 - [230419_TIL](https://hj0216.tistory.com/370)
 - [230420_TIL](https://hj0216.tistory.com/371)
 - [230421_TIL](https://hj0216.tistory.com/374)
+- [230422_TIL](https://hj0216.tistory.com/376)
 </details>
 
 <br/>
@@ -526,6 +527,7 @@
 - [[BaekJoon] 2675번 문자열 반복 문제풀이 (Success)](https://hj0216.tistory.com/369)
 - [[BaekJoon] 25083번 새싹 문제풀이 (Success)](https://hj0216.tistory.com/372)
 - [[BaekJoon] 24262번 알고리즘 수업 - 알고리즘의 수행 시간 1 문제풀이 (Success)](https://hj0216.tistory.com/373)
+- [[BaekJoon] 2587번 대표값2 문제풀이 (Success)](https://hj0216.tistory.com/377)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
