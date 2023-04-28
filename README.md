@@ -375,6 +375,7 @@
 
 - [[해결 방법] ORA-00001: 무결성 제약 조건에 위배됩니다](https://hj0216.tistory.com/219)
 - [[해결 방법] ORA-00904: "...": 부적합한 식별자](https://hj0216.tistory.com/223)
+- [[해결 방법] ORA-00909: 인수의 개수가 부적합합니다](https://hj0216.tistory.com/385)
 - [[해결 방법] ORA-00913: 값의 수가 너무 많습니다](https://hj0216.tistory.com/215)
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
 - [[해결 방법] ORA-00925: INTO 키워드가 누락되었습니다](https://hj0216.tistory.com/362)
