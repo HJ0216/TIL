@@ -96,7 +96,7 @@
 
 
 <details>
-<summary>230401~_TIL</summary>
+<summary>230401~230425_TIL</summary>
 
 - [230401_TIL](https://hj0216.tistory.com/316)
 - [230402_TIL](https://hj0216.tistory.com/317)
@@ -124,6 +124,13 @@
 - [230424_TIL](https://hj0216.tistory.com/380)
 - [230425_TIL](https://hj0216.tistory.com/382)
 </details>
+
+<details>
+<summary>230503~_TIL</summary>
+
+- [230503_TIL](https://hj0216.tistory.com/387)
+</details>
+
 
 <br/>
 
@@ -536,6 +543,7 @@
 - [[BaekJoon] 25305번 커트라 문제풀이 (Success)](https://hj0216.tistory.com/383)
 - [[BaekJoon] 1427번 소트 인사이드 문제풀이 (Success)](https://hj0216.tistory.com/381)
 - [[BaekJoon] 24263번 알고리즘 수업 - 알고리즘의 수행 시간 2 문제풀이 (Success)](https://hj0216.tistory.com/384)
+- [[BaekJoon] 10988번 팰린드롬인지 확인하기 문제풀이 (Success)](https://hj0216.tistory.com/386)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (-ing)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
