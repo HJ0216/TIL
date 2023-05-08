@@ -381,6 +381,7 @@
 </details>
 
 
+
 <details>
 <summary>How_to_fix_Errors</summary>
 
@@ -388,6 +389,7 @@
 - [[해결 방법] ORA-00904: "...": 부적합한 식별자](https://hj0216.tistory.com/223)
 - [[해결 방법] ORA-00909: 인수의 개수가 부적합합니다](https://hj0216.tistory.com/385)
 - [[해결 방법] ORA-00913: 값의 수가 너무 많습니다](https://hj0216.tistory.com/215)
+- [[해결 방법] ORA-00917: 누락된 콤마](https://hj0216.tistory.com/397)
 - [[해결 방법] ORA-00918: 열의 정의가 애매합니다](https://hj0216.tistory.com/172)
 - [[해결 방법] ORA-00925: INTO 키워드가 누락되었습니다](https://hj0216.tistory.com/362)
 - [[해결 방법] ORA-00927: 누락된 등호](https://hj0216.tistory.com/348)
@@ -415,6 +417,16 @@
 - [[해결 방법] ORA-42399: 읽기 전용 뷰에서는 DML 작업을 수행할 수 없습니다](https://hj0216.tistory.com/230)
 - [[해결 방법] HIDDEN COLUMN ROWNUM 조회 문제](https://hj0216.tistory.com/189)
 - [[해결 방법] COLUMN ALIAS 부적합 식별자 문제](https://hj0216.tistory.com/238)
+</details>
+
+
+
+### MySQL
+
+<details>
+<summary>How_to_fix_Errors</summary>
+
+- [[해결 방법] Error Code: 1046. No database selected](https://hj0216.tistory.com/396)
 </details>
 
 
