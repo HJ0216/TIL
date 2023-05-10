@@ -285,6 +285,7 @@
 - [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_1](https://hj0216.tistory.com/349)
 - [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_2](https://hj0216.tistory.com/394)
 - [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_3](https://hj0216.tistory.com/398)
+- [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_4](https://hj0216.tistory.com/401)
 </details>
 
 <details>
@@ -421,16 +422,6 @@
 </details>
 
 
-
-### MySQL
-
-<details>
-<summary>How_to_fix_Errors</summary>
-
-- [[해결 방법] Error Code: 1046. No database selected](https://hj0216.tistory.com/396)
-</details>
-
-
 <details>
 <summary>Certificate_SQLD</summary>
 
@@ -441,6 +432,14 @@
 </details>
 <br/>
 
+### MySQL
+
+<details>
+<summary>How_to_fix_Errors</summary>
+
+- [[해결 방법] Error Code: 1046. No database selected](https://hj0216.tistory.com/396)
+</details>
+<br/>
 
 ### JavaScript
 <details>
@@ -566,6 +565,7 @@
 - [[BaekJoon] 2444번 별 찍기 - 7 문제풀이 (Success)](https://hj0216.tistory.com/393)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (Success)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 11718번 그대로 출력하기 문제풀이 (Success)](https://hj0216.tistory.com/399)
+- [[BaekJoon] 1157번 단어 공부 문제풀이 (Success)](https://hj0216.tistory.com/400)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
 
