@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id="root"></div>
+</body>
+
+<!--ReactJS 설치 전 script import -->
+<script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+<!--React: application의 interactiveness를 올려주는 lib-->
+<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<!--React DOM: React element를 HTML에 삽입-->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!--JSX 사용을 위해 import-->
+<script type="text/babel;">
+    const root = document.getElementById("root");
+/*  
+    CreateElement
+    const h3 = React.createElement("h3", 
+                                    {id: "awesome-span",
+                                     style: {color: "dodgerblue"},
+                                     onMouseEnter: () => console.log("mouse Enter"),
+                                    }, 
+                                    "Hello, I'm a span");
+
+    const btn = React.createElement("button", {
+        onClick: () => console.log("i'm clicked"),
+    }, "Click me");
+*/
+    function Title() {
+        return (
+            <h3 id="title" onMouseEnter={() => console.log("mouse enter")}>
+                Hello, I'm a title
+            </h3>
+        )
+    };
+
+    const Btn = () => (
+        <button style={{backgroundColor: "aliceblue"}} onClick={() => console.log("i'm clicked")}>
+            Click me
+        </button>
+    )
+
+
+    // const container = React.createElement("div", null, [title, btn]);
+    const Container = () => (
+                                <div>
+                                    <Title />
+                                    <Btn />
+                                    <button>Click me</button>
+                                </div>
+                            );
+                      // JSX: <>에서 소문자로 시작-html, 대문자로 시작-Component로 인식
+
+    // ReactDOM.render(h3, root);
+    // render: React element ▶ HTML로 만들어 배치하여 사용자에게 보여줌
+    // ReactDOM.render(btn, root);
+
+    // span과 btn을 모두 rendering
+    ReactDOM.render(<Container />, root);
+
+</script>
+
+</html>
