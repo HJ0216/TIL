@@ -2,7 +2,7 @@
 
 ### TIL
 <details>
-<summary>230113~230131_TIL</summary>
+<summary>TIL: 2301</summary>
 
 - [230113_TIL](https://hj0216.tistory.com/2)  
 - [230114_TIL](https://hj0216.tistory.com/4)
@@ -25,8 +25,10 @@
 - [230131_TIL](https://hj0216.tistory.com/79)
 </details>
 
+
+
 <details>
-<summary>230201~230228_TIL</summary>
+<summary>TIL: 2302</summary>
 
 - [230201_TIL](https://hj0216.tistory.com/82)
 - [230202_TIL](https://hj0216.tistory.com/83)
@@ -58,8 +60,10 @@
 - [230228_TIL](https://hj0216.tistory.com/175)
 </details>
 
+
+
 <details>
-<summary>230301~230331_TIL</summary>
+<summary>TIL: 2303</summary>
 
 - [230301_TIL](https://hj0216.tistory.com/180)
 - [230302_TIL](https://hj0216.tistory.com/186)
@@ -95,8 +99,9 @@
 </details>
 
 
+
 <details>
-<summary>230401~230425_TIL</summary>
+<summary>TIL: 2304</summary>
 
 - [230401_TIL](https://hj0216.tistory.com/316)
 - [230402_TIL](https://hj0216.tistory.com/317)
@@ -125,148 +130,21 @@
 - [230425_TIL](https://hj0216.tistory.com/382)
 </details>
 
+
+
 <details>
-<summary>230503~_TIL</summary>
+<summary>TIL: 2305</summary>
 
 - [230503_TIL](https://hj0216.tistory.com/387)
 - [230504_TIL](https://hj0216.tistory.com/389)
 - [230505_TIL](https://hj0216.tistory.com/391)
 - [230507_TIL](https://hj0216.tistory.com/395)
+- [230513_TIL](https://hj0216.tistory.com/406)
 </details>
-
-
 <br/>
 
 
-### AI
-<details>
-<summary>Basic_Steps</summary>
 
-- [Practice for AI Learning Model Construction](https://hj0216.tistory.com/3)
-- [Scalar, Vector, Matirx, Tensor](https://hj0216.tistory.com/30)
-- [Pandas pkg and Numpy pkg](https://hj0216.tistory.com/47)
-</details>
-
-<details>
-<summary>Data_Preprocessing</summary>
-
-- [Split training data and test data](https://hj0216.tistory.com/31)
-- [Pandas Package and Missing Value Handling](https://hj0216.tistory.com/36)
-- [Classification and One-Hot Encoding](https://hj0216.tistory.com/45)
-- [ImageDataGenerator](https://hj0216.tistory.com/100)
-</details>
-
-
-<details>
-<summary>Model_Construction</summary>
-
-- [Types of Artificial Neural Networks](https://hj0216.tistory.com/9)
-- [ANN Model Construction](https://hj0216.tistory.com/5)
-- [MultiLayer Perceptron](https://hj0216.tistory.com/29)
-- [Classification Model Construction](https://hj0216.tistory.com/48)
-- [CNN Model Construction](https://hj0216.tistory.com/56)
-- [CNN Model Construction2](https://hj0216.tistory.com/67)
-- [RNN Model Construction](https://hj0216.tistory.com/72)
-- [LSTM, Bidirectional, Conv1D](https://hj0216.tistory.com/77)
-- [Ensemble Model](https://hj0216.tistory.com/80)
-</details>
-
-
-<details>
-<summary>Improving_Model_Performance</summary>
-
-- [Model Performance Indicator](https://hj0216.tistory.com/33)
-- [Hyper-parameter Tuning](https://hj0216.tistory.com/28)
-- [Activation Function](https://hj0216.tistory.com/42)
-- [Data Preprocessing: StandardScaler, MinMaxScaler](https://hj0216.tistory.com/54)
-- [Validation Data](https://hj0216.tistory.com/43)
-- [Handling Overfitting: EarlyStopping](https://hj0216.tistory.com/44)
-</details>
-
-<details>
-<summary>Others</summary>
-
-- [Environment Settings for GPU usage](https://hj0216.tistory.com/34)
-- [Matplotlib: Scatter and plot](https://hj0216.tistory.com/32)
-- [Save model and weights](https://hj0216.tistory.com/57)
-- [[Warning] Allocation of ... exceeds 10% of free system memory](https://hj0216.tistory.com/76)
-</details>
-
-<details>
-<summary>Project</summary>
-
-- [[Project] Stock price prediction using Ensemble model](https://hj0216.tistory.com/74)
-</details>
-
-
-<br/>
-
-
-### Linux
-<details>
-<summary>Linux_Basics_Lecture</summary>
-
-- [리눅스(Linux) 공부 시작하기](https://hj0216.tistory.com/6)
-- [리눅스 기초 30강 시리즈 - 01강 CentOS7 설치](https://hj0216.tistory.com/7)
-- [리눅스 기초 30강 시리즈 - 02강 리눅스 원격 접속](https://hj0216.tistory.com/17)
-- [리눅스 기초 30강 시리즈 - 03강 Putty 환경 설정](https://hj0216.tistory.com/20)
-- [리눅스 기초 30강 시리즈 - 04강 기본 명령어](https://hj0216.tistory.com/21)
-- [리눅스 기초 30강 시리즈 - 05강 명령 프롬프트](https://hj0216.tistory.com/26)
-- [리눅스 기초 30강 시리즈 - 06강 디렉토리 이해 - HOME](https://hj0216.tistory.com/49)
-- [리눅스 기초 30강 시리즈 - 07강 디렉토리 내용 보기](https://hj0216.tistory.com/50)
-- [리눅스 기초 30강 시리즈 - 08강 도움말 보기](https://hj0216.tistory.com/51)
-- [리눅스 기초 30강 시리즈 - 09강 디렉토리 생성(mkdir) 삭제(rmdir)](https://hj0216.tistory.com/52)
-- [리눅스 기초 30강 시리즈 - 10강 파일 내용 보기(cat/nl/more/less)](https://hj0216.tistory.com/53)
-- [리눅스 기초 30강 시리즈 - 11강 디렉토리 구조](https://hj0216.tistory.com/59)
-- [리눅스 기초 30강 시리즈 - 12강 경로 이동(cd) 절대경로/상대경로](https://hj0216.tistory.com/60)
-- [리눅스 기초 30강 시리즈 - 13강 파일 복사(cp) 삭제(rm)](https://hj0216.tistory.com/61)
-- [리눅스 기초 30강 시리즈 - 14강 이동(mv) 이름 바꾸기(rename)](https://hj0216.tistory.com/62)
-- [리눅스 기초 30강 시리즈 - 15강 자주하는 실수 3가지](https://hj0216.tistory.com/63)
-- [리눅스 기초 30강 시리즈 - 16강 패키지 관리(rpm/yum)](https://hj0216.tistory.com/68)
-- [리눅스 기초 30강 시리즈 - 17강 vim 편집기](https://hj0216.tistory.com/69)
-- [리눅스 기초 30강 시리즈 - 18강 C언어코딩(gcc)](https://hj0216.tistory.com/70)
-- [리눅스 기초 30강 시리즈 - 19강 ftp client 사용법](https://hj0216.tistory.com/86)
-- [리눅스 기초 30강 시리즈 - 20강 압축(gzip/xz/tar)](https://hj0216.tistory.com/87)
-- [리눅스 기초 30강 시리즈 - 21강 권한의 이해](https://hj0216.tistory.com/88)
-- [리눅스 기초 30강 시리즈 - 22강 파일 분류](https://hj0216.tistory.com/91)
-- [리눅스 기초 30강 시리즈 - 23강 하드 링크 심볼릭 링크](https://hj0216.tistory.com/92)
-- [리눅스 기초 30강 시리즈 - 24강 명령어 별칭(alias)](https://hj0216.tistory.com/93)
-- [리눅스 기초 30강 시리즈 - 25강 명령어 역사(history)](https://hj0216.tistory.com/94)
-- [리눅스 기초 30강 시리즈 - 26강 bash - 1](https://hj0216.tistory.com/95)
-- [리눅스 기초 30강 시리즈 - 27강 bash - 2](https://hj0216.tistory.com/96)
-- [리눅스 기초 30강 시리즈 - 28강 bash - 3](https://hj0216.tistory.com/97)
-- [리눅스 기초 30강 시리즈 - 29강 출력 내용 저장](https://hj0216.tistory.com/98)
-- [[완강] 리눅스 기초 30강 시리즈 - 30강 설치 후 할 일](https://hj0216.tistory.com/101)
-</details>
-
-<details>
-<summary>Certificate_Linux_Master_Level2</summary>
-
-- [[Certificate] Linux Master Level2 (221210_1-40)](https://hj0216.tistory.com/137)
-- [[Certificate] Linux Master Level2 (221210_41-80)](https://hj0216.tistory.com/133)
-- [[Certificate] Linux Master Level2 (220903_1-40)](https://hj0216.tistory.com/126)
-- [[Certificate] Linux Master Level2 (220903_41-80)](https://hj0216.tistory.com/128)
-- [[Certificate] Linux Master Level2 (220611_1-40)](https://hj0216.tistory.com/130)
-- [[Certificate] Linux Master Level2 (220611_41-80)](https://hj0216.tistory.com/133)
-- [[Certificate] Linux Master Level2 (211211_1-40)](https://hj0216.tistory.com/159)
-- [[Certificate] Linux Master Level2 (211211_41-80)](https://hj0216.tistory.com/160)
-- [[Certificate] Linux Master Level2 (210911_1-40)](https://hj0216.tistory.com/165)
-- [[Certificate] Linux Master Level2 (210911_41-80)](https://hj0216.tistory.com/166)
-- [[Certificate] Linux Master Level2 (210313_1-40)](https://hj0216.tistory.com/181)
-- [[Certificate] Linux Master Level2 (210313_41-80)](https://hj0216.tistory.com/182)
-- [[Certificate] Linux Master Level2 (201212_1-40)](https://hj0216.tistory.com/183)
-- [[Certificate] Linux Master Level2 (201212_41-80)](https://hj0216.tistory.com/185)
-- [[Certificate] Linux Master Level2 (201010_1-40)](https://hj0216.tistory.com/192)
-- [[Certificate] Linux Master Level2 (201010_41-80)](https://hj0216.tistory.com/203)
-- [[Certificate] Linux Master Level2 (200613_1-40)](https://hj0216.tistory.com/204)
-- [[Certificate] Linux Master Level2 (200613_41-80)](https://hj0216.tistory.com/205)
-- [[Certificate] Linux Master Level2 (191214_1-40)](https://hj0216.tistory.com/206)
-- [[Certificate] Linux Master Level2 (191214_41-80)](https://hj0216.tistory.com/207)
-- [[Certificate] Linux Master Level2 (Summary)](https://hj0216.tistory.com/214)
-</details>
-
-
-<br/>
 
 
 ### Java
@@ -289,6 +167,8 @@
 - [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_5](https://hj0216.tistory.com/403)
 - [[자바의 정석_기초편] Chapter08. 예외처리(Exception)](https://hj0216.tistory.com/405)
 </details>
+
+
 
 <details>
 <summary>How_to_fix_Errors</summary>
@@ -313,9 +193,9 @@
 - [[해결 방법] Server Tomcat v9.0 Server at localhost failed to start.](https://hj0216.tistory.com/154)
 - [[해결 방법] Variable cannot be resolved to a variable](https://hj0216.tistory.com/111)
 </details>
-
-
 <br/>
+
+
 
 
 
@@ -326,9 +206,9 @@
 - [[해결 방법] No default constructor found](https://hj0216.tistory.com/340)
 - [[해결 방법] nested exception is java.lang.NullPointerException](https://hj0216.tistory.com/347)
 </details>
-
-
 <br/>
+
+
 
 
 
@@ -424,6 +304,7 @@
 </details>
 
 
+
 <details>
 <summary>Certificate_SQLD</summary>
 
@@ -434,6 +315,10 @@
 </details>
 <br/>
 
+
+
+
+
 ### MySQL
 
 <details>
@@ -442,6 +327,22 @@
 - [[해결 방법] Error Code: 1046. No database selected](https://hj0216.tistory.com/396)
 </details>
 <br/>
+
+
+
+
+
+### React
+<details>
+<summary>React_Basics_Lecture</summary>
+
+- [[ReactJS_영화_웹] #2 THE BASICS OF REACT](https://hj0216.tistory.com/18)
+</details>
+<br/>
+
+
+
+
 
 ### JavaScript
 <details>
@@ -459,13 +360,7 @@
 <br/>
 
 
-### Github
-- [[Github] Rename a Folder](https://hj0216.tistory.com/10)
-- [[Github] Repository Short Description Setting](https://hj0216.tistory.com/158)
 
-
-
-<br/>
 
 
 ### Git
@@ -473,6 +368,8 @@
 - [[Git Bash] Github 기존 Repository와 Local PC 연결](https://hj0216.tistory.com/321)
 - [[Git Bash] Github Repository 내 폴더 이름 변경](https://hj0216.tistory.com/11)
 - [[Git Bash] 저장소의 폴더 및 파일 삭제](https://hj0216.tistory.com/41)
+
+
 
 <details>
 <summary>How_to_fix_Errors</summary>
@@ -486,11 +383,19 @@
 - [[해결 방법] Permission denied](https://hj0216.tistory.com/13)
 - [[해결 방법] this operation must be run in a work tree](https://hj0216.tistory.com/16)
 </details>
-
-
-
-
 <br/>
+
+
+
+
+
+### Github
+- [[Github] Rename a Folder](https://hj0216.tistory.com/10)
+- [[Github] Repository Short Description Setting](https://hj0216.tistory.com/158)
+<br/>
+
+
+
 
 
 ### Algorithm
@@ -573,7 +478,147 @@
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
   
 </details>
+<br/>
 
 
 
+
+
+### Linux
+<details>
+<summary>Linux_Basics_Lecture</summary>
+
+- [리눅스(Linux) 공부 시작하기](https://hj0216.tistory.com/6)
+- [리눅스 기초 30강 시리즈 - 01강 CentOS7 설치](https://hj0216.tistory.com/7)
+- [리눅스 기초 30강 시리즈 - 02강 리눅스 원격 접속](https://hj0216.tistory.com/17)
+- [리눅스 기초 30강 시리즈 - 03강 Putty 환경 설정](https://hj0216.tistory.com/20)
+- [리눅스 기초 30강 시리즈 - 04강 기본 명령어](https://hj0216.tistory.com/21)
+- [리눅스 기초 30강 시리즈 - 05강 명령 프롬프트](https://hj0216.tistory.com/26)
+- [리눅스 기초 30강 시리즈 - 06강 디렉토리 이해 - HOME](https://hj0216.tistory.com/49)
+- [리눅스 기초 30강 시리즈 - 07강 디렉토리 내용 보기](https://hj0216.tistory.com/50)
+- [리눅스 기초 30강 시리즈 - 08강 도움말 보기](https://hj0216.tistory.com/51)
+- [리눅스 기초 30강 시리즈 - 09강 디렉토리 생성(mkdir) 삭제(rmdir)](https://hj0216.tistory.com/52)
+- [리눅스 기초 30강 시리즈 - 10강 파일 내용 보기(cat/nl/more/less)](https://hj0216.tistory.com/53)
+- [리눅스 기초 30강 시리즈 - 11강 디렉토리 구조](https://hj0216.tistory.com/59)
+- [리눅스 기초 30강 시리즈 - 12강 경로 이동(cd) 절대경로/상대경로](https://hj0216.tistory.com/60)
+- [리눅스 기초 30강 시리즈 - 13강 파일 복사(cp) 삭제(rm)](https://hj0216.tistory.com/61)
+- [리눅스 기초 30강 시리즈 - 14강 이동(mv) 이름 바꾸기(rename)](https://hj0216.tistory.com/62)
+- [리눅스 기초 30강 시리즈 - 15강 자주하는 실수 3가지](https://hj0216.tistory.com/63)
+- [리눅스 기초 30강 시리즈 - 16강 패키지 관리(rpm/yum)](https://hj0216.tistory.com/68)
+- [리눅스 기초 30강 시리즈 - 17강 vim 편집기](https://hj0216.tistory.com/69)
+- [리눅스 기초 30강 시리즈 - 18강 C언어코딩(gcc)](https://hj0216.tistory.com/70)
+- [리눅스 기초 30강 시리즈 - 19강 ftp client 사용법](https://hj0216.tistory.com/86)
+- [리눅스 기초 30강 시리즈 - 20강 압축(gzip/xz/tar)](https://hj0216.tistory.com/87)
+- [리눅스 기초 30강 시리즈 - 21강 권한의 이해](https://hj0216.tistory.com/88)
+- [리눅스 기초 30강 시리즈 - 22강 파일 분류](https://hj0216.tistory.com/91)
+- [리눅스 기초 30강 시리즈 - 23강 하드 링크 심볼릭 링크](https://hj0216.tistory.com/92)
+- [리눅스 기초 30강 시리즈 - 24강 명령어 별칭(alias)](https://hj0216.tistory.com/93)
+- [리눅스 기초 30강 시리즈 - 25강 명령어 역사(history)](https://hj0216.tistory.com/94)
+- [리눅스 기초 30강 시리즈 - 26강 bash - 1](https://hj0216.tistory.com/95)
+- [리눅스 기초 30강 시리즈 - 27강 bash - 2](https://hj0216.tistory.com/96)
+- [리눅스 기초 30강 시리즈 - 28강 bash - 3](https://hj0216.tistory.com/97)
+- [리눅스 기초 30강 시리즈 - 29강 출력 내용 저장](https://hj0216.tistory.com/98)
+- [[완강] 리눅스 기초 30강 시리즈 - 30강 설치 후 할 일](https://hj0216.tistory.com/101)
+</details>
+
+
+
+<details>
+<summary>Certificate_Linux_Master_Level2</summary>
+
+- [[Certificate] Linux Master Level2 (221210_1-40)](https://hj0216.tistory.com/137)
+- [[Certificate] Linux Master Level2 (221210_41-80)](https://hj0216.tistory.com/133)
+- [[Certificate] Linux Master Level2 (220903_1-40)](https://hj0216.tistory.com/126)
+- [[Certificate] Linux Master Level2 (220903_41-80)](https://hj0216.tistory.com/128)
+- [[Certificate] Linux Master Level2 (220611_1-40)](https://hj0216.tistory.com/130)
+- [[Certificate] Linux Master Level2 (220611_41-80)](https://hj0216.tistory.com/133)
+- [[Certificate] Linux Master Level2 (211211_1-40)](https://hj0216.tistory.com/159)
+- [[Certificate] Linux Master Level2 (211211_41-80)](https://hj0216.tistory.com/160)
+- [[Certificate] Linux Master Level2 (210911_1-40)](https://hj0216.tistory.com/165)
+- [[Certificate] Linux Master Level2 (210911_41-80)](https://hj0216.tistory.com/166)
+- [[Certificate] Linux Master Level2 (210313_1-40)](https://hj0216.tistory.com/181)
+- [[Certificate] Linux Master Level2 (210313_41-80)](https://hj0216.tistory.com/182)
+- [[Certificate] Linux Master Level2 (201212_1-40)](https://hj0216.tistory.com/183)
+- [[Certificate] Linux Master Level2 (201212_41-80)](https://hj0216.tistory.com/185)
+- [[Certificate] Linux Master Level2 (201010_1-40)](https://hj0216.tistory.com/192)
+- [[Certificate] Linux Master Level2 (201010_41-80)](https://hj0216.tistory.com/203)
+- [[Certificate] Linux Master Level2 (200613_1-40)](https://hj0216.tistory.com/204)
+- [[Certificate] Linux Master Level2 (200613_41-80)](https://hj0216.tistory.com/205)
+- [[Certificate] Linux Master Level2 (191214_1-40)](https://hj0216.tistory.com/206)
+- [[Certificate] Linux Master Level2 (191214_41-80)](https://hj0216.tistory.com/207)
+- [[Certificate] Linux Master Level2 (Summary)](https://hj0216.tistory.com/214)
+</details>
+<br/>
+
+
+
+
+
+### AI
+<details>
+<summary>Basic_Steps</summary>
+
+- [Practice for AI Learning Model Construction](https://hj0216.tistory.com/3)
+- [Scalar, Vector, Matirx, Tensor](https://hj0216.tistory.com/30)
+- [Pandas pkg and Numpy pkg](https://hj0216.tistory.com/47)
+</details>
+
+
+
+<details>
+<summary>Data_Preprocessing</summary>
+
+- [Split training data and test data](https://hj0216.tistory.com/31)
+- [Pandas Package and Missing Value Handling](https://hj0216.tistory.com/36)
+- [Classification and One-Hot Encoding](https://hj0216.tistory.com/45)
+- [ImageDataGenerator](https://hj0216.tistory.com/100)
+</details>
+
+
+
+<details>
+<summary>Model_Construction</summary>
+
+- [Types of Artificial Neural Networks](https://hj0216.tistory.com/9)
+- [ANN Model Construction](https://hj0216.tistory.com/5)
+- [MultiLayer Perceptron](https://hj0216.tistory.com/29)
+- [Classification Model Construction](https://hj0216.tistory.com/48)
+- [CNN Model Construction](https://hj0216.tistory.com/56)
+- [CNN Model Construction2](https://hj0216.tistory.com/67)
+- [RNN Model Construction](https://hj0216.tistory.com/72)
+- [LSTM, Bidirectional, Conv1D](https://hj0216.tistory.com/77)
+- [Ensemble Model](https://hj0216.tistory.com/80)
+</details>
+
+
+
+<details>
+<summary>Improving_Model_Performance</summary>
+
+- [Model Performance Indicator](https://hj0216.tistory.com/33)
+- [Hyper-parameter Tuning](https://hj0216.tistory.com/28)
+- [Activation Function](https://hj0216.tistory.com/42)
+- [Data Preprocessing: StandardScaler, MinMaxScaler](https://hj0216.tistory.com/54)
+- [Validation Data](https://hj0216.tistory.com/43)
+- [Handling Overfitting: EarlyStopping](https://hj0216.tistory.com/44)
+</details>
+
+
+
+<details>
+<summary>Others</summary>
+
+- [Environment Settings for GPU usage](https://hj0216.tistory.com/34)
+- [Matplotlib: Scatter and plot](https://hj0216.tistory.com/32)
+- [Save model and weights](https://hj0216.tistory.com/57)
+- [[Warning] Allocation of ... exceeds 10% of free system memory](https://hj0216.tistory.com/76)
+</details>
+
+
+
+<details>
+<summary>Project</summary>
+
+- [[Project] Stock price prediction using Ensemble model](https://hj0216.tistory.com/74)
+</details>
 <br/>
