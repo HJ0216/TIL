@@ -287,6 +287,7 @@
 - [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_3](https://hj0216.tistory.com/398)
 - [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_4](https://hj0216.tistory.com/401)
 - [[자바의 정석_기초편] Chapter07. 객체지향(Object Oriented)_5](https://hj0216.tistory.com/403)
+- [[자바의 정석_기초편] Chapter08. 예외처리(Exception)](https://hj0216.tistory.com/405)
 </details>
 
 <details>
@@ -568,7 +569,9 @@
 - [[BaekJoon] 11718번 그대로 출력하기 문제풀이 (Success)](https://hj0216.tistory.com/399)
 - [[BaekJoon] 1157번 단어 공부 문제풀이 (Success)](https://hj0216.tistory.com/400)
 - [[BaekJoon] 2745번 진법 변환 문제풀이 (Success)](https://hj0216.tistory.com/402)
+- [[BaekJoon] 2720번 세탁소 사장 동혁 문제풀이 (Success)](https://hj0216.tistory.com/404)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
+  
 </details>
 
 
