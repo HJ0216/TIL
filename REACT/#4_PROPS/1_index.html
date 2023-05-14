@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id="root"></div>
+</body>
+
+<!--ReactJS 설치 전 script import -->
+<script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+<!--React: application의 interactivity를 올려주는 lib-->
+<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<!--React DOM: React element를 HTML에 삽입-->
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+<!--props type을 지정할 때 사용-->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!--JSX 사용을 위해 import-->
+<script type="text/babel;">
+/*
+    function SaveBtn() {
+        return <button style={{
+            backgroundColor: "dodgerblue",
+            color: "ghostwhite",
+            padding: "7px 10px",
+            border: 0,
+            borderRadius: 5
+        }}>Save Changes</button>
+    }
+    const ConfirmBtn = () => {
+        return (
+            <button style={{
+                backgroundColor: "dodgerblue",
+                color: "ghostwhite",
+                padding: "7px 10px",
+                border: 0,
+                borderRadius: 5
+            }}>confirm</button>
+        )
+    }
+*/
+    // style 중첩으로 인한 코드 비효율성 수정
+    function Btn({text, big, onClick, fontSize=14}) {
+    {/* function Btn(props)
+        console.log(props); */}
+        console.log(text, "was rendered.");
+        return (
+          <button
+            onClick={onClick}
+            style={{
+              backgroundColor: "dodgerblue",
+              color: "ghostwhite",
+              padding: "7px 10px",
+              border: 0,
+              borderRadius: 5,
+              // fontSize: big ? 18 : 16,
+              fontSize,
+            }}>
+                {text}
+            </button>
+        // }}>{props.name}</button>
+        );
+    }
+    Btn.propTypes = {
+        text: PropTypes.string.isRequired,
+        fontSize: PropTypes.number,
+    };
+    // Invalid prop `text` of type `number` supplied to `Btn`, expected `string`.
+    // The prop `fontSize` is marked as required in `Btn`, but its value is `undefined`.
+    
+    const MemorizeBtn = React.memo(Btn);
+    // memo(): state에 변화가 있는 component만 re-rendering
+    MemorizeBtn.propTypes = {
+        text: PropTypes.string.isRequired,
+        fontSize: PropTypes.number,
+    };
+
+    const App = () => {
+        const [value, setValue] = React.useState("Save Changes");
+        const changeValue = () => setValue("Revert Changes");
+        return (
+            <div>
+                <div>
+                    <Btn text={value} big={true} onClick={changeValue} fontSize={20} /> &ensp;
+                    {/* Btn({text: "Save Changes"}), 함수에 객체를 생성하여 인자를 전달한 것과 동일한 효과*/}
+                    <Btn text={"Continue"} big={false} />
+                </div>
+
+                <div>
+                    <MemorizeBtn text={value} big={true} onClick={changeValue} /> &ensp;
+                    <MemorizeBtn text="Continue" big={false} />
+                </div>
+            </div>
+        );
+    }
+        
+const root = document.getElementById("root");
+ReactDOM.render(<App />, root);
+
+</script>
+
+</html>
