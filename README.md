@@ -338,7 +338,18 @@
 <summary>React_Basics_Lecture</summary>
 
 - [[ReactJS_영화_웹] #2 THE BASICS OF REACT](https://hj0216.tistory.com/18)
+- [[ReactJS_영화_웹] #3 STATE](https://hj0216.tistory.com/410)
+- [[ReactJS_영화_웹] #4 PROPS](https://hj0216.tistory.com/411)
 </details>
+
+
+
+<details>
+<summary>How_to_fix_Errors</summary>
+
+- [[해결 방법] TypeError: Cannot read property 'map' of undefined](https://hj0216.tistory.com/412)
+</details>
+
 <br/>
 
 
