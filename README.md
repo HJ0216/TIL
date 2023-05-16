@@ -340,6 +340,8 @@
 - [[ReactJS_영화_웹] #2 THE BASICS OF REACT](https://hj0216.tistory.com/18)
 - [[ReactJS_영화_웹] #3 STATE](https://hj0216.tistory.com/410)
 - [[ReactJS_영화_웹] #4 PROPS](https://hj0216.tistory.com/411)
+- [[ReactJS_영화_웹] #5 CREATE REACT APP](https://hj0216.tistory.com/413)
+- [[ReactJS_영화_웹] #6 EFFECTS](https://hj0216.tistory.com/415)
 </details>
 
 
@@ -488,6 +490,7 @@
 - [[BaekJoon] 2745번 진법 변환 문제풀이 (Success)](https://hj0216.tistory.com/402)
 - [[BaekJoon] 2720번 세탁소 사장 동혁 문제풀이 (Success)](https://hj0216.tistory.com/404)
 - [[BaekJoon] 27323번 직사각형 문제풀이 (Success)](https://hj0216.tistory.com/408)
+- [[BaekJoon] 5622번 다이얼 문제풀이 (Success)](https://hj0216.tistory.com/414)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
   
 </details>
