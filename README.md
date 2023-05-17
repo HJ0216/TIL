@@ -343,6 +343,8 @@
 - [[ReactJS_영화_웹] #4 PROPS](https://hj0216.tistory.com/411)
 - [[ReactJS_영화_웹] #5 CREATE REACT APP](https://hj0216.tistory.com/413)
 - [[ReactJS_영화_웹] #6 EFFECTS](https://hj0216.tistory.com/415)
+- [[ReactJS_영화_웹] #7 TO DO LIST](https://hj0216.tistory.com/418)
+- [[ReactJS_영화_웹] #7 COIN TRACKER](https://hj0216.tistory.com/420)
 </details>
 
 
@@ -351,6 +353,7 @@
 <summary>How_to_fix_Errors</summary>
 
 - [[해결 방법] TypeError: Cannot read property 'map' of undefined](https://hj0216.tistory.com/412)
+- [[해결 방법] Adjacent JSX elements must be wrapped in an enclosing tag](https://hj0216.tistory.com/419)
 </details>
 
 <br/>
