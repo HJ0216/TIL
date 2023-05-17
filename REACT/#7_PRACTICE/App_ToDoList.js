@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function App() {
+function App_ToDoList() {
   const [toDo, setToDo] = useState("");
   const [toDos, setToDos] = useState([]);
   const onChange = (event) => {
@@ -41,4 +41,4 @@ function App() {
   );
 }
 
-export default App;
+export default App_ToDoList;
