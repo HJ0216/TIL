@@ -168,6 +168,7 @@
 - [[자바의 정석_기초편] Chapter08. 예외처리(Exception)](https://hj0216.tistory.com/405)
 - [[자바의 정석_기초편] Chapter09. java.lang package / Useful class_1](https://hj0216.tistory.com/409)
 - [[자바의 정석_기초편] Chapter09. java.lang package / Useful class_2](https://hj0216.tistory.com/417)
+- [[자바의 정석_기초편] Chapter10. 날짜와 시간 & 형식화](https://hj0216.tistory.com/422)
 </details>
 
 
@@ -207,6 +208,18 @@
 
 - [[해결 방법] No default constructor found](https://hj0216.tistory.com/340)
 - [[해결 방법] nested exception is java.lang.NullPointerException](https://hj0216.tistory.com/347)
+</details>
+<br/>
+
+
+
+
+
+### Spring Boot
+<details>
+<summary>SpringBoot_JPA_1_Lecture</summary>
+
+- [[SpringBoot_JPA_1] resources/static and templates](https://hj0216.tistory.com/421)
 </details>
 <br/>
 
