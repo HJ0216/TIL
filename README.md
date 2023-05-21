@@ -140,6 +140,7 @@
 - [230505_TIL](https://hj0216.tistory.com/391)
 - [230507_TIL](https://hj0216.tistory.com/395)
 - [230513_TIL](https://hj0216.tistory.com/406)
+- [230521_TIL](https://hj0216.tistory.com/424)
 </details>
 <br/>
 
@@ -220,6 +221,17 @@
 <summary>SpringBoot_JPA_1_Lecture</summary>
 
 - [[SpringBoot_JPA_1] resources/static and templates](https://hj0216.tistory.com/421)
+- [[SpringBoot_JPA_1] @Embeddable, @Embedded](https://hj0216.tistory.com/428)
+- [[SpringBoot_JPA_1] @OneToMany, @ManyToOne](https://hj0216.tistory.com/429)
+</details>
+
+
+
+<details>
+<summary>How_to_fix_Errors</summary>
+
+- [[해결 방법] No EntityManager with actual transaction available for current thread](https://hj0216.tistory.com/426)
+- [[해결 방법] SQLGrammarException: could not prepare statement](https://hj0216.tistory.com/427)
 </details>
 <br/>
 
@@ -358,6 +370,7 @@
 - [[ReactJS_영화_웹] #6 EFFECTS](https://hj0216.tistory.com/415)
 - [[ReactJS_영화_웹] #7 TO DO LIST](https://hj0216.tistory.com/418)
 - [[ReactJS_영화_웹] #7 COIN TRACKER](https://hj0216.tistory.com/420)
+- [[ReactJS_영화_웹] #7 MOVIE APP](https://hj0216.tistory.com/423)
 </details>
 
 
@@ -367,6 +380,7 @@
 
 - [[해결 방법] TypeError: Cannot read property 'map' of undefined](https://hj0216.tistory.com/412)
 - [[해결 방법] Adjacent JSX elements must be wrapped in an enclosing tag](https://hj0216.tistory.com/419)
+- [[해결 방법] TypeError: Cannot read property 'rating' of undefined](https://hj0216.tistory.com/425)
 </details>
 
 <br/>
