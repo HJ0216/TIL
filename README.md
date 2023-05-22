@@ -223,6 +223,7 @@
 - [[SpringBoot_JPA_1] resources/static and templates](https://hj0216.tistory.com/421)
 - [[SpringBoot_JPA_1] @Embeddable, @Embedded](https://hj0216.tistory.com/428)
 - [[SpringBoot_JPA_1] @OneToMany, @ManyToOne](https://hj0216.tistory.com/429)
+- [[SpringBoot_JPA_1] @Inheritance @DiscriminatorColumn](https://hj0216.tistory.com/430)
 </details>
 
 
