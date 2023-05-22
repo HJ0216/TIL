@@ -1,0 +1,16 @@
+* {
+  color: aliceblue;
+  background-color: black;
+}
+
+.homeTitle {
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  height: 50px;
+  padding: 10px 0;
+}
+
+.homeSlider {
+  padding-left: 40px;
+}
