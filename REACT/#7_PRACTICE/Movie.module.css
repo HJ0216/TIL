@@ -1,0 +1,41 @@
+.movieImg {
+    margin: 10px 0 5px 0;
+    padding: 10px 0 5px 0;
+}
+
+.movieContent {
+    width: 230px;
+}
+
+.movieTitle {
+    text-align: center;
+    height: 50px;
+}
+
+.movieTitleLink {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.movieSummaryTitle {
+    font-weight: 600;
+    line-height: 20px;
+}
+
+.movieSummary {
+    height: 65px;
+}
+
+.movieYear {
+    text-align: center;
+    line-height: 20px;
+}
+
+.movieGenresUl {
+    display: flex;
+}
+
+.movieGenresLi {
+    margin-right: 5px;
+    height: 50px;
+}
