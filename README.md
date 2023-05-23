@@ -224,6 +224,9 @@
 - [[SpringBoot_JPA_1] @Embeddable, @Embedded](https://hj0216.tistory.com/428)
 - [[SpringBoot_JPA_1] @OneToMany, @ManyToOne](https://hj0216.tistory.com/429)
 - [[SpringBoot_JPA_1] @Inheritance @DiscriminatorColumn](https://hj0216.tistory.com/430)
+- [[SpringBoot_JPA_1] @Enumerated](https://hj0216.tistory.com/433)
+- [[SpringBoot_JPA_1] @JoinTable](https://hj0216.tistory.com/434)
+- [[SpringBoot_JPA_1] JPA Entity Default Constructor](https://hj0216.tistory.com/435)
 </details>
 
 
@@ -233,6 +236,7 @@
 
 - [[해결 방법] No EntityManager with actual transaction available for current thread](https://hj0216.tistory.com/426)
 - [[해결 방법] SQLGrammarException: could not prepare statement](https://hj0216.tistory.com/427)
+- [[해결 방법] nested exception is org.hibernate.DuplicateMappingException](https://hj0216.tistory.com/432)
 </details>
 <br/>
 
@@ -372,6 +376,7 @@
 - [[ReactJS_영화_웹] #7 TO DO LIST](https://hj0216.tistory.com/418)
 - [[ReactJS_영화_웹] #7 COIN TRACKER](https://hj0216.tistory.com/420)
 - [[ReactJS_영화_웹] #7 MOVIE APP](https://hj0216.tistory.com/423)
+- [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(HOME)](https://hj0216.tistory.com/431)
 </details>
 
 
