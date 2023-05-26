@@ -170,6 +170,7 @@
 - [[자바의 정석_기초편] Chapter09. java.lang package / Useful class_1](https://hj0216.tistory.com/409)
 - [[자바의 정석_기초편] Chapter09. java.lang package / Useful class_2](https://hj0216.tistory.com/417)
 - [[자바의 정석_기초편] Chapter10. 날짜와 시간 & 형식화](https://hj0216.tistory.com/422)
+- [[자바의 정석_기초편] Chapter11. 컬렉션 프레임워크 (Collections framework)_1](https://hj0216.tistory.com/443)
 </details>
 
 
@@ -227,6 +228,9 @@
 - [[SpringBoot_JPA_1] @Enumerated](https://hj0216.tistory.com/433)
 - [[SpringBoot_JPA_1] @JoinTable](https://hj0216.tistory.com/434)
 - [[SpringBoot_JPA_1] JPA Entity Default Constructor](https://hj0216.tistory.com/435)
+- [[SpringBoot_JPA_1] FetchType.LAZY, EAGER](https://hj0216.tistory.com/444)
+- [[SpringBoot_JPA_1] Cascade Type](https://hj0216.tistory.com/445)
+- [[SpringBoot_JPA_1] Injection](https://hj0216.tistory.com/446)
 </details>
 
 
@@ -237,6 +241,7 @@
 - [[해결 방법] No EntityManager with actual transaction available for current thread](https://hj0216.tistory.com/426)
 - [[해결 방법] SQLGrammarException: could not prepare statement](https://hj0216.tistory.com/427)
 - [[해결 방법] nested exception is org.hibernate.DuplicateMappingException](https://hj0216.tistory.com/432)
+- [[해결 방법] Unable to create requested service](https://hj0216.tistory.com/447)
 </details>
 <br/>
 
@@ -380,6 +385,7 @@
 - [[ReactJS_Complete] Arrow Functions](https://hj0216.tistory.com/436)
 - [[ReactJS_Complete] Exports and Imports](https://hj0216.tistory.com/437)
 - [[ReactJS_Complete] Destructuring](https://hj0216.tistory.com/441)
+- [[ReactJS_Complete] Useful JavaScript Function](https://hj0216.tistory.com/442)
 </details>
 
 
