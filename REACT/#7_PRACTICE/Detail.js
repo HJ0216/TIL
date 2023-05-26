@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import styles from "./Detail.module.css";
 
 function Detail() {
   const { id } = useParams();
@@ -21,13 +22,55 @@ function Detail() {
     getMovie();
     // useEffect() 내부에서 getMovie()선언 후 호출 가능하나
     // 마운트 당시 한 번만 실행되는 useEffect()이므로 getMovie()가 마운트 될 때만 호출될 수 있음
+    document.body.style.overflowY = "hidden"; // 세로 스크롤 제거
   }, []);
-
+  const onDownloadClick = () => {
+    window.location.href = data?.data?.movie?.torrents?.[0]?.url;
+  };
+  const onWatchNowClick = () => {
+    window.location.href = data?.data?.movie?.url;
+  }
+  
   return (
     <div>
-      <h1>Detail</h1>
-      <h2>{data.data.movie.rating}</h2>
-      {/* JSON 데이터 구조 확인 */}
+      <div className={styles.detail}>
+        <img
+          className="styles.detail__img"
+          src={data?.data?.movie?.large_cover_image}
+          alt="Background Image"
+        />
+        {/* JSON 데이터 구조 확인 */}
+        <div className={styles.detail__inner}>
+          <div className={styles.detail__title}>
+            {data?.data?.movie?.title_long}
+          </div>
+          <div className={styles.detail__synopsis}>
+            {
+              data?.data?.movie?.description_full
+              /* console.log()에 찍히는 데이터 확인 후 데이터 입력 */
+            }
+          </div>
+          <br />
+          <div className={styles.detail__btn}>
+            <div>
+              <button
+                className={styles.detail__downloadBtn}
+                onClick={onDownloadClick}
+              >
+                DOWNLOAD
+              </button>
+            </div>
+            <div>
+              <button
+                className={styles.detail__watchNowBtn}
+                onClick={onWatchNowClick}
+              >
+                WATCH NOW
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
