@@ -1,6 +1,33 @@
+.movieContainer {
+    position: relative;
+    display: inline-block;
+}
+
 .movieImg {
     margin: 10px 0 5px 0;
     padding: 10px 0 5px 0;
+    filter: blur(0); /* 초기: 블러 처리 X */
+    transition: filter 0.3s ease-in-out; /* 부드러운 전환을 제공 */
+}
+
+.movieImg:hover {
+    filter: blur(8px);
+}
+
+.movieText {
+    position: absolute;
+    top: 50%; /*상위 요소의 50%(중앙)에 위치*/
+    left: 50%; /*해당 요소를 수평, 수직으로 50%에 위치*/
+    transform: translate(-50%, -50%); /*absolute 기준 상하 50%에 위치하도록 조정*/
+    color: #fff;
+    font-size: 24px;
+    text-align: center;
+    opacity: 0; /* 초기에는 투명하게 설정 */
+    transition: opacity 0.3s ease-in-out; /* 투명도에 트랜지션 효과 추가 */
+}
+
+.movieContainer:hover .movieText {
+  opacity: 0.7; /* 호버 시 투명도를 1로 설정하여 텍스트가 나타나도록 함 */
 }
 
 .movieContent {
