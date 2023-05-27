@@ -386,6 +386,7 @@
 - [[ReactJS_Complete] Exports and Imports](https://hj0216.tistory.com/437)
 - [[ReactJS_Complete] Destructuring](https://hj0216.tistory.com/441)
 - [[ReactJS_Complete] Useful JavaScript Function](https://hj0216.tistory.com/442)
+- [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(DETAIL)](https://hj0216.tistory.com/448)
 </details>
 
 
@@ -540,6 +541,7 @@
 - [[BaekJoon] 5622번 다이얼 문제풀이 (Success)](https://hj0216.tistory.com/414)
 - [[BaekJoon] 14215번 세 막대 문제풀이 (Success)](https://hj0216.tistory.com/416)
 - [[BaekJoon] 11005번 진법 변환 2 문제풀이 (Success)](https://hj0216.tistory.com/439)
+- [[BaekJoon] 10757번 큰 수 A+B 문제풀이 (Success)](https://hj0216.tistory.com/449)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
 <br/>
