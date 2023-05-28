@@ -141,6 +141,7 @@
 - [230507_TIL](https://hj0216.tistory.com/395)
 - [230513_TIL](https://hj0216.tistory.com/406)
 - [230521_TIL](https://hj0216.tistory.com/424)
+- [230527_TIL](https://hj0216.tistory.com/455)
 </details>
 <br/>
 
@@ -231,6 +232,8 @@
 - [[SpringBoot_JPA_1] FetchType.LAZY, EAGER](https://hj0216.tistory.com/444)
 - [[SpringBoot_JPA_1] Cascade Type](https://hj0216.tistory.com/445)
 - [[SpringBoot_JPA_1] Injection](https://hj0216.tistory.com/446)
+- [[SpringBoot_JPA_1] create Private Method](https://hj0216.tistory.com/450)
+- [[SpringBoot_JPA_1] StringUtils.hasText()](https://hj0216.tistory.com/451)
 </details>
 
 
@@ -242,6 +245,7 @@
 - [[해결 방법] SQLGrammarException: could not prepare statement](https://hj0216.tistory.com/427)
 - [[해결 방법] nested exception is org.hibernate.DuplicateMappingException](https://hj0216.tistory.com/432)
 - [[해결 방법] Unable to create requested service](https://hj0216.tistory.com/447)
+- [[해결 방법] org.springframework.validation.BindException:](https://hj0216.tistory.com/452)
 </details>
 <br/>
 
@@ -387,6 +391,8 @@
 - [[ReactJS_Complete] Destructuring](https://hj0216.tistory.com/441)
 - [[ReactJS_Complete] Useful JavaScript Function](https://hj0216.tistory.com/442)
 - [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(DETAIL)](https://hj0216.tistory.com/448)
+- [[ReactJS_Complete] Wrapper Component](https://hj0216.tistory.com/453)
+- [[ReactJS_Complete] React.createElement](https://hj0216.tistory.com/454)
 </details>
 
 
