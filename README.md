@@ -234,6 +234,7 @@
 - [[SpringBoot_JPA_1] Injection](https://hj0216.tistory.com/446)
 - [[SpringBoot_JPA_1] create Private Method](https://hj0216.tistory.com/450)
 - [[SpringBoot_JPA_1] StringUtils.hasText()](https://hj0216.tistory.com/451)
+- [[SpringBoot_JPA_1] Dirty Checking & Merge](https://hj0216.tistory.com/458)
 </details>
 
 
@@ -246,6 +247,7 @@
 - [[해결 방법] nested exception is org.hibernate.DuplicateMappingException](https://hj0216.tistory.com/432)
 - [[해결 방법] Unable to create requested service](https://hj0216.tistory.com/447)
 - [[해결 방법] org.springframework.validation.BindException:](https://hj0216.tistory.com/452)
+- [[해결 방법] Request method 'POST' not supported](https://hj0216.tistory.com/457)
 </details>
 <br/>
 
@@ -393,6 +395,8 @@
 - [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(DETAIL)](https://hj0216.tistory.com/448)
 - [[ReactJS_Complete] Wrapper Component](https://hj0216.tistory.com/453)
 - [[ReactJS_Complete] React.createElement](https://hj0216.tistory.com/454)
+- [[ReactJS_Complete] useState() and Object](https://hj0216.tistory.com/459)
+- [[ReactJS_Complete] Child-to-Parent Component Communication (Bottom-up)](https://hj0216.tistory.com/460)
 </details>
 
 
@@ -548,6 +552,8 @@
 - [[BaekJoon] 14215번 세 막대 문제풀이 (Success)](https://hj0216.tistory.com/416)
 - [[BaekJoon] 11005번 진법 변환 2 문제풀이 (Success)](https://hj0216.tistory.com/439)
 - [[BaekJoon] 10757번 큰 수 A+B 문제풀이 (Success)](https://hj0216.tistory.com/449)
+- [[BaekJoon] 5073번 삼각형과 세 변 문제풀이 (Success)](https://hj0216.tistory.com/456)
+- [[BaekJoon] 10101번 삼각형 외우기 문제풀이 (Success)](https://hj0216.tistory.com/461)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
 <br/>
