@@ -235,6 +235,7 @@
 - [[SpringBoot_JPA_1] create Private Method](https://hj0216.tistory.com/450)
 - [[SpringBoot_JPA_1] StringUtils.hasText()](https://hj0216.tistory.com/451)
 - [[SpringBoot_JPA_1] Dirty Checking & Merge](https://hj0216.tistory.com/458)
+- [[SpringBoot_JPA_1] @Transactional](https://hj0216.tistory.com/465)
 </details>
 
 
@@ -248,6 +249,8 @@
 - [[해결 방법] Unable to create requested service](https://hj0216.tistory.com/447)
 - [[해결 방법] org.springframework.validation.BindException:](https://hj0216.tistory.com/452)
 - [[해결 방법] Request method 'POST' not supported](https://hj0216.tistory.com/457)
+- [[해결 방법] org.hibernate.hql.internal.ast.QuerySyntaxException: unexpected token: .](https://hj0216.tistory.com/462)
+- [[해결 방법] No matching variant of org.springframework.boot:spring-boot-gradle-plugin:3.1.0 was found](https://hj0216.tistory.com/463)
 </details>
 <br/>
 
@@ -397,6 +400,7 @@
 - [[ReactJS_Complete] React.createElement](https://hj0216.tistory.com/454)
 - [[ReactJS_Complete] useState() and Object](https://hj0216.tistory.com/459)
 - [[ReactJS_Complete] Child-to-Parent Component Communication (Bottom-up)](https://hj0216.tistory.com/460)
+- [[ReactJS_Complete] Controlled Component, Uncontrolled Component](https://hj0216.tistory.com/464)
 </details>
 
 
