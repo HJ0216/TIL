@@ -236,6 +236,7 @@
 - [[SpringBoot_JPA_1] StringUtils.hasText()](https://hj0216.tistory.com/451)
 - [[SpringBoot_JPA_1] Dirty Checking & Merge](https://hj0216.tistory.com/458)
 - [[SpringBoot_JPA_1] @Transactional](https://hj0216.tistory.com/465)
+- [[SpringBoot_JPA_1] @NoArgsConstructor](https://hj0216.tistory.com/470)
 </details>
 
 
@@ -251,6 +252,9 @@
 - [[해결 방법] Request method 'POST' not supported](https://hj0216.tistory.com/457)
 - [[해결 방법] org.hibernate.hql.internal.ast.QuerySyntaxException: unexpected token: .](https://hj0216.tistory.com/462)
 - [[해결 방법] No matching variant of org.springframework.boot:spring-boot-gradle-plugin:3.1.0 was found](https://hj0216.tistory.com/463)
+- [[해결 방법] Whitelabel Error Page](https://hj0216.tistory.com/467)
+- [[해결 방법] import org.springframework cannot be resolved](https://hj0216.tistory.com/468)
+- [[해결 방법] No projects are found to import](https://hj0216.tistory.com/469)
 </details>
 <br/>
 
@@ -558,6 +562,7 @@
 - [[BaekJoon] 10757번 큰 수 A+B 문제풀이 (Success)](https://hj0216.tistory.com/449)
 - [[BaekJoon] 5073번 삼각형과 세 변 문제풀이 (Success)](https://hj0216.tistory.com/456)
 - [[BaekJoon] 10101번 삼각형 외우기 문제풀이 (Success)](https://hj0216.tistory.com/461)
+- [[BaekJoon] 2903번 중앙 이동 알고리즘 문제풀이 (Success)](https://hj0216.tistory.com/466)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
 <br/>
