@@ -237,6 +237,7 @@
 - [[SpringBoot_JPA_1] Dirty Checking & Merge](https://hj0216.tistory.com/458)
 - [[SpringBoot_JPA_1] @Transactional](https://hj0216.tistory.com/465)
 - [[SpringBoot_JPA_1] @NoArgsConstructor](https://hj0216.tistory.com/470)
+- [[SpringBoot_JPA_1] TypedQuery](https://hj0216.tistory.com/483)
 </details>
 
 
@@ -575,6 +576,7 @@
 - [[BaekJoon] 2903번 중앙 이동 알고리즘 문제풀이 (Success)](https://hj0216.tistory.com/466)
 - [[BaekJoon] 9063번 대지 문제풀이 (Success)](https://hj0216.tistory.com/472)
 - [[BaekJoon] 15894번 수학은 체육과목 입니다 문제풀이 (Success)](https://hj0216.tistory.com/475)
+- [[BaekJoon] 2738번 행렬 덧셈 문제풀이 (Success)](https://hj0216.tistory.com/484)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
 <br/>
