@@ -143,7 +143,6 @@
 - [230521_TIL](https://hj0216.tistory.com/424)
 - [230527_TIL](https://hj0216.tistory.com/455)
 </details>
-<br/>
 
 
 
@@ -407,11 +406,11 @@
 - [[ReactJS_영화_웹] #7 COIN TRACKER](https://hj0216.tistory.com/420)
 - [[ReactJS_영화_웹] #7 MOVIE APP](https://hj0216.tistory.com/423)
 - [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(HOME)](https://hj0216.tistory.com/431)
+- [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(DETAIL)](https://hj0216.tistory.com/448)
 - [[ReactJS_Complete] Arrow Functions](https://hj0216.tistory.com/436)
 - [[ReactJS_Complete] Exports and Imports](https://hj0216.tistory.com/437)
 - [[ReactJS_Complete] Destructuring](https://hj0216.tistory.com/441)
 - [[ReactJS_Complete] Useful JavaScript Function](https://hj0216.tistory.com/442)
-- [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(DETAIL)](https://hj0216.tistory.com/448)
 - [[ReactJS_Complete] Wrapper Component](https://hj0216.tistory.com/453)
 - [[ReactJS_Complete] React.createElement](https://hj0216.tistory.com/454)
 - [[ReactJS_Complete] useState() and Object](https://hj0216.tistory.com/459)
@@ -423,7 +422,7 @@
 - [[ReactJS_Complete] Conditional Styling](https://hj0216.tistory.com/476)
 - [[ReactJS_Complete] CSS: @media](https://hj0216.tistory.com/477)
 - [[ReactJS_Complete] JSX Limitations & Workarounds](https://hj0216.tistory.com/479)
-- [[ReactJS_Complete] <div> Soup](https://hj0216.tistory.com/480)
+- [[ReactJS_Complete] &lt;div&gt; Soup](https://hj0216.tistory.com/480)
 - [[ReactJS_Complete] ReactDOM.createPortal()](https://hj0216.tistory.com/481)
 - [[ReactJS_Complete] React.useRef()](https://hj0216.tistory.com/482)
 - [[ReactJS_Complete] React.useEffect()](https://hj0216.tistory.com/485)
