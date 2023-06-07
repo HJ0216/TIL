@@ -207,6 +207,7 @@
 - [[해결 방법] Unhandled exception type ParseException](https://hj0216.tistory.com/116)
 - [[해결 방법] Server Tomcat v9.0 Server at localhost failed to start.](https://hj0216.tistory.com/154)
 - [[해결 방법] Variable cannot be resolved to a variable](https://hj0216.tistory.com/111)
+- [[해결 방법] The operator > is undefined for the argument type(s) int, int[][]](https://hj0216.tistory.com/511)
 </details>
 <br/>
 
@@ -266,6 +267,8 @@
 - [[해결 방법] Whitelabel Error Page](https://hj0216.tistory.com/467)
 - [[해결 방법] import org.springframework cannot be resolved](https://hj0216.tistory.com/468)
 - [[해결 방법] No projects are found to import](https://hj0216.tistory.com/469)
+- [[해결 방법] Package name does not correspond to the file path](https://hj0216.tistory.com/512)
+- [[해결 방법] Database not found, either pre-create it or allow remote database creation](https://hj0216.tistory.com/513)
 </details>
 <br/>
 
@@ -432,6 +435,7 @@
 - [[ReactJS_Complete] useSelector, useDispatch](https://hj0216.tistory.com/498)
 - [[ReactJS_Complete] Redux toolKit: createSlice](https://hj0216.tistory.com/499)
 - [[ReactJS_Complete] Using Redux](https://hj0216.tistory.com/502)
+- [[ReactJS_etc] Difference between state and variable](https://hj0216.tistory.com/510)
 </details>
 
 
@@ -475,6 +479,8 @@
 - [[해결 방법] Uncaught TypeError: Cannot set properties of null](https://hj0216.tistory.com/322)
 - [[해결 방법] Uncaught ReferenceError: Must call super constructor](https://hj0216.tistory.com/440)
 - [[해결 방법] TypeError: Cannot read properties of undefined (reading 'counter')](https://hj0216.tistory.com/495)
+- [[해결 방법] SyntaxError: Cannot use import statement outside a module](https://hj0216.tistory.com/508)
+- [[해결 방법] Error: Cannot find module 'C:\Users\user\Desktop\REACT\redux\productReducer.js'](https://hj0216.tistory.com/509)
 </details>
 <br/>
 
@@ -605,6 +611,7 @@
 - [[BaekJoon] 15894번 수학은 체육과목 입니다 문제풀이 (Success)](https://hj0216.tistory.com/475)
 - [[BaekJoon] 2738번 행렬 덧셈 문제풀이 (Success)](https://hj0216.tistory.com/484)
 - [[BaekJoon] 24264번 알고리즘 수업 - 알고리즘의 수행 시간 3 문제풀이 (Success)](https://hj0216.tistory.com/503)
+- [[BaekJoon] 24264번 알고리즘 수업 - 알고리즘의 수행 시간 4 문제풀이 (Success)](https://hj0216.tistory.com/507)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
 <br/>
