@@ -435,6 +435,7 @@
 - [[ReactJS_Complete] useSelector, useDispatch](https://hj0216.tistory.com/498)
 - [[ReactJS_Complete] Redux toolKit: createSlice](https://hj0216.tistory.com/499)
 - [[ReactJS_Complete] Using Redux](https://hj0216.tistory.com/502)
+- [[ReactJS_Complete] useEffect, useCallback](https://hj0216.tistory.com/516)
 - [[ReactJS_etc] Difference between state and variable](https://hj0216.tistory.com/510)
 </details>
 
@@ -457,6 +458,8 @@
 - [[해결 방법] TypeError: _store_ui_slice__WEBPACK_IMPORTED_MODULE_1__.default.toggle is not a function](https://hj0216.tistory.com/501)
 - [[해결 방법] Actions must be plain objects. Use custom middleware for async actions.](https://hj0216.tistory.com/504)
 - [[해결 방법] could not find react-redux context value;](https://hj0216.tistory.com/505)
+- [[해결 방법] TypeError: Cannot read properties of undefined (reading 'toFixed')](https://hj0216.tistory.com/514)
+- [[해결 방법] Parsing error: Unexpected reserved word 'await'](https://hj0216.tistory.com/517)
 </details>
 
 <br/>
@@ -612,6 +615,7 @@
 - [[BaekJoon] 2738번 행렬 덧셈 문제풀이 (Success)](https://hj0216.tistory.com/484)
 - [[BaekJoon] 24264번 알고리즘 수업 - 알고리즘의 수행 시간 3 문제풀이 (Success)](https://hj0216.tistory.com/503)
 - [[BaekJoon] 24264번 알고리즘 수업 - 알고리즘의 수행 시간 4 문제풀이 (Success)](https://hj0216.tistory.com/507)
+- [[BaekJoon] 24264번 알고리즘 수업 - 알고리즘의 수행 시간 5 문제풀이 (Success)](https://hj0216.tistory.com/515)
 - [[BaekJoon] 2477번 참외밭 문제풀이 (-ing)](https://hj0216.tistory.com/191)
 </details>
 <br/>
