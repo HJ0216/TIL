@@ -150,6 +150,7 @@
 <summary>TIL: 2306</summary>
 
 - [230603_TIL](https://hj0216.tistory.com/493)
+- [230611_TIL](https://hj0216.tistory.com/524)
 </details>
 <br/>
 
@@ -159,7 +160,7 @@
 
 ### Java
 <details>
-<summary>Java_Basics_Lecture</summary>
+<summary>Java</summary>
 
 - [[자바의 정석_기초편] Chapter02. 변수(Variable)](https://hj0216.tistory.com/85)
 - [[자바의 정석_기초편] Chapter03. 연산자(Operator)](https://hj0216.tistory.com/90)
@@ -181,6 +182,7 @@
 - [[자바의 정석_기초편] Chapter10. 날짜와 시간 & 형식화](https://hj0216.tistory.com/422)
 - [[자바의 정석_기초편] Chapter11. 컬렉션 프레임워크 (Collections framework)_1](https://hj0216.tistory.com/443)
 - [[자바의 정석_기초편] Chapter11. 컬렉션 프레임워크 (Collections framework)_2](https://hj0216.tistory.com/490)
+- [[자바의 정석_기초편] Chapter11. 컬렉션 프레임워크 (Collections framework)_3](https://hj0216.tistory.com/523)
 </details>
 
 
@@ -230,7 +232,7 @@
 
 ### Spring Boot
 <details>
-<summary>SpringBoot_JPA_1_Lecture</summary>
+<summary>SpringBoot_JPA</summary>
 
 - [[SpringBoot_JPA_1] resources/static and templates](https://hj0216.tistory.com/421)
 - [[SpringBoot_JPA_1] @Embeddable, @Embedded](https://hj0216.tistory.com/428)
@@ -278,7 +280,7 @@
 
 ### OracleSQL
 <details>
-<summary>OracleSQL_Basics_Lecture</summary>
+<summary>OracleSQL</summary>
 
 - [Oracle SQL 강의 - 01강 학습 안내(SQL, DB, DBMS의 의미와 필요성)](https://hj0216.tistory.com/18)
 - [Oracle SQL 강의 - 02강 오라클 DBMS 18c XE 설치하기](https://hj0216.tistory.com/58)
@@ -398,7 +400,7 @@
 
 ### React
 <details>
-<summary>React_Basics_Lecture</summary>
+<summary>React</summary>
 
 - [[ReactJS_영화_웹] #2 THE BASICS OF REACT](https://hj0216.tistory.com/18)
 - [[ReactJS_영화_웹] #3 STATE](https://hj0216.tistory.com/410)
@@ -410,20 +412,14 @@
 - [[ReactJS_영화_웹] #7 MOVIE APP](https://hj0216.tistory.com/423)
 - [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(HOME)](https://hj0216.tistory.com/431)
 - [[ReactJS_영화_웹] #7 MOVIE APP UPGRADE(DETAIL)](https://hj0216.tistory.com/448)
-- [[ReactJS_Complete] Arrow Functions](https://hj0216.tistory.com/436)
-- [[ReactJS_Complete] Exports and Imports](https://hj0216.tistory.com/437)
-- [[ReactJS_Complete] Destructuring](https://hj0216.tistory.com/441)
-- [[ReactJS_Complete] Useful JavaScript Function](https://hj0216.tistory.com/442)
 - [[ReactJS_Complete] Wrapper Component](https://hj0216.tistory.com/453)
 - [[ReactJS_Complete] React.createElement](https://hj0216.tistory.com/454)
 - [[ReactJS_Complete] useState() and Object](https://hj0216.tistory.com/459)
 - [[ReactJS_Complete] Child-to-Parent Component Communication (Bottom-up)](https://hj0216.tistory.com/460)
 - [[ReactJS_Complete] Controlled Component, Uncontrolled Component](https://hj0216.tistory.com/464)
 - [[ReactJS_Complete] Outputting Conditional Content](https://hj0216.tistory.com/471)
-- [[ReactJS_Complete] CSS: transition](https://hj0216.tistory.com/473)
 - [[ReactJS_Complete] For ... in or of](https://hj0216.tistory.com/474)
 - [[ReactJS_Complete] Conditional Styling](https://hj0216.tistory.com/476)
-- [[ReactJS_Complete] CSS: @media](https://hj0216.tistory.com/477)
 - [[ReactJS_Complete] JSX Limitations & Workarounds](https://hj0216.tistory.com/479)
 - [[ReactJS_Complete] &lt;div&gt; Soup](https://hj0216.tistory.com/480)
 - [[ReactJS_Complete] ReactDOM.createPortal()](https://hj0216.tistory.com/481)
@@ -470,6 +466,17 @@
 
 ### JavaScript
 <details>
+<summary>JavaScript</summary>
+
+- [[ReactJS_Complete] Arrow Functions](https://hj0216.tistory.com/436)
+- [[ReactJS_Complete] Exports and Imports](https://hj0216.tistory.com/437)
+- [[ReactJS_Complete] Destructuring](https://hj0216.tistory.com/441)
+- [[ReactJS_Complete] Useful JavaScript Function](https://hj0216.tistory.com/442)
+</details>
+
+
+
+<details>
 <summary>How_to_fix_Errors</summary>
 
 - [[해결 방법] Uncaught ReferenceError: Cannot access '...' before initialization](https://hj0216.tistory.com/293)
@@ -484,6 +491,20 @@
 - [[해결 방법] TypeError: Cannot read properties of undefined (reading 'counter')](https://hj0216.tistory.com/495)
 - [[해결 방법] SyntaxError: Cannot use import statement outside a module](https://hj0216.tistory.com/508)
 - [[해결 방법] Error: Cannot find module 'C:\Users\user\Desktop\REACT\redux\productReducer.js'](https://hj0216.tistory.com/509)
+- [[해결 방법] TypeError: props.forEach is not a function](https://hj0216.tistory.com/522)
+</details>
+<br/>
+
+
+
+
+### CSS
+<details>
+<summary>CSS</summary>
+
+- [[ReactJS_Complete] CSS: transition](https://hj0216.tistory.com/473)
+- [[ReactJS_Complete] CSS: @media](https://hj0216.tistory.com/477)
+- [[CSS] CheckBox Customizing](https://hj0216.tistory.com/521)
 </details>
 <br/>
 
@@ -538,6 +559,7 @@
 - [[BaekJoon] 10172번 개 문제풀이 (Success)](https://hj0216.tistory.com/155)
 - [[BaekJoon] 10430번 나머지 문제풀이 (Success)](https://hj0216.tistory.com/227)
 - [[BaekJoon] 10757번 큰 수 A+B 문제풀이 (Success)](https://hj0216.tistory.com/449)
+- [[BaekJoon] 10798번 세로읽기 문제풀이 (Success)](https://hj0216.tistory.com/520)
 - [[BaekJoon] 10807번 개수 세기 문제풀이 (Success)](https://hj0216.tistory.com/277)
 - [[BaekJoon] 10809번 알파벳 찾기 문제풀이 (Success)](https://hj0216.tistory.com/366)
 - [[BaekJoon] 10810번 공 넣기 문제풀이 (Success)](https://hj0216.tistory.com/353)
