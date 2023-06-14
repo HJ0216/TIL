@@ -271,6 +271,7 @@
 - [[해결 방법] No projects are found to import](https://hj0216.tistory.com/469)
 - [[해결 방법] Package name does not correspond to the file path](https://hj0216.tistory.com/512)
 - [[해결 방법] Database not found, either pre-create it or allow remote database creation](https://hj0216.tistory.com/513)
+- [[해결 방법] finished with non-zero exit value 1](https://hj0216.tistory.com/526)
 </details>
 <br/>
 
@@ -583,6 +584,7 @@
 - [[BaekJoon] 11654번 아스키 코드 문제풀이 (Success)](https://hj0216.tistory.com/359)
 - [[BaekJoon] 11718번 그대로 출력하기 문제풀이 (Success)](https://hj0216.tistory.com/399)
 - [[BaekJoon] 11720번 숫자의 합 문제풀이 (Success)](https://hj0216.tistory.com/361)
+- [[BaekJoon] 13241번 최소공배수 문제풀이 (Success)](https://hj0216.tistory.com/525)
 - [[BaekJoon] 1330번 두 수 비교하기 문제풀이 (Success)](https://hj0216.tistory.com/239)
 - [[BaekJoon] 14215번 세 막대 문제풀이 (Success)](https://hj0216.tistory.com/416)
 - [[BaekJoon] 1427번 소트 인사이드 문제풀이 (Success)](https://hj0216.tistory.com/381)
