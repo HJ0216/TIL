@@ -251,6 +251,7 @@
 - [[SpringBoot_JPA_1] @NoArgsConstructor](https://hj0216.tistory.com/470)
 - [[SpringBoot_JPA_1] TypedQuery](https://hj0216.tistory.com/483)
 - [[SpringBoot_JPA_1] @PathVariable](https://hj0216.tistory.com/486)
+- [[SpringBoot_JPA_Basic] JPA persist, find, remove, update](https://hj0216.tistory.com/527)
 </details>
 
 
