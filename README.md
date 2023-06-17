@@ -252,6 +252,7 @@
 - [[SpringBoot_JPA_1] TypedQuery](https://hj0216.tistory.com/483)
 - [[SpringBoot_JPA_1] @PathVariable](https://hj0216.tistory.com/486)
 - [[SpringBoot_JPA_Basic] JPA persist, find, remove, update](https://hj0216.tistory.com/527)
+- [[SpringBoot_JPA_Basic] JPA 1차 cache](https://hj0216.tistory.com/528)
 </details>
 
 
