@@ -394,6 +394,13 @@
 <summary>How_to_fix_Errors</summary>
 
 - [[해결 방법] Error Code: 1046. No database selected](https://hj0216.tistory.com/396)
+- [[해결 방법] Error Code: 1054. Unknown column 'content_no' on 'field list'](https://hj0216.tistory.com/534)
+- [[해결 방법] Error Code: 1146. Table 'TEST.user_info' doesn't exist](https://hj0216.tistory.com/532)
+- [[해결 방법] Error Code: 1175. You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column](https://hj0216.tistory.com/535)
+- [[해결 방법] Error Code: 1292. Incorrect date value](https://hj0216.tistory.com/531)
+- [[해결 방법] Error Code: 1364. Field 'user_name' doesn't have any default value](https://hj0216.tistory.com/530)
+- [[해결 방법] Error Code: 1406. Data too long for column](https://hj0216.tistory.com/529)
+- [[해결 방법] Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails](https://hj0216.tistory.com/533)
 </details>
 <br/>
 
