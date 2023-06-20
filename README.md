@@ -274,6 +274,9 @@
 - [[해결 방법] Package name does not correspond to the file path](https://hj0216.tistory.com/512)
 - [[해결 방법] Database not found, either pre-create it or allow remote database creation](https://hj0216.tistory.com/513)
 - [[해결 방법] finished with non-zero exit value 1](https://hj0216.tistory.com/526)
+- [[해결 방법] java.lang.StackOverflowError: null](https://hj0216.tistory.com/536)
+- [[해결 방법] java: array required, but java.util.List<> found](https://hj0216.tistory.com/537)
+- [[해결 방법] org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Infinite recursion (StackOverflowError)](https://hj0216.tistory.com/538)
 </details>
 <br/>
 
