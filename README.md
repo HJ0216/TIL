@@ -253,6 +253,7 @@
 - [[SpringBoot_JPA_1] @PathVariable](https://hj0216.tistory.com/486)
 - [[SpringBoot_JPA_Basic] JPA persist, find, remove, update](https://hj0216.tistory.com/527)
 - [[SpringBoot_JPA_Basic] JPA 1차 cache](https://hj0216.tistory.com/528)
+- [[SpringBoot] JPA JOIN Null값 처리](https://hj0216.tistory.com/541)
 </details>
 
 
@@ -404,6 +405,7 @@
 - [[해결 방법] Error Code: 1364. Field 'user_name' doesn't have any default value](https://hj0216.tistory.com/530)
 - [[해결 방법] Error Code: 1406. Data too long for column](https://hj0216.tistory.com/529)
 - [[해결 방법] Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails](https://hj0216.tistory.com/533)
+- [[해결 방법] Error Code: 1136. Column count doesn't match value count at row 1](https://hj0216.tistory.com/540)
 </details>
 <br/>
 
@@ -446,6 +448,7 @@
 - [[ReactJS_Complete] Using Redux](https://hj0216.tistory.com/502)
 - [[ReactJS_Complete] useEffect, useCallback](https://hj0216.tistory.com/516)
 - [[ReactJS_etc] Difference between state and variable](https://hj0216.tistory.com/510)
+- [[ReactJS] Preventing useEffect from running twice with a useRef](https://hj0216.tistory.com/539)
 </details>
 
 
