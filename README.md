@@ -254,6 +254,7 @@
 - [[SpringBoot_JPA_Basic] JPA persist, find, remove, update](https://hj0216.tistory.com/527)
 - [[SpringBoot_JPA_Basic] JPA 1차 cache](https://hj0216.tistory.com/528)
 - [[SpringBoot] JPA JOIN Null값 처리](https://hj0216.tistory.com/541)
+- [[SpringBoot] JPA @PrePersist](https://hj0216.tistory.com/542)
 </details>
 
 
@@ -278,6 +279,7 @@
 - [[해결 방법] java.lang.StackOverflowError: null](https://hj0216.tistory.com/536)
 - [[해결 방법] java: array required, but java.util.List<> found](https://hj0216.tistory.com/537)
 - [[해결 방법] org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Infinite recursion (StackOverflowError)](https://hj0216.tistory.com/538)
+- [[해결 방법] java.sql.SQLIntegrityConstraintViolationException: Column '...' cannot be null](https://hj0216.tistory.com/543)
 </details>
 <br/>
 
@@ -399,13 +401,14 @@
 
 - [[해결 방법] Error Code: 1046. No database selected](https://hj0216.tistory.com/396)
 - [[해결 방법] Error Code: 1054. Unknown column 'content_no' on 'field list'](https://hj0216.tistory.com/534)
+- [[해결 방법] Error Code: 1064. You have an error in your SQL syntax](https://hj0216.tistory.com/544)
+- [[해결 방법] Error Code: 1136. Column count doesn't match value count at row 1](https://hj0216.tistory.com/540)
 - [[해결 방법] Error Code: 1146. Table 'TEST.user_info' doesn't exist](https://hj0216.tistory.com/532)
 - [[해결 방법] Error Code: 1175. You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column](https://hj0216.tistory.com/535)
 - [[해결 방법] Error Code: 1292. Incorrect date value](https://hj0216.tistory.com/531)
 - [[해결 방법] Error Code: 1364. Field 'user_name' doesn't have any default value](https://hj0216.tistory.com/530)
 - [[해결 방법] Error Code: 1406. Data too long for column](https://hj0216.tistory.com/529)
 - [[해결 방법] Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails](https://hj0216.tistory.com/533)
-- [[해결 방법] Error Code: 1136. Column count doesn't match value count at row 1](https://hj0216.tistory.com/540)
 </details>
 <br/>
 
@@ -472,6 +475,7 @@
 - [[해결 방법] could not find react-redux context value;](https://hj0216.tistory.com/505)
 - [[해결 방법] TypeError: Cannot read properties of undefined (reading 'toFixed')](https://hj0216.tistory.com/514)
 - [[해결 방법] Parsing error: Unexpected reserved word 'await'](https://hj0216.tistory.com/517)
+- [[해결 방법] Hooks can only be called inside of the body of a function component.](https://hj0216.tistory.com/545)
 </details>
 
 <br/>
