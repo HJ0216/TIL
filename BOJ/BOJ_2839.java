@@ -12,8 +12,8 @@ public class Main {
 
 		int kg = Integer.parseInt(br.readLine());
 
-		int i = 1;
-		int j = 1;
+		int i = 0;
+		int j = 0;
 
 		boolean b = false;
 
