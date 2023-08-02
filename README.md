@@ -442,6 +442,7 @@
 - [[BaekJoon] 11022번 A+B-8 문제풀이 (Success)](https://hj0216.tistory.com/301)
 - [[BaekJoon] 11382번 꼬마 정민 문제풀이 (Success)](https://hj0216.tistory.com/221)
 - [[BaekJoon] 1152번 단어의 개수 문제풀이 (Success)](https://hj0216.tistory.com/388)
+- [[BaekJoon] 11653번 소인수분해 문제풀이 (Success)](https://hj0216.tistory.com/600)
 - [[BaekJoon] 11654번 아스키 코드 문제풀이 (Success)](https://hj0216.tistory.com/359)
 - [[BaekJoon] 11718번 그대로 출력하기 문제풀이 (Success)](https://hj0216.tistory.com/399)
 - [[BaekJoon] 11720번 숫자의 합 문제풀이 (Success)](https://hj0216.tistory.com/361)
@@ -455,6 +456,7 @@
 - [[BaekJoon] 15552번 빠른 A+B 문제풀이 (Success)](https://hj0216.tistory.com/300)
 - [[BaekJoon] 15894번 수학은 체육과목 입니다 문제풀이 (Success)](https://hj0216.tistory.com/475)
 - [[BaekJoon] 18108번 1998년생인 내가 태국에서는 2541년생?! 문제풀이 (Success)](https://hj0216.tistory.com/179)
+- [[BaekJoon] 1978번 소수 찾기 문제풀이 (Success)](https://hj0216.tistory.com/599)
 - [[BaekJoon] 2292번 벌집 문제풀이 (Success)](https://hj0216.tistory.com/173)
 - [[BaekJoon] 24262번 알고리즘 수업 - 알고리즘의 수행 시간 1 문제풀이 (Success)](https://hj0216.tistory.com/364)
 - [[BaekJoon] 24263번 알고리즘 수업 - 알고리즘의 수행 시간 2 문제풀이 (Success)](https://hj0216.tistory.com/384)
@@ -489,6 +491,7 @@
 - [[BaekJoon] 2750번 수 정렬 문제풀이 (Success)](https://hj0216.tistory.com/326)
 - [[BaekJoon] 2753번 윤년 문제풀이 (Success)](https://hj0216.tistory.com/247)
 - [[BaekJoon] 27866번 문자와 문자열 문제풀이 (Success)](https://hj0216.tistory.com/280)
+- [[BaekJoon] 2798번 블랙잭 문제풀이 (Success)](https://hj0216.tistory.com/601)
 - [[BaekJoon] 2869번 달팽이는 올라가고 싶다 문제풀이 (Success)](https://hj0216.tistory.com/167)
 - [[BaekJoon] 2884번 알람 시계 문제풀이 (Success)](https://hj0216.tistory.com/252)
 - [[BaekJoon] 2903번 중앙 이동 알고리즘 문제풀이 (Success)](https://hj0216.tistory.com/466)
@@ -504,7 +507,9 @@
 - [[BaekJoon] 8393번 합 문제풀이 (Success)](https://hj0216.tistory.com/274)
 - [[BaekJoon] 9063번 대지 문제풀이 (Success)](https://hj0216.tistory.com/472)
 - [[BaekJoon] 9086번 문자열 문제풀이 (Success)](https://hj0216.tistory.com/356)
-- [[BaekJoon] 9498번 시험 성적 문제풀이 (Success)](https://hj0216.tistory.com/242)</details>
+- [[BaekJoon] 9498번 시험 성적 문제풀이 (Success)](https://hj0216.tistory.com/242)
+- [[BaekJoon] 9506번 약수들의 합 문제풀이 (Success)](https://hj0216.tistory.com/597)
+- </details>
 <br/>
 
 
