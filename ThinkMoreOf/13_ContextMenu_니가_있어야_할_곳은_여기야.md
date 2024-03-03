@@ -38,7 +38,7 @@ WPF를 공부하고 있습니다. xaml의 기본 기능을 연습하기 위해�
 
 Button 태그에 ContextMenu를 설정하면 오른쪽 마우스 클릭 시, MenuItem들이 출력됩니다.
 
-![ContextMenu_1](/images/13/contextMenu_1.png)
+![ContextMenu_1](./images/13/contextMenu_1.png)
 
 마우스가 함께 스크린샷에 나오지 않지만, 기본적으로 마우스를 클릭한 곳에 ContextMenu가 위치하게 됩니다.
 
@@ -107,7 +107,7 @@ private void Button_Click(object sender, RoutedEventArgs e)
 </Window.Resources>
 ```
 
-![ContextMenu_2](/images/13/contextMenu_2.png)
+![ContextMenu_2](./images/13/contextMenu_2.png)
 
 해결되었기 때문에 코드 정리를 시작했습니다. 같은 기능을 하는 중복된 코드는.. 제 마음이 신경 쓰이기 때문에 Behind Code에 있던 contextMenu.PlacementTarget를 지웠습니다.  
 그리고 제가 설정한 위치에 메뉴가 다시 안뜨기 시작합니다.. 하..  
