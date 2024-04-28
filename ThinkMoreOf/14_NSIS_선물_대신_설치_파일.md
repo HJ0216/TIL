@@ -28,7 +28,25 @@ NSIS를 통해 Setup 파일을 간단하게 만들 수는 있지만, HM NIS Edit
 
 
 #
+# WPF 애플리케이션 실행 파일 만들기
+HM NIS Edit과 관련해서 설치부터 실행까지 너무나 잘 정리되어있는 글들이 많기에 저는 실제 프로젝트에서 사용한 기능을 중심으로 정리할 예정입니다.
+
+💀 난관1: 어느 파일까지 복사할 것인가
+처음에 Visual Studio에서 
+
+```bash
+
+
+```
+
+
+
+
+#
 ### 📚참고 자료
 [NSIS Wiki](https://nsis.sourceforge.io/Main_Page)  
 [NSIS 사용자 설명서](https://www.opentutorials.org/module/3650/21850)  
 [[NSIS] HM NIS Edit로 쉽고 빠르게 설치 파일 만들기](https://luckygg.tistory.com/260)  
+[NSIS 설치 및 HM NIS Edit 스크립트 마법사 사용하기](https://yeo-computerclass.tistory.com/149)  
+[[NSIS] 프로그램 실행중일때는 확인 메시지후 종료하기](https://sheepone.tistory.com/187)  
+[‘처음’ Windows 설치 파일을 ‘배포’하는 개발자들을 위하여](https://blog.dramancompany.com/2015/12/%EC%B2%98%EC%9D%8C-windows-%EC%84%A4%EC%B9%98-%ED%8C%8C%EC%9D%BC%EC%9D%84-%EB%B0%B0%ED%8F%AC%ED%95%98%EB%8A%94-%EA%B0%9C%EB%B0%9C%EC%9E%90%EB%93%A4%EC%9D%84-%EC%9C%84%ED%95%98%EC%97%AC/)  
