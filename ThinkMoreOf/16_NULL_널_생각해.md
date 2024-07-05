@@ -121,6 +121,7 @@ private void somethingGood(SomeClass imInstance){
 ```
 
 2. 파라미터에서 null 방어하기
+
 ```java
 private void somethingGood(SomeClass imInstance){
     imInstance = Objects.requireNonNull(imInstance, "Parameter 'imInstance' cannot be null");
