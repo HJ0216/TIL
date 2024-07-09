@@ -198,7 +198,7 @@ private void connectToDatabase(){
 }
 ```
 
-4. Layer에 맞는 예외
+5. Layer에 맞는 예외
   * 각 계층에서 발생할 수 있는 오류의 성격은 다르기 때문에, 해당 계층에 맞는 예외를 던지는 것이 유용
     * Repository (혹은 DAO) 에서 HttpException을 던진다거나 Presentation (Controller) 에서 SQLException을 처리하는것은 Layer별 역할에 맞지 않음
   * 가능한 가장 늦은 위치에서 처리
@@ -215,7 +215,7 @@ class DuplicatedException extends ValidationException {}
 class UserAlreadyRegisteredException extends ValidationException {}
 ```
 
-5. 외부 SDK, 외부 API를 통해 발생하는 예외들은 하나로 묶어서 처리
+6. 외부 SDK, 외부 API를 통해 발생하는 예외들은 하나로 묶어서 처리
   * 외부 라이브러리에서 발생하는 문제와 우리가 관리하는 코드는 같은 방식으로 해결해서는 안됨
 
 ```java
@@ -247,11 +247,11 @@ private void order(){
 }
 ```
 
-6. Catch절에 예외 흐름에 적합한 코드 구현
+7. Catch절에 예외 흐름에 적합한 코드 구현
   * 로깅 혹은 Layer에 적합한 Exception 변환 등  
   ▶ 로깅 혹은 Layer에 적합한 Exception 변환 등이 필요한 것이 아니라면 try catch로 다시 잡지 않는 것이 좋음
 
-7. 정상적인 흐름에서 Catch 금지 (무분별한 Catch 금지)
+8. 정상적인 흐름에서 Catch 금지 (무분별한 Catch 금지)
   * 프로그램의 정상적인 흐름을 제어하기 위해 예외를 사용하지 않음  
   ▶ 예외는 오직 예외적인 경우에만 사용
 
