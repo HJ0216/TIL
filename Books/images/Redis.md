@@ -32,5 +32,19 @@ decr counter1
 # (integer) 1
 incrby counter1 10
 # (integer) 11
+```
 
+* Redis pipelining
+  * 여러 명령을 한 번에 서버에 보내서 처리하고 결과를 받는 방식
+  * 네트워크 왕복(Round Trip) 시간을 줄여 성능을 향상시킬 수 있음
+
+```java
+jedis.set("users:300:name", "imjedis");
+jedis.set("users:300:email", "imjedis@email.com");
+jedis.set("users:300:age", "30");
+
+Pipeline pipelined = jedis.pipelined();
+pipelined.set("users:400:name", "jedisPipe");
+pipelined.set("users:400:email", "jedisPipe@email.com");
+pipelined.set("users:400:age", "25");
 ```
