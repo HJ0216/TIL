@@ -185,3 +185,63 @@ System.out.println(jedis.sismember("users:300:follow", "250"));
 Set<String> sinter = jedis.sinter("users:200:follow", "users:300:follow");
 sinter.forEach(System.out::println);
 ```
+
+
+### Hashes Data Type
+* field-value pair collection
+
+```bash
+HSET users:1:info name grep email grep@email.com phone 010-1234-1234
+# (integer) 3
+HGET users:1:info name
+# "grep"
+HGET users:1:info email
+# "grep@email.com"
+HGETALL users:1:info
+# 1) "name"
+# 2) "grep"
+# 3) "email"
+# 4) "grep@email.com"
+# 5) "phone"
+# 6) "010-1234-1234"
+
+HDEL users:1:info phone
+# (integer) 1
+HGETALL users:1:info
+# 1) "name"
+# 2) "grep"
+# 3) "email"
+# 4) "grep@email.com"
+
+HSET users:1:info visits 0
+# (integer) 1
+HGET users:1:info visits
+# "0"
+HINCRBY users:1:info visits 1
+# (integer) 1
+HINCRBY users:1:info visits 10
+# (integer) 11
+```
+
+```java
+// Hash Set
+jedis.hset("users:2:info", "name", "grep2");
+
+HashMap<String, String> userInfo = new HashMap<>();
+userInfo.put("email", "grep2@email.com");
+userInfo.put("phone", "010-5678-5678");
+
+jedis.hset("users:2:info", userInfo);
+
+// Delete
+jedis.hdel("users:2:info", "phone");
+
+// Get
+System.out.println(jedis.hget("users:2:info", "email"));
+
+Map<String, String> user2Info = jedis.hgetAll("users:2:info");
+user2Info.forEach((k,v) -> System.out.printf("%s %s%n", k, v));
+
+// Increment
+jedis.hincrBy("users:2:info", "visits", 10);
+```
