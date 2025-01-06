@@ -245,3 +245,81 @@ user2Info.forEach((k,v) -> System.out.printf("%s %s%n", k, v));
 // Increment
 jedis.hincrBy("users:2:info", "visits", 10);
 ```
+
+
+### Sorted Set Data Type
+* ordered collection, Unique strings
+  * leader board
+  * rate limit
+
+```bash
+ZADD "game1:scores" 100 user1 200 user2 300 user3
+# (integer) 3
+ZADD "game1:scores" 50 user4 150 user5 250 user6
+# (integer) 3
+ZRANGE "game1:scores" 0 +inf BYSCORE LIMIT 0 10
+# 1) "user4"
+# 2) "user1"
+# 3) "user5"
+# 4) "user2"
+# 5) "user6"
+# 6) "user3"
+ZRANGE "game1:scores" +inf 0 BYSCORE REV LIMIT 0 10
+# 1) "user3"
+# 2) "user6"
+# 3) "user2"
+# 4) "user5"
+# 5) "user1"
+# 6) "user4"
+ZRANGE "game1:scores" +inf 0 BYSCORE REV LIMIT 0 3
+# 1) "user3"
+# 2) "user6"
+# 3) "user2"
+
+ZREM "game1:scores" user3
+# (integer) 1
+ZREM "game1:scores" user3
+# (integer) 0
+
+ZRANGE "game1:scores" +inf 0 BYSCORE REV LIMIT 0 3
+# 1) "user6"
+# 2) "user2"
+# 3) "user5"
+
+ZCARD "game1:scores"
+# (integer) 5
+ZCARD "Game1:scores"
+# (integer) 0
+
+ZINCRBY "game1:scores" 500 user4
+# "550"
+ZRANGE "game1:scores" +inf 0 BYSCORE REV LIMIT 0 3
+# 1) "user4"
+# 2) "user6"
+# 3) "user2"
+```
+
+```java
+HashMap<String, Double> scores = new HashMap<>();
+scores.put("user1", 100.0);
+scores.put("user2", 10.0);
+scores.put("user3", 20.0);
+scores.put("user4", 30.0);
+scores.put("user5", 40.0);
+
+jedis.zadd("game2:scores", scores);
+
+List<String> zrange = jedis.zrange("game2:scores", 0, Long.MAX_VALUE);
+zrange.forEach(System.out::println);
+// scores의 value 기준으로 자동 오름차순 정렬
+
+List<Tuple> tuples = jedis.zrangeWithScores("game2:scores", 0, Long.MAX_VALUE);
+tuples.forEach(i -> System.out.println("%s %f".formatted(i.getElement(), i.getScore())));
+
+System.out.println(jedis.zcard("game2:scores"));
+
+jedis.zincrby("game2:scores", 50, "user2");
+
+List<Tuple> tuples2 = jedis.zrangeWithScores("game2:scores", 0, Long.MAX_VALUE);
+tuples2.forEach(i -> System.out.println("%s %f".formatted(i.getElement(), i.getScore())));
+```
