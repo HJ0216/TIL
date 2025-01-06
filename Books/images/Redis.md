@@ -135,3 +135,53 @@ if (blpop != null) {
   blpop.forEach(System.out::println);
 }
 ```
+
+
+### Set Data Type
+* Unordered collection, Unique strings
+
+```bash
+SADD users:100:follow 150 130 120
+# (integer) 3
+SCARD users:100:follow
+# (integer) 3
+SADD users:100:follow 150 130 120
+# (integer) 0
+
+# Set은 입력 순서대로 데이터가 저장되지 않는 특징에 유의
+SMEMBERS users:100:follow
+# 1) "120"
+# 2) "130"
+# 3) "150"
+SISMEMBER users:100:follow 100
+# (integer) 0
+SISMEMBER users:100:follow 120
+# (integer) 1
+
+SADD users:200:follow 150 30 20
+# (integer) 3
+SINTER users:100:follow users:200:follow
+# 1) "150"
+
+SREM users:200:follow 30
+# (integer) 1
+SREM users:200:follow 30
+# (integer) 0
+SMEMBERS users:200:follow
+# 1) "20"
+# 2) "150"
+```
+
+```java
+jedis.sadd("users:300:follow", "100", "200", "300");
+jedis.srem("users:300:follow", "100");
+
+Set<String> smembers = jedis.smembers("users:300:follow");
+smembers.forEach(System.out::println);
+
+System.out.println(jedis.sismember("users:300:follow", "200"));
+System.out.println(jedis.sismember("users:300:follow", "250"));
+
+Set<String> sinter = jedis.sinter("users:200:follow", "users:300:follow");
+sinter.forEach(System.out::println);
+```
