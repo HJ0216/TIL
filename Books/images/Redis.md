@@ -323,3 +323,58 @@ jedis.zincrby("game2:scores", 50, "user2");
 List<Tuple> tuples2 = jedis.zrangeWithScores("game2:scores", 0, Long.MAX_VALUE);
 tuples2.forEach(i -> System.out.println("%s %f".formatted(i.getElement(), i.getScore())));
 ```
+
+
+### Geospatial Data Type
+* Coorinate(Latitude and Longitude)
+
+```bash
+GEOADD stores:geo 126.98102606983623 37.57940249726259 경회루
+# (integer) 1
+GEOADD stores:geo 126.96865587536988 37.570777342456765 경희궁
+# (integer) 1
+GEODIST stores:geo 경회루 경희궁
+# "1452.4463"
+GEODIST stores:geo 경회루 경희궁 km
+# "1.4524"
+GEOSEARCH stores:geo FROMLONLAT 126.974 37.574 BYRADIUS 500 m
+# (empty array)
+GEOSEARCH stores:geo FROMLONLAT 126.974 37.574 BYRADIUS 1 km
+# 1) "\xea\xb2\xbd\xed\x9d\xac\xea\xb6\x81"
+# 2) "\xea\xb2\xbd\xed\x9a\x8c\xeb\xa3\xa8"
+```
+
+```java
+jedis.geoadd("stores2:geo", 126.98102606983623, 37.57940249726259, "Gyeonghoeru");
+jedis.geoadd("stores2:geo", 126.96865587536988, 37.570777342456765, "Gyeonghuigung Palace");
+
+Double geodist = jedis.geodist("stores2:geo", "Gyeonghoeru", "Gyeonghuigung Palace");
+System.out.println("geodist = " + geodist);
+
+//        List<GeoRadiusResponse> geoSearch = jedis.geosearch(
+//            "stores2:geo",
+//            new GeoCoordinate(126.974, 37.575),
+//            1500,
+//            GeoUnit.M);
+//        geoSearch.forEach(r -> System.out.println("%s %f %f".formatted(r.getMemberByString(), r.getCoordinate().getLongitude(), r.getCoordinate().getLatitude())));
+// GeoSearch는 기본적으로 멤버만 반환
+// Jedis에서 WITHCOORD가 활성화되지 않았다면 getCoordinate()가 null을 반환
+// Redis에서 명령어 확인 시, 해당 코드에서는 WITHCOORD 옵션이 빠져있음
+
+List<GeoRadiusResponse> geoSearch = jedis.geosearch("stores2:geo",
+    new GeoSearchParam()
+        .fromLonLat(new GeoCoordinate(126.974, 37.575))
+        .byRadius(1500, GeoUnit.M)
+        .withCoord()
+);
+
+geoSearch.forEach(r ->
+    System.out.println("%s %f %f".formatted(
+        r.getMemberByString(),
+        r.getCoordinate().getLongitude(),
+        r.getCoordinate().getLatitude())
+    )
+);
+
+jedis.unlink("stores2:geo");
+```
