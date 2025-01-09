@@ -378,3 +378,51 @@ geoSearch.forEach(r ->
 
 jedis.unlink("stores2:geo");
 ```
+
+
+
+### Bitmap Data Type
+* 메모리를 적게 사용해 대량의 데이터를 저장할 때 유용
+
+```bash
+SETBIT request-somepage-20250106 100 1
+# (integer) 0
+SETBIT request-somepage-20250106 110 1
+# (integer) 0
+SETBIT request-somepage-20250106 120 1
+# (integer) 0
+SETBIT request-somepage-20250106 130 1
+# (integer) 0
+BITCOUNT SETBIT request-somepage-20250106
+# (integer) 0
+BITCOUNT request-somepage-20250106
+# (integer) 4
+GETBIT request-somepage-20250106 100
+# (integer) 1
+GETBIT request-somepage-20250106 101
+# (integer) 0
+```
+
+```java
+jedis.setbit("request-somepage-20250107", 100, true);
+jedis.setbit("request-somepage-20250107", 110, true);
+jedis.setbit("request-somepage-20250107", 120, true);
+
+System.out.println(jedis.getbit("request-somepage-20250107", 100));
+System.out.println(jedis.getbit("request-somepage-20250107", 50));
+
+System.out.println(jedis.bitcount("request-somepage-20250107"));
+
+// bitmap vs set
+Pipeline pipelined = jedis.pipelined();
+IntStream.rangeClosed(0, 100000).forEach(i -> {
+  pipelined.sadd("request-somepage-set-20250106", String.valueOf(i), "1");
+  pipelined.setbit("request-somepage-bit-20250106", i, true);
+
+  if(i == 1000){
+    pipelined.sync();
+  }
+
+  pipelined.sync();
+});
+```
