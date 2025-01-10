@@ -426,3 +426,79 @@ IntStream.rangeClosed(0, 100000).forEach(i -> {
   pipelined.sync();
 });
 ```
+
+
+
+## Transaction
+* MULTI - EXEC / DISCARD
+* Isolation
+* WATCH with MULTI
+
+```bash
+MULTI
+# OK
+(TX)> SET key 100
+# QUEUED
+(TX)> SET key2 200
+# QUEUED
+
+# EXEC 전 key, key2 조회 X
+
+(TX)> EXEC
+# 1) OK
+# 2) OK
+
+MULTI
+# OK
+(TX)> set key 100
+# QUEUED
+(TX)> sett key2 200
+# (error) ERR unknown command `sett`, with args beginning with: `key2`, `200`,
+(TX)> EXEC
+# (error) EXECABORT Transaction discarded because of previous errors.
+# 트랜잭션 준비 단계(MULTI)에서 Redis는 큐에 명령어를 저장하기 전에 명령어의 존재 여부를 확인
+# SETT는 Redis에 등록되지 않은 명령어이므로, 즉시 오류를 발생시키며 트랜잭션 전체를 무효화(EXECABORT)
+
+MULTI
+# OK
+(TX)> set key 100
+# QUEUED
+(TX)> set key 100 200
+# QUEUED
+(TX)> set key2 200
+# QUEUED
+(TX)> set key2 200 300
+# QUEUED
+(TX)> EXEC
+# 1) OK
+# 2) (error) ERR syntax error
+# 3) OK
+# 4) (error) ERR syntax error
+# Redis는 트랜잭션 준비 단계에서는 명령어의 구문 유효성까지 검증하지 않음
+# 트랜잭션 실행 단계(EXEC)에서 실제로 명령어를 실행하려고 할 때, 구문이 잘못된 것을 확인하고 해당 명령어만 실패
+# Redis는 이런 경우 부분 성공을 허용
+
+WATCH key
+# OK
+MULTI
+# OK
+(TX)> SET key 500
+# QUEUED
+(TX)> EXEC
+# (nil)
+GET key
+# "300"
+
+MULTI
+# OK
+(TX)> SET key 500
+# QUEUED
+(TX)> SET key2 400
+# QUEUED
+(TX)> SET key3 300
+# QUEUED
+(TX)> EXEC
+# (nil)
+GET key2
+# "200"
+```
