@@ -99,3 +99,40 @@ Elastic IP를 EC2 인스턴스에 연결하면 해당 IP 주소로 EC2 인스턴
 2. 인스턴스 상태: 실행 중 → 종료 중 → 종료됨
 
 ⭐ 클라우드는 사용한 만큼 요금을 지불하므로 사용하지 않는 자원은 곧바로 종료/삭제 ⭐
+
+## 4. EBS
+>EBS(Elastic Block Store)
+* EC2에 연결해서 쓸 수 있는 Block Storage(* 외장 하드 같은 느낌)
+  * 한 개의 EBS를 여러 개의 EC2 인스턴스에 연결하는 것은 불가능
+  * 한 개의 EC2 인스턴스에 여러개의 EBS를 연결하는 것은 가능
+
+* Volume: EBS의 가장 기본적인 형태로 EC2에 바로 연결 가능한 것
+* Snapshot: 볼륨의 특정 시점을 그대로 복사하여 저장한 파일(* 백업 파일)
+* AMI(Amazon Machine Image): OS가 설치된 형태의 이미지 파일
+  * AMI를 이용하여 EC2 인스턴스를 생성할 수 있음
+* IOPS(Input/Output Operations Per Second): 저장 장치의 성능 측정 단위
+
+>EBS 볼륨 생성
+1. Elastic Block Store - 볼륨
+2. 볼륨 생성
+* 볼륨을 생성할 때 동일한 가용 영역에 생성해야만 EC2 인스턴스와 연결할 수 있음
+3. 볼륨 생성
+4. 볼륨 상태: 생성 중 → 사용 가능
+5. 작업 - 볼륨 연결
+6. 연결할 인스턴스 선택
+7. 볼륨 연결
+8. 첨부된 리소스에서 인스턴스 상태 attached 확인
+
+>EBS 스냅샷 생성 및 삭제
+1. Elastic Block Store - 볼륨
+2. 작업 - 스냅샷 생성
+3. 스냅샷 생성
+4. Elastic Block Store - 스냅샷
+5. 작업 - 스냅샷 삭제
+
+>EBS 볼륨 삭제
+  * 볼륨이 EC2 인스턴스에 연결되어 있지 않은 상태에서 삭제 가능
+1. Elastic Block Store - 볼륨
+2. 작업 - 볼륨 분리
+3. 첨부된 리소스가 없는지 확인
+4. 작업 - 볼륨 삭제
