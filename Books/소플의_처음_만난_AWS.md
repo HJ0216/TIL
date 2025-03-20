@@ -198,3 +198,63 @@ Elastic IP를 EC2 인스턴스에 연결하면 해당 IP 주소로 EC2 인스턴
 2. 대상 그룹 - 대상 탭 → 대상 등록
 3. 인스턴스 선택 → 아래에 보류 중인 것으로 포함 → 보류 중인 대상 등록
 ![image](https://github.com/user-attachments/assets/08b7ae28-b6ca-46ee-949f-9c0ba07f3171)
+
+
+## 6. Auto Scaling
+>Auto Scaling
+* 트래픽에 따라 자동으로 서버의 개수를 조절해주는 기능
+ * (EC2 관점에서는 트래픽에 따라 자동으로 EC2 인스턴스 개수를 조절해주는 기능)
+
+> AWS Auto Scaling
+* 구조
+  * 클라이언트 요청이 ELB로 들어오면, 로드 밸런서에서 ASG(Auto Scaling Group)으로 부하를 분산
+    * ASG: Auto Scaling되는 EC2 인스턴스들의 집합
+  * ASG(Auto Scaling Group)는 AMI(Amazon Machine Image)를 필요로 하며, Cloud Watch라는 클라우드 모니터링 서비스를 사용해서 서버 용량을 늘릴지 줄일지 결정
+  * 시작 구성(Launch Configuration): Auto Scaling을 할 때 사용할 EC2 인스턴스의 사전 설정 정보
+
+>AMI 생성하기
+1. 작업 - 이미지 및 템플릿 - 이미지 생성
+2. 이름 입력
+3. 재부팅 옵션 선택
+  * 인스턴스가 잠시라도 중단되면 안될 경우, 옵션을 활성화하지 않으나 파일 시스템의 무결성이 보장되지 않음
+
+ASG 생성
+1. Auto Scaling - Auto Scaling 그룹
+2. Auto Scaling 그룹 생성
+3. (1단계) 시작 템플릿 또는 구성 선택
+  * 이름 입력 및 시작 템플릿 생성
+    * 만들어둔 AMI 선택, 이 외 EC2 생성 과정과 동일 → 시작 템플릿 생성
+  * 시작 템플릿 선택
+4. (2단계) 인스턴스 시작 옵션
+  * 가용 영역 및 서브넷 선택
+    * ELB 만들 때 생성했떤 대상 그룹의 가용 영역과 동일하게 설정 필수
+    Auto Scaling으로 생성된 EC2 인스턴스가 대상 그룹에 속하게 되어 트래픽을 전달받아야 함
+5. (3단계) 다른 서비스와 통합
+  * 로드 밸런서와 Auto Scaling Group을 연결
+    * 기존 로드 밸런서에 연결 → 대상 그룹 선택: Auto Scaling으로 생성된 EC2 인스턴스가 대상 그룹에 속하게 되어 트래픽을 전달받을 수 있음
+  * 상태 확인 - Elastic Load Balancer 상태 확인 켜기(ELB 상태 체크)
+6. (4단계) 그룹 크기 및 크기 조정 구성
+  * 크기 조정: EC2 인스턴스의 개수 입력
+  * 대상 추적 정책 사용 여부 선택: Auto Scaling 그룹의 크기를 조정하기 위한 조건
+7. (5단계) 알림 추가
+8. (6단계) 태그 추가
+9. (7단계) 검토
+  * Auto Scaling 그룹 생성 클릭
+
+>Auto Scaling 작동 테스트
+  * ASG를 생성하면 ASG의 최소 크기를 1로 설정했기 때문 EC2 인스턴스가 하나 자동으로 생성
+1. 부하 프로그램 사용하여 Auto Scaling 그룹의 크기를 조정하기 위한 조건이 발동하도록 설정
+2. Auto Scaling으로 생성된 EC2의 모니터링을 통해 부하 확인
+3. Auto Scaling 발동 조건 확인 시, EC2 생성 확인
+4. Auto Scaling - Auto Scaling 그룹 - 활동, 인스턴스 관리 확인
+5. 로드 밸런싱 - 대상 그룹 - 대상 확인
+  * ASG와 대상 그룹의 인스턴스 개수가 다른 이유
+    * 대상 그룹: 로드 밸런서가 부하를 분산하기 위한 그룹(수동으로 생성한 인스턴스가 포함됨) 
+    * ASG: Auto Scaling된 인스턴스만 관리하기 위한 그룹
+
+![image](https://github.com/user-attachments/assets/7beb075a-c76b-4b12-93b5-ebab4ca8e1ac)
+🚨 문제점  
+각 EC2 인스턴스가 각각 DB에 연결되어있어 다른 EC2에 연결될 경우, 특정 EC2에 저장된 데이터가 보이지 않는 문제
+
+⭐ 해결  
+DB가 EC2 인스턴스에 들어가는 것이 아니라 별도의 DB 인스턴스를 구성해서 모든 EC2 인스턴스들이 해당 DB를 바라보도록 해야 함
