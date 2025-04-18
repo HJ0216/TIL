@@ -22,3 +22,186 @@ await asyncMethod2();
 await + 비동기 메서드
 * 비동기 메서드가 순차적으로 실행됨
 * UI Thread가 멈추지 않음
+
+동기적 로딩
+* 모델 객체 내부에 이미지 데이터(BitmapImage)가 UI 바인딩 당시 로드되어 있는 상태 → INotifyPropertyChanged가 필요 없음
+
+비동기적 로딩
+1. 객체가 생성되고 리스트에 추가되어 UI에 바인딩될 때, 모델 객체 내부의 이미지 데이터가 아직 완전히 로드되지 않음
+2. 비동기 동작이 완료되면 새로운 이미지 데이터가 생성됨
+3. 새로운 이미지 데이터를 모델의 데이터 변수에 대입(속성이 참조하는 객체 자체가 변경됨)
+4. UI는 속성이 이제 다른 객체를 가리키게 되었다는 사실을 모르므로 `INotifyPropertyChanged`를 사용하여 화면에 이미지를 갱신
+
+```cs
+// 동기
+public BitmapImage Image { get; set; }
+
+private void LoadImageSync(string source)
+{
+    BitmapImage loadedImage = GetBitmapImageSync(source);
+
+    Application.Current.Dispatcher.Invoke(() =>
+    {
+        Image = loadedImage;
+    }, DispatcherPriority.Background);
+}
+
+// 비동기
+private BitmapImage _image;
+public BitmapImage Image
+{
+    get => _image;
+    set
+    {
+        if (!object.Equals(_image, value))
+        {
+            _image = value;
+            OnPropertyChanged(nameof(Image));
+        }
+    }
+}
+
+public async Task LoadImageAsync(string source)
+{
+    BitmapImage loadedImage = await GetBitmapImageAsync(source);
+
+    _ = Application.Current.Dispatcher.InvokeAsync(() =>
+    {
+        Image = loadedImage;
+    }, DispatcherPriority.Background);
+}
+```
+
+비동기와 finally
+```cs
+private async void Method()
+{
+	try
+	{
+		await Task.Run(() => MethodAsync());
+        return;
+	}
+	catch(Exception ex)
+	{
+	}
+    finally
+    {
+        // sample logic..
+    }
+}
+```
+* await를 사용한 비동기 작업이 끝나지 않으면, finally는 비동기 작업이 완료된 후에 실행
+* return 문이 중간에 있어도 finally는 실행됨
+
+
+
+### Dispatcher
+WPF: UI 요소 접근은 반드시 UI 스레드에서만 해야 함
+1. `Task.Run`, `async/await`, `Thread` 등을 사용할 경우, 작업이 UI 스레드 바깥에서 실행될 수 있음
+    * 무거운 작업을 UI 스레드에서 할 경우, 화면이 멈춘 것처럼 보이므로 이런 경우에 `Task.Run`을 사용
+2. 이 상황에서 UI 요소에 접근 할 경우, `InvalidOperationException: The calling thread cannot access this object because a different thread owns it` 예외가 발생
+3. 다시 UI 스레드로 돌아가기 위해 `Dispatcher` 사용
+
+```cs
+private async void Method()
+{
+	try
+	{
+		Method1(); // UI Thread
+		await Task.Run(() => Method2()); // Background Thread
+		Method3(); // UI Thread(ConfigureAwait(false)를 사용하지 않는 한)
+	}
+	catch(Exception ex)
+	{
+		// UI Thread
+	}
+}
+
+public void Task Method2()
+{
+    Dispatcher.Invoke(() =>
+	{
+		// UI 작업 실행
+	});
+}
+```
+* UI 메서드에서 Dispatcher.Invoke 사용 시, `DeadLock` 문제 발생 유의
+
+⭐ Dispatcher 사용법
+* Task 메서드에서만 Dispatcher.Invoke 사용
+* UI Event를 제외한 메서드 내부에서는 UI 이벤트, Task 메서드에서 중복으로 사용될 수 있으므로 Dispatcher.Invoke 사용 X
+
+
+
+### `Dispatcher.InvokeAsync` / `Application.Current.Dispatcher.InvokeAsync`
+* Dispatcher.InvokeAsync
+    * 클래스가 Window, UserControl 또는 다른 DispatcherObject를 상속받은 클래스(대부분의 UI 요소 클래스)일 경우 사용 가능
+* Application.Current.Dispatcher.InvokeAsync
+    * ViewModel, Model 등 DispatcherObject를 상속받은 클래스가 아닐 경우 사용
+
+
+
+### BitmapImage
+```cs
+public static async Task<BitmapImage> GetBitmapImageFromWebAsync(string imagePath)
+{
+    try
+    {
+        byte[] imageData = await httpClient.GetByteArrayAsync(imagePath);
+
+        var bitmapImage = new BitmapImage();
+        using (var stream = new MemoryStream(imageData))
+        {
+            stream.Position = 0;
+
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = stream;
+            bitmapImage.EndInit();
+        }
+
+        bitmapImage.Freeze();
+
+        return bitmapImage;
+    }
+    catch (Exception ex)
+    {
+        return null;
+    }
+}
+```
+* `using` 범위
+    * MemoryStream은 IDisposable이니까 메모리 누수 방지를 위해 using을 써서 명확하게 해제하는 게 좋음
+        * IDisposable Interface: using 문을 쓰면 작업이 끝난 다음에 자동으로 메모리를 해제(using문으로 해제가 되지 않을 경우, 명시적으로 Dispose()를 호출)
+    * StreamSource를 BitmapImage에 연결하는, 즉 정확히 메모리스트림이 필요한 부분까지만 감싸는 게 좋음
+    
+* `BitmapImage.CacheOption = OnLoad`
+    * 일반적으로 BitmapImage.CacheOption = OnLoad이면, EndInit() 시점에 스트림 내용을 다 읽고 메모리에 올림
+    * 이 옵션이 없으면 BitmapImage는 스트림을 실시간으로 읽는 방식이어서, using으로 닫히면 이미지 로딩 실패
+        * `Cannot access a closed Stream`
+* `stream.Position = 0`
+    * byte[]로부터 MemoryStream을 만들면 포인터가 스트림 끝에 위치
+    * BitmapImage가 이미지를 읽기 전에 Position을 0으로 초기화해야 정상적으로 데이터를 읽을 수 있음
+* `bitmapImage.Freeze()`
+    * BitmapImage는 생성한 스레드에서만 수정할 수 있음 → Freeze()를 하면 이미지가 불변  상태가 되어 다른 스레드에서 사용해도 안전
+        * `Must create DependencySource on same Thread as the DependencyObject.`
+    * Freeze된 객체는 WPF 내부에서 성능 최적화가 가능해지고, 메모리 사용도 줄어듦
+
+
+
+### 디스카드(discard) 패턴
+```cs
+public async Task LoadImageAsync(string source)
+{
+    BitmapImage loadedImage = await GetBitmapImageAsync(source);
+
+    _ = Application.Current.Dispatcher.InvokeAsync(() =>
+    {
+        Image = loadedImage;
+    }, DispatcherPriority.Background);
+}
+```
+1. Dispatcher.InvokeAsync 메서드는 DispatcherOperation 객체(Dispatcher 큐에 예약된 작업의 상태)를 반환
+2. async 메서드나 이와 유사한 비동기 작업 객체(예: Task, DispatcherOperation)를 반환하는 메서드를 호출할 때, 그 결과를 await 하거나 변수에 할당하지 않으면 컴파일러는 CS4014 경고("이 호출은 await되지 않으므로 현재 메서드의 실행은 호출이 완료되기 전에 계속됩니다...")를 발생(비동기 작업의 완료를 기다리거나 예외를 처리하는 것을 잊었을 수 있음을 알려주기 위함)
+3. 이 때 디스카드(_)를 사용해서 의도적으로 Dispatcher.InvokeAsync가 반환하는 DispatcherOperation 객체를 사용하지 않을 것임을 컴파일러에게 명시적으로 알릴 수 있음
+
