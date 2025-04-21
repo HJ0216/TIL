@@ -241,3 +241,95 @@ DataTrigger
     </TextBlock>
 </StackPanel>
 ```
+
+
+### `Template` vs `ItemContainerStyle` vs `ItemTemplate`
+* Template
+  * ListBox 전체의 구조(스크롤뷰, 아이템 배치 등)를 정의
+* ItemContainerStyle
+  * ListBoxItem 자체의 스타일 → ControlTemplate
+* ItemTemplate
+  *  각 아이템의 콘텐츠 모양을 정의 → DataTemplate
+
+```xml
+<Window>
+    <Grid>
+        <ListBox Name="myListBox" Height="200" Width="300" Margin="10">
+            <ListBox.Template>
+                <ControlTemplate TargetType="ListBox">
+                    <Border x:Name="border" CornerRadius="5">
+                        <ScrollViewer>
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="DodgerBlue" />
+                        </Trigger>
+
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="LightGray" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ListBox.Template>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock x:Name="nameText" Text="{Binding Name}" FontWeight="Bold" />
+                        <TextBlock Text="{Binding Age}" />
+                    </StackPanel>
+
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Age}" Value="30">
+                            <Setter TargetName="nameText" Property="Foreground" Value="Red"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="BorderBrush" Value="DarkGray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="LightBlue" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <ListBox.Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="Background" Value="White" />
+                    <Style.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="Background" Value="LightYellow" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+        </ListBox>
+    </Grid>
+</Window>
+
+```
+
+
+### 태그 내 Property 나열 순서
+1. 식별 관련  
+  x:Name, Uid 등
+2. 레이아웃 및 위치 관련  
+  Grid.Row, Width, Margin 등
+3. 데이터 및 중요 기능 관련  
+  Content, Binding, Visibility 등
+4. 기타
+5. 스타일 및 템플릿 관련  
+  Style 등
+6. 이벤트 핸들러 관련  
+  Click, SelectionChanged 등
