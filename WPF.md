@@ -193,7 +193,9 @@ DataTrigger
 ```
 
 * RelativeSource TemplatedParent
-  * ControlTemplate 또는 DataTemplate 내부에서 템플릿을 사용하는 컨트롤(Button 등) 을 참조할 때 사용
+  * `ControlTemplate`에서 주로 사용
+  * DataTemplate은 템플릿의 대상이 데이터 객체이기 때문에 TemplatedParent는 null이 됨
+  * TemplatedParent를 찾기 위해서는 `FindAncestor`를 사용
 ```xml
 <Border Background="{Binding Background, RelativeSource={RelativeSource TemplatedParent}}" />
 ```
@@ -333,3 +335,9 @@ DataTrigger
   Style 등
 6. 이벤트 핸들러 관련  
   Click, SelectionChanged 등
+
+
+
+### `OverridesDefaultStyle="True"` 최소화
+* WPF가 내부적으로 기본 스타일을 다 무시하고 전부 재정의해야 하기 때문에, 비용이 큼
+* 스타일 오버라이딩으로 해결해보도록 노력하고, OverridesDefaultStyle는 꼭 필요한 경우만 사용
