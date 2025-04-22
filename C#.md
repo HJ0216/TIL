@@ -93,6 +93,29 @@ private async void Method()
 * await를 사용한 비동기 작업이 끝나지 않으면, finally는 비동기 작업이 완료된 후에 실행
 * return 문이 중간에 있어도 finally는 실행됨
 
+#### 비동기 코드 사용 시, 주의 사항
+* 작업이 완료되기 전에 Source에 할당할 경우, 값이 제대로 설정되지 않을 수 있음
+```cs
+public void Method(string source)
+{
+    Model model = new Model();
+    model.Uri = source;
+    model.Image = await GetBitmapImageAsync(source);
+
+    Model selectedModel = model;
+    // 문제1: model의 Image를 비동기로 가져오는데, 이미지가 Load되기 전 selectedModel에 model을 할당
+
+    // ...
+
+    CurrentModel = selectedModel
+    // 문제2: Image가 없는 selectedModel을 CurrentModel에 할당
+    image_CurrentImage.Source = CurrentModel.Image;
+    // 비동기로 이미지가 추후에 Load되더라도 image_CurrentImage.Source의 데이터가 자동으로 업데이트되지 않음
+    // 해결: image_CurrentImage.Source에 이미지를 따로 Load
+    // image_CurrentImage.Source = await GetBitmapImageAsync(source);
+}
+```
+
 
 
 ### Dispatcher
@@ -186,6 +209,7 @@ public static async Task<BitmapImage> GetBitmapImageFromWebAsync(string imagePat
     * BitmapImage는 생성한 스레드에서만 수정할 수 있음 → Freeze()를 하면 이미지가 불변  상태가 되어 다른 스레드에서 사용해도 안전
         * `Must create DependencySource on same Thread as the DependencyObject.`
     * Freeze된 객체는 WPF 내부에서 성능 최적화가 가능해지고, 메모리 사용도 줄어듦
+* 이미지가 바이트 배열에서 로드된 경우라면 UriSource는 null이고, StreamSource가 설정
 
 
 
