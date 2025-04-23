@@ -229,3 +229,161 @@ public async Task LoadImageAsync(string source)
 2. async 메서드나 이와 유사한 비동기 작업 객체(예: Task, DispatcherOperation)를 반환하는 메서드를 호출할 때, 그 결과를 await 하거나 변수에 할당하지 않으면 컴파일러는 CS4014 경고("이 호출은 await되지 않으므로 현재 메서드의 실행은 호출이 완료되기 전에 계속됩니다...")를 발생(비동기 작업의 완료를 기다리거나 예외를 처리하는 것을 잊었을 수 있음을 알려주기 위함)
 3. 이 때 디스카드(_)를 사용해서 의도적으로 Dispatcher.InvokeAsync가 반환하는 DispatcherOperation 객체를 사용하지 않을 것임을 컴파일러에게 명시적으로 알릴 수 있음
 
+
+
+### `값복사` vs `참조복사`
+```cs
+// TargetImage에 BitmapImage가 설정됨
+BitmapImage TargetImage { get; set; }
+string imageUri = string.empty;
+UpdateBitmapImageAsync(imageUri);
+public async Task UpdateBitmapImageAsync(string source)
+{
+    TargetImage = GetBitmapImageFromWebAsync(source);
+}
+
+// TargetImage에 BitmapImage가 설정되지 않음
+UpdateBitmapImageAsync(Target, imageUri);
+public async Task UpdateBitmapImageAsync(BitmapImage target, string source)
+{
+    target = GetBitmapImageFromWebAsync(source);
+}
+```
+* 인스턴스를 새로 할당하는 경우, target = GetBitmapImageFromWebAsync(source);는 단순히 지역 변수 target을 바꾸는 것일 뿐, 실제 바인딩 대상인 TargetImage 속성에는 영향을 주지 않음
+* 매개변수의 `일부 속성을 바꾸는 것`과 매개변수의 `참조값 자체를 바꾸는 것`의 차이
+
+```cs
+// 해결1: 매개변수로 넘기지 않고 직접 할당
+BitmapImage TargetImage { get; set; }
+string imageUri = string.empty;
+UpdateBitmapImageAsync(imageUri);
+public async Task UpdateBitmapImageAsync(string source)
+{
+    TargetImage = GetBitmapImageFromWebAsync(source);
+    OnPropertyChanged(nameof(TargetImage));
+}
+
+// 해결2: 인스턴스를 바꾸지 않고 내부 스트림만 업데이트
+public async Task UpdateBitmapImageAsync(BitmapImage bitmapImage, string source)
+{
+    byte[] imageData = await httpClient.GetByteArrayAsync(source);
+
+    using (var stream = new MemoryStream(imageData))
+    {
+        stream.Position = 0;
+
+        bitmapImage.BeginInit();
+        bitmapImage.StreamSource = stream;
+        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+        bitmapImage.EndInit();
+    }
+
+    bitmapImage.Freeze();
+}
+// 해결2의 문제
+// Freeze()한 BitmapImage는 더 이상 Source나 내부 스트림 같은 걸 바꿀 수 없음(객체 자체가 Read-Only 상태로 고정됨)
+// Freeze()는 BitmapImage를 생성한 UI Thread 이외의 Thread에서도 안전하게 접근할 수 있도록 하므로 사용 권장
+```
+
+
+### ref 타입
+* 값 자체를 직접 바꿀 수 있도록 변수의 참조(reference) 를 함수에 넘길 때 사용
+* async 메서드와는 함께 쓸 수 없음
+```cs
+class Model
+{
+    public string Name { get; set; }
+}
+
+Model TestModel1 = new Model { Name = "Original" };
+Model TestModel2 = new Model { Name = "Original" };
+Model TestModel3 = new Model { Name = "Original" };
+Model TestModel4 = new Model { Name = "Original" };
+
+private void UpdateMethodRef(ref Model model)
+{
+    Trace.WriteLine("Update - Before Ref: " + TestModel1.Name);
+    model.Name = "Update Ref";
+    Trace.WriteLine("Update - After Ref: " + TestModel1.Name);
+
+    // 결과
+    // Update - Before Ref: Original
+    // Update - After Ref: Update Ref
+}
+
+private void UpdateMethodNotRef(Model model)
+{
+    Trace.WriteLine("Update - Before Not Ref: " + TestModel2.Name);
+    model.Name = "Update Not Ref";
+    Trace.WriteLine("Update - After Not Ref: " + TestModel2.Name);
+
+    // 결과
+    // Update - Before Not Ref: Original
+    // Update - After Not Ref: Update Not Ref
+}
+
+private void ChangeMethodRef(ref Model model)
+{
+    Trace.WriteLine("Change - Before Ref: " + TestModel3.Name);
+    model = new Model { Name = "Change Ref" };
+    Trace.WriteLine("Change - After Ref: " + TestModel3.Name);
+
+    // 결과
+    // Change - Before Ref: Original
+    // Change - After Ref: Update Ref
+}
+
+private void ChangeMethodNotRef(Model model)
+{
+    Trace.WriteLine("Change - Before Not Ref: " + TestModel4.Name);
+    model = new Model { Name = "Change Not Ref" };
+    Trace.WriteLine("Change - After Not Ref: " + TestModel4.Name);
+
+    // 결과
+    // Change - Before Not Ref: Original
+    // Change - After Not Ref: Update Not Ref
+}
+```
+
+
+
+### WebClient vs HttpClient
+* WebClient
+  * .NET Framework 시절부터 있던 오래된 클래스
+  * using을 사용하여 사용할 때마다 생성 및 삭제
+  * 파일 및 url 기반 모두 사용 가능
+  * ***더 이상 지원하지 않기 때문에 신규 개발에 사용 X***
+```cs
+using (var client = new WebClient())
+{
+    string html = client.DownloadString("https://hj0216.tistory.com");
+}
+```
+
+* HttpClient
+  * .NET 4.5 이후 등장한 더 현대적인 HTTP 요청 방식
+  * 생성 후 재사용하는 방식이 성능과 리소스 측면에서 좋음
+  * async/await와 완벽하게 호환되어 비동기 작업을 깔끔하게 처리
+  * url 기반: `httpClient.GetByteArrayAsync(source)`  
+    file 기반: `File.ReadAllBytesAsync(source)`
+```cs
+public static class HttpClientProvider
+{
+    public static readonly HttpClient httpClient = new HttpClient();
+
+    public static Task<byte[]> Method(string source)
+    {
+        if(IsWebUrl(source))
+            return await httpClient.GetByteArrayAsync(source);
+        
+        return null;
+    }
+
+    public static bool IsWebUrl(string source)
+    {
+        return Uri.IsWellFormedUriString(source, UriKind.Absolute) &&
+            (source.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            source.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+    }
+}
+```
