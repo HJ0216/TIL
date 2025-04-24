@@ -389,6 +389,7 @@ public static class HttpClientProvider
 }
 ```
 
+
 ### ObservableCollection
 * 컬렉션 내부의 항목이 추가, 삭제, 변경될 때 CollectionChanged 이벤트를 발생시켜 UI에 변경 사항을 알림
 * new ObservableCollection<T>() 처럼 완전히 새로운 인스턴스를 할당하는 것은 그 속성 자체의 값이 바뀌는 것이지, 기존 컬렉션 내부의 내용이 바뀌는 것이 아님 = CollectionChanged가 발생하지 않음
