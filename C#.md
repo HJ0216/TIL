@@ -155,7 +155,13 @@ public void Task Method2()
 * Task 메서드에서만 Dispatcher.Invoke 사용
 * UI Event를 제외한 메서드 내부에서는 UI 이벤트, Task 메서드에서 중복으로 사용될 수 있으므로 Dispatcher.Invoke 사용 X
 
-
+* 간접적으로 바인딩된 데이터를 사용할 때, Dispatcher 사용 여부
+  * CurrentModels: UI 바인딩 O / AllModels: UI 바인딩 X
+    * CurrentModels = AllModels
+      * CurrentList와 AllList가 같은 객체를 참조하므로 UI에도 영향 → AllModels 변경 시 Dispatcher 필요 O
+    * CurrentModels = AllModels.toList()
+      * CurrentList는 독립된 List → AllModels 변경 시 Dispatcher 필요 X
+  * CurrentModel이 UI에 직접적으로 바인딩되어있지 않을 경우, UI 컨트롤에 설정할 때 Dispatcher 선언
 
 ### `Dispatcher.InvokeAsync` / `Application.Current.Dispatcher.InvokeAsync`
 * Dispatcher.InvokeAsync
@@ -393,3 +399,8 @@ public static class HttpClientProvider
 ### ObservableCollection
 * 컬렉션 내부의 항목이 추가, 삭제, 변경될 때 CollectionChanged 이벤트를 발생시켜 UI에 변경 사항을 알림
 * new ObservableCollection<T>() 처럼 완전히 새로운 인스턴스를 할당하는 것은 그 속성 자체의 값이 바뀌는 것이지, 기존 컬렉션 내부의 내용이 바뀌는 것이 아님 = CollectionChanged가 발생하지 않음
+  * 데이터 양이 많거나 변경이 잦을 경우(예: 슬라이드 페이지 넘김), Clear()와 여러 번의 Add() 호출은 각각 CollectionChanged 이벤트를 발생시켜 UI에서 버벅임이 발생할 수 있음
+    * List<T>()/IEnumerable<T>() + INotifyPropertyChanged  
+    새로운 리스트를 대입
+
+
