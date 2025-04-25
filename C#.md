@@ -22,6 +22,31 @@ await asyncMethod2();
 await + 비동기 메서드
 * 비동기 메서드가 순차적으로 실행됨
 * UI Thread가 멈추지 않음
+```cs
+private async void RunAsyncTask_Click(object sender, RoutedEventArgs e)
+{
+    Console.WriteLine("1");
+    await DoWorkAsync();
+    Console.WriteLine("5");
+}
+
+private async Task DoWorkAsync()
+{
+    Console.WriteLine("2");
+    await Task.Delay(1000);
+    Console.WriteLine("3");
+    Console.WriteLine("4");
+}
+
+/*
+1
+2
+(1초 후)
+3
+4
+5
+*/
+```
 
 동기적 로딩
 * 모델 객체 내부에 이미지 데이터(BitmapImage)가 UI 바인딩 당시 로드되어 있는 상태 → INotifyPropertyChanged가 필요 없음
@@ -404,3 +429,100 @@ public static class HttpClientProvider
     새로운 리스트를 대입
 
 
+
+### `Task` vs `void`
+* async 메서드의 반환 타입을 왜 void가 아닌 Task로 하는 게 좋은가
+  * 호출자가 완료 시점을 알 수 있음
+    * 호출한 곳에서 await 키워드를 사용하여 해당 비동기 작업이 완료될 때까지 기다릴 수 있음
+    * 완료된 후에 다른 작업을 수행해야 하는 경우 필수적
+  * 예외 처리
+    * async Task 메서드 내에서 발생하는 예외는 반환되는 Task 객체에 저장
+    * 호출자가 이 Task를 await하면, 예외가 await 지점에서 다시 던져지므로 try-catch 블록으로 정상적으로 처리할 수 있음
+    * Task 객체들은 Task.WhenAll (여러 작업을 동시에 실행하고 모두 완료될 때까지 대기)이나 Task.WhenAny (여러 작업 중 하나라도 완료될 때까지 대기) 등을 사용하여 조합하여 사용할 수 있음 → 비동기 흐름을 더 유연하게 구성할 수 있음
+* async void는 주로 이벤트 핸들러(Event Handler)를 위해 존재(이벤트 핸들러의 시그니처는 반환 타입이 void여야 하기 때문)
+  * 이 경우에도 async void 이벤트 핸들러 내부에서는 가능한 한 빨리 async Task 메서드를 호출
+  * async void 메서드 자체에는 최소한의 로직(주로 try-catch로 async Task 메서드 호출 감싸기)만 두는 것이 좋음
+```cs
+private async void Button_Click(object sender, RoutedEventArgs e)
+{
+    try
+    {
+        await HandleButtonClickAsync();
+    }
+    catch (Exception ex)
+    {
+        ShowError(ex.Message);
+    }
+}
+
+private async Task HandleButtonClickAsync()
+{
+    await SomeLongOperationAsync();
+    // 여기서 예외가 발생하면 Task에 담겨 호출자(Button_Click)에게 전달됨
+}
+```
+
+
+
+### await vs await Task.Run()
+* await
+  * 현재 컨텍스트 (UI 스레드, 작업자 스레드 등)에서 시작 및 재개
+  * await 사이 동기 코드가 UI 스레드에서 실행되면 멈춤 유발 가능
+  * 주로 기다리는 일(파일 저장, 네트워크 통신 등)일 때 좋음
+* await Task.Run()
+  * ThreadPool 스레드에서 전체 실행
+  * UI 스레드 멈춤 없음 (작업 전체가 백그라운드에서 실행)
+  * 컴퓨터가 머리를 많이 써야 하는 복잡한 계산 같은 부분(기다리는 거 말고 진짜 일하는 부분)이 길게 있을 때 좋음
+  * 약간의 스레드 전환 오버헤드 발생
+```cs
+private async Task InitData()
+{
+    await Task.Delay(1000); // 비동기 대기 (예: DB에서 불러오기)
+    Console.WriteLine("Init 완료!");
+}
+
+await InitData();
+
+private void InitData()
+{
+    Thread.Sleep(3000); // 오래 걸림
+    Console.WriteLine("Init 완료!");
+}
+
+await Task.Run(() => InitData()); // 백그라운드 스레드에서 처리
+```
+* 이미 비동기 I/O 위주인 메서드를 불필요하게 Task.Run으로 감싸는 것은 추가적인 스레드 전환 오버헤드를 발생시킬 수 있으므로 일반적으로 권장되지 않음
+
+```cs
+private async Task Method()
+{
+    Console.WriteLine($"[Method] 시작 - Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+    await Task.Delay(1000); // 비동기 대기
+    Console.WriteLine($"[Method] 완료 - Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+}
+
+Console.WriteLine($"[Main] Before await InitData - Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+await InitData();
+Console.WriteLine($"[Main] After await InitData - Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+/*
+[Main] Before await InitData - Thread ID: 1
+[Method] 시작 - Thread ID: 1
+[Method] 완료 - Thread ID: 1
+[Main] After await InitData - Thread ID: 1
+
+모든 작업이 UI 스레드(또는 주 스레드)에서 일어남
+컨텍스트가 유지됨
+*/
+
+Console.WriteLine($"[Main] Before await Task.Run - Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+await Task.Run(() => InitData());
+Console.WriteLine($"[Main] After await Task.Run - Thread ID: {Thread.CurrentThread.ManagedThreadId}");
+/*
+[Main] Before await InitData - Thread ID: 1
+[Method] 시작 - Thread ID: 6
+[Method] 완료 - Thread ID: 6
+[Main] After await InitData - Thread ID: 1
+
+불필요한 context switch + 리소스 낭비
+*/
+```
