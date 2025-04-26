@@ -526,3 +526,23 @@ Console.WriteLine($"[Main] After await Task.Run - Thread ID: {Thread.CurrentThre
 불필요한 context switch + 리소스 낭비
 */
 ```
+
+
+
+### 초기화: `Loaded Event` vs `Constructor`
+* Loaded
+  * UI 요소가 이미 로드된 후 → 안전하게 컨트롤 접근 가능
+  * `await` 가능 → 파일, DB, 웹 요청도 자연스럽게 처리
+* Constructor
+  * `new`로 객체 만들자마자 바로 필요한 간단한 값 설정
+  * UI와 무관한 빠른 세팅 (예: 변수 초기화, 기본값 할당 등)
+
+
+
+### 책임의 분리
+* Progress UI의 Visibility는 어느 메서드에 있는 게 좋을까
+  * UI Event
+    * UI 이외의 메서드는 로직에만 집중할 수 있음
+    * 특히 실행 메서드가 다양한 곳에서 호출될 수 있고, UI와 독립적일 때
+  * 실행 메서드 내부
+    * 호출만 하면 Progress UI까지 신경쓰지 않아도 됨
