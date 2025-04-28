@@ -529,13 +529,34 @@ Console.WriteLine($"[Main] After await Task.Run - Thread ID: {Thread.CurrentThre
 
 
 
-### 초기화: `Loaded Event` vs `Constructor`
-* Loaded
-  * UI 요소가 이미 로드된 후 → 안전하게 컨트롤 접근 가능
-  * `await` 가능 → 파일, DB, 웹 요청도 자연스럽게 처리
-* Constructor
-  * `new`로 객체 만들자마자 바로 필요한 간단한 값 설정
-  * UI와 무관한 빠른 세팅 (예: 변수 초기화, 기본값 할당 등)
+### 초기화
+* `Loaded Event` vs `Constructor`
+  * Loaded
+    * UI 요소가 이미 로드된 후 → 안전하게 컨트롤 접근 가능
+    * `await` 가능 → 파일, DB, 웹 요청도 자연스럽게 처리
+  * Constructor
+    * `new`로 객체 만들자마자 바로 필요한 간단한 값 설정
+    * UI와 무관한 빠른 세팅 (예: 변수 초기화, 기본값 할당 등)
+  * 객체 초기화는 데이터가 생성 시점에 즉시 사용 가능한지, 아니면 UI 로딩 및 환경 정보가 필요한지에 따라 생성자나 Loaded 이벤트를 선택하여 진행
+* `속성` vs `생성자`
+  * 속성
+    * 초기화에 복잡한 로직이 필요할 때
+    * 생성자 매개변수로 값을 받아 초기화할 때
+    * 다수의 속성들을 함께 초기화할 때
+```cs
+public List<string> Holidays { get; set; }
+
+public MyClass(bool isSpecial)
+{
+    Holidays = isSpecial ? new List<string> { "Special" } : new List<string>();
+}
+```
+  * 생성자
+    * 단순한 기본값을 설정할 때 (무조건 빈 리스트 만들기, 기본 숫자 넣기 등)
+    * 복잡한 로직 없이 간단할 때
+```cs
+public List<string> Holidays { get; set; } = new List<string>();
+```
 
 
 
@@ -546,3 +567,26 @@ Console.WriteLine($"[Main] After await Task.Run - Thread ID: {Thread.CurrentThre
     * 특히 실행 메서드가 다양한 곳에서 호출될 수 있고, UI와 독립적일 때
   * 실행 메서드 내부
     * 호출만 하면 Progress UI까지 신경쓰지 않아도 됨
+
+
+
+### Nullable(?)
+* 사용
+  * 객체가 아직 설정되지 않은 경우가 있을 때
+  * null이 정상적인 초기 상태이거나 없는 상태를 의미할 때
+  * null일 수도 있는 상황을 코드로 명확히 하고 싶을 때
+* 미사용
+  * 항상 초기화되어 있을 때
+  * 절대 null이 되어서는 안 될 때
+* List
+  * 초기에 빈 리스트로 만들면 null 체크 안하는 방법으로 주로 사용
+
+
+
+### null or empty
+* JsonConvert.DeserializeObject
+  * 원본 데이터가 null 값이면 null을 반환
+  * 원본 데이터가 비어 있는 JSON 배열이면 비어 있는 리스트 객체를 생성
+* `from row in dt.Rows select ...`
+  * dt.Rows가 비어 있으면 빈 IEnumerable 반환  
+  → 빈 리스트는 비어있는 JSON 배열 [] 반환
