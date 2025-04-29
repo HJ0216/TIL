@@ -590,3 +590,54 @@ public List<string> Holidays { get; set; } = new List<string>();
 * `from row in dt.Rows select ...`
   * dt.Rows가 비어 있으면 빈 IEnumerable 반환  
   → 빈 리스트는 비어있는 JSON 배열 [] 반환
+
+
+
+### LINQ to SQL vs 순수 ADO.NET
+* LINQ to SQL
+  * .NET Framework에서 제공하는 ORM(Object-Relational Mapping) 도구
+    * 요청 데이터의 구조가 DB 테이블과 거의 같을 때 자동 매핑이 가능하여 코드가 간결해짐
+  * LINQ를 사용하여 SQL Server와 통신할 수 있음(**다른 DB는 지원하지 않음**)
+  * 관련 엔티티는 실제 접근 시 로딩됨(Lazy Loading) → 불필요한 쿼리 실행을 줄일 수 있어 성능 최적화에 유리  
+    (*정렬 후 데이터 필터링 사례 참고*)
+  *  .NET 4.0 이후 업데이트 중단, 현재는 Entity Framework 또는 EF Core 사용이 권장됨
+```cs
+Northwnd nw = new Northwnd(@"northwnd.mdf");
+
+var companyNameQuery =
+    from cust in nw.Customers
+    where cust.City == "London"
+    select cust.CompanyName;
+```
+* 순수 ADO.NET
+  * .NET에서 데이터베이스와 직접 통신하기 위해 사용하는 저수준의 데이터 액세스 기술
+    * FormData 방식처럼 수동 파싱이 필요한 경우, SQL을 직접 작성해서 처리하는 방식이 더 적합
+  * 모든 DBMS와 호환 가능
+  * SQL 직접 실행하므로 변환 비용 없음  
+    (LINQ to SQL은 내부적으로 LINQ를 SQL로 변환하는 오버헤드 발생)
+  * 반복적인 코드(보일러플레이트)가 많아지고 유지보수가 어려울 수 있음
+```cs
+string connectionString = "Server=.;Database=MyDB;Trusted_Connection=True;";
+
+using (SqlConnection conn = new SqlConnection(connectionString))
+{
+    conn.Open();
+
+    string query = "SELECT Id, Name FROM Users WHERE Age > @Age";
+
+    using (SqlCommand cmd = new SqlCommand(query, conn))
+    {
+        cmd.Parameters.AddWithValue("@Age", 20);
+
+        using (SqlDataReader reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+                Console.WriteLine($"Id: {id}, Name: {name}");
+            }
+        }
+    }
+}
+```
