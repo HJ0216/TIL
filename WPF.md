@@ -341,3 +341,34 @@ DataTrigger
 ### `OverridesDefaultStyle="True"` 최소화
 * WPF가 내부적으로 기본 스타일을 다 무시하고 전부 재정의해야 하기 때문에, 비용이 큼
 * 스타일 오버라이딩으로 해결해보도록 노력하고, OverridesDefaultStyle는 꼭 필요한 경우만 사용
+
+
+
+### ScrollViewer
+ListBox나 ListView 같은 ItemsControl은 자체적으로 ScrollViewer를 내장
+```xml
+<ListBox>
+    <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+            <VirtualizingStackPanel/> 
+        </ItemsPanelTemplate>
+    </ListBox.ItemsPanel>
+    <ListBox.ItemTemplate>
+        
+    </ListBox.ItemTemplate>
+</ListBox>
+```
+ItemsPanelTemplate에서 설정한 VirtualizingStackPanel은 ScrollViewer의 Content로 사용
+
+
+### ScrollBar
+```xml
+<ScrollBar x:Name="PART_VerticalScrollBar" Grid.Column="1"
+           Orientation="Vertical" Visibility="Hidden"
+           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+           Maximum="{Binding ScrollableHeight, RelativeSource={RelativeSource TemplatedParent}}"
+           Style="{StaticResource ScrollBarStyle}"/>
+```
+ScrollBar 구현 시, Value와 Maximum을 바인딩하여야 스크롤바가 실제 콘텐츠의 스크롤 위치와 동기화되어 움직임
+* Value: VerticalOffset(ScrollViewer의 현재 세로 스크롤 위치)
+* Maximum: ScrollableHeight(콘텐츠의 총 스크롤 가능한 높이)
