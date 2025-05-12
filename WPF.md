@@ -372,3 +372,85 @@ ItemsPanelTemplate에서 설정한 VirtualizingStackPanel은 ScrollViewer의 Con
 ScrollBar 구현 시, Value와 Maximum을 바인딩하여야 스크롤바가 실제 콘텐츠의 스크롤 위치와 동기화되어 움직임
 * Value: VerticalOffset(ScrollViewer의 현재 세로 스크롤 위치)
 * Maximum: ScrollableHeight(콘텐츠의 총 스크롤 가능한 높이)
+
+
+
+### 기타
+* ControlTemplate 내부의 태그는 x:Name을 통해 코드 비하인드에서 접근이 불가능 → 이벤트의 매개변수인 sender를 통해 접근
+```cs
+public void button_Click(object sender, EventArgs e)
+{
+    Button button = (Button)sender;
+}
+```
+* 코드 비하인드에서 ControlTemplate안의 다른 요소에 접근하고자 하는 경우,
+  1. VisualTreeHelper 사용
+```cs
+private void textBlock_MouseDown(object sender, MouseButtonEventArgs e)
+{
+    if (sender is TextBlock textBlock)
+    {
+        var parent = VisualTreeHelper.GetParent(textBlock);
+        while (parent != null && !(parent is ListBoxItem))
+        {
+            parent = VisualTreeHelper.GetParent(parent);
+        }
+
+        if (parent != null)
+        {
+            // ListBoxItem 내부에서 TextBox 찾기
+            var textBox = FindVisualChild<TextBox>((DependencyObject)parent);
+            if (textBox != null)
+            {
+                textBlock.Visibility = Visibility.Collapsed;
+                textBox.Visibility = Visibility.Visible;
+            }
+        }
+    }
+}
+
+// VisualTreeHelper를 사용한 하위 요소 탐색 도우미 메서드
+private static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+{
+    int childCount = VisualTreeHelper.GetChildrenCount(parent);
+    for (int i = 0; i < childCount; i++)
+    {
+        var child = VisualTreeHelper.GetChild(parent, i);
+        if (child is T tChild)
+            return tChild;
+
+        var result = FindVisualChild<T>(child);
+        if (result != null)
+            return result;
+    }
+    return null;
+}
+```
+  2. Tag 또는 Uid 활용하기
+```xml
+<Grid>
+    <TextBlock x:Name="textBlock"
+               Tag="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=Children[1]}"
+               MouseDown="txtBlock_Title_MouseDown"/>
+    
+    <TextBox x:Name="textBox"/>
+</Grid>
+
+<Grid>
+    <TextBlock x:Name="textBlock"
+               Tag="{Binding ElementName=textBox}"
+               MouseDown="txtBlock_Title_MouseDown"/>
+    
+    <TextBox x:Name="textBox"/>
+</Grid>
+```
+```cs
+private void textBlock_MouseDown(object sender, MouseButtonEventArgs e)
+{
+    if (e.ClickCount == 2 && sender is TextBlock tb && tb.Tag is TextBox editBox)
+    {
+        tb.Visibility = Visibility.Collapsed;
+        editBox.Visibility = Visibility.Visible;
+    }
+}
+```
