@@ -454,3 +454,26 @@ private void textBlock_MouseDown(object sender, MouseButtonEventArgs e)
     }
 }
 ```
+
+
+### Grid
+* Column이나 Row의 Visibility를 auto 대신 style과 Height를 이용하여 컨트롤할 수 있음
+```xml
+<Grid>
+    <Grid.RowDefinitions>        
+        <RowDefinition Height="auto"/>
+        <RowDefinition>
+            <RowDefinition.Style>
+                <Style TargetType="RowDefinition">
+                    <Setter Property="Height" Value="1*"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=toggle}" Value="false">
+                            <Setter Property="Height" Value="0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </RowDefinition.Style>
+        </RowDefinition>
+    </Grid.RowDefinitions>
+<Grid>
+```
