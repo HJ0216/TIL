@@ -477,3 +477,46 @@ private void textBlock_MouseDown(object sender, MouseButtonEventArgs e)
     </Grid.RowDefinitions>
 <Grid>
 ```
+
+
+
+### DependencyProperty
+```cs
+public partial class MainWindow : Window
+{
+    public MainWindow()
+    {
+        InitializeComponent();
+    }
+
+    // 1. 의존 속성 등록
+    public static readonly DependencyProperty MyCustomPropertyProperty =
+        DependencyProperty.Register(
+            "MyCustomProperty",
+            typeof(string),
+            typeof(MainWindow),
+            new PropertyMetadata(string.Empty));
+        // "MyCustomProperty": 속성 이름(실제 사용할 CLR 속성과 동일)
+        // typeof(string): 이 속성이 다룰 값의 타입
+        // typeof(MainWindow): 이 속성을 정의하고 사용할 클래스
+        // new PropertyMetadata(...): 기본값을 설정(여기서는 빈 문자열(string.Empty)이 기본값)
+        // + 필요하면 속성 변경 시 실행할 콜백 함수도 지정할 수 있음
+
+    // 2. CLR Wrapper
+    public string MyCustomProperty
+    {
+        get { return (string)GetValue(MyCustomPropertyProperty); }
+        set { SetValue(MyCustomPropertyProperty, value); }
+    }
+}
+```
+```xml
+<local:MainWindow
+    x:Class="WpfApp1.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:WpfApp1"
+    MyCustomProperty="Hello Custom Property">
+</local:MainWindow>
+<!--MyCustomProperty="Hello Custom Property": 내부에서는 SetValue(...)가 자동으로 호출-->
+```
