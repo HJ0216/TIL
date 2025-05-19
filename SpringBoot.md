@@ -67,3 +67,47 @@ JVM은 .jar 파일을 통해 프로그램을 실행할 수 있음(`java -jar`)
 4. Package: `.class`, 리소스를 JAR로 묶음 
 5. 결과물: `build/libs/`에 `.jar` 생성
 
+#### Gradle vs Maven
+| 항목  | Gradle               | Maven      |
+| ----- | -------------------- | ---------- |
+| 설정  | Groovy/Kotlin DSL    | XML        |
+| 속도  | 빠름 (캐시, 병렬 빌드) | 비교적 느림 |
+| 가독성 | 간결함               | 장황함      |
+| 유연성 | 높음                 | 중간       |
+
+
+### Spring Initializer
+![spring initializer](./images/springboot-initializer.png)
+* Group
+  * 회사나 조직의 도메인(com.naver)
+  * Java의 패키지 네임스페이스처럼 사용됨
+  * 명명 규칙
+    * 영어 소문자만 사용
+    * 숫자 사용 가능 (단, 숫자로 시작하면 안 됨)
+    * 하이픈(-)은 허용되지 않음
+* Artifact
+  * 프로젝트의 고유 이름(com.naver.shopping)
+  * 빌드 결과물 이름에도 반영
+  * 명명 규칙
+    * 하이픈(-) 사용 가능
+      * 단, package name에는 하이픈(-) 사용 불가
+* Name
+  * 프로젝트의 이름 (기본값은 artifact와 동일)
+* Package Name
+  * 기본값은 group + artifact 조합
+* Packaging: JAR vs WAR
+  * JAR(Java ARchive)
+    * Spring Boot 기본 실행 방식
+    * 내장 톰캣 포함되어있음
+    * java -jar 명령으로 바로 실행 가능
+  * WAR(Web Application Archive)
+    * 전통적인 방식 (Java EE 환경)
+    * 서버(톰캣, WebLogic 등)에 올려야 실행됨
+
+#### 서버(톰캣)에 올리는 방식
+1. WAR 파일을 만든다
+2. 웹 서버가 설치된 컴퓨터에 복사한다
+3. 톰캣의 webapps/ 폴더에 WAR 파일을 넣는다
+4. 톰캣 서버를 실행하면 WAR가 실행된다.  
+(톰캣이 WAR를 읽고 웹사이트를 열어줌)
+
