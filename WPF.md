@@ -372,6 +372,40 @@ ItemsPanelTemplate에서 설정한 VirtualizingStackPanel은 ScrollViewer의 Con
 ScrollBar 구현 시, Value와 Maximum을 바인딩하여야 스크롤바가 실제 콘텐츠의 스크롤 위치와 동기화되어 움직임
 * Value: VerticalOffset(ScrollViewer의 현재 세로 스크롤 위치)
 * Maximum: ScrollableHeight(콘텐츠의 총 스크롤 가능한 높이)
+* 마우스 휠로 수평 스크롤을 하려면 PreviewMouseWheel 이벤트를 수신하여 수동으로 수평 스크롤 이벤트로 변환해줘야 함
+```cs
+private void lb_GeneratedImages_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+{
+    // Shift와 마우스 휠로 수평 컨트롤을 하고자 하는 경우
+    if (Keyboard.Modifiers == ModifierKeys.Shift)
+    {
+        var scrollViewer = FindVisualChild<ScrollViewer>(lb_GeneratedImages);
+        if (scrollViewer != null)
+        {
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.Delta);
+            // scrollViewer.HorizontalOffset: 현재 스크롤의 가로 위치
+            // e.Delta: 마우스 휠을 한 번 움직일 때 생기는 값
+            // scrollViewer.ScrollToHorizontalOffset(...): 스크롤 뷰어의 가로 위치를 이동
+            e.Handled = true;
+            // 부모 컨트롤이나 시스템에서 중복 처리 방지
+        }
+    }
+}
+private static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+{
+    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+    {
+        var child = VisualTreeHelper.GetChild(parent, i);
+        if (child is T typedChild)
+            return typedChild;
+
+        var result = FindVisualChild<T>(child);
+        if (result != null)
+            return result;
+    }
+    return null;
+}
+```
 
 
 
@@ -520,3 +554,10 @@ public partial class MainWindow : Window
 </local:MainWindow>
 <!--MyCustomProperty="Hello Custom Property": 내부에서는 SetValue(...)가 자동으로 호출-->
 ```
+
+
+
+### Background 기본값
+* Panel(Grid, StackPanel 등): Transparent
+* Control (ListBox, TextBox, Button 등): 흰색
+* 기타(Border, Popup, Window 등): Transparent
