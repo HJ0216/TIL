@@ -561,3 +561,42 @@ public partial class MainWindow : Window
 * Panel(Grid, StackPanel 등): Transparent
 * Control (ListBox, TextBox, Button 등): 흰색
 * 기타(Border, Popup, Window 등): Transparent
+
+
+
+### DispatcherPriority.Input
+```cs
+private void tBlock_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+{
+    // 중략 ...
+    editArea.Visibility = Visibility.Visible;
+    editTextBox.Focus();
+}
+```
+🚨 문제: editTextBox에 Focus가 가지 않음  
+💡 원인: editTextBox가 아직 Loaded된 상태가 아님
+✅ 해결: 비동기적으로 포커스 호출을 큐에 넣어, UI 업데이트 이후에 포커스가 가도록 수정
+
+```cs
+private void tBlock_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+{
+    // 중략 ...
+    editArea.Visibility = Visibility.Visible;
+    editTextBox.Dispatcher.BeginInvoke(new Action(() =>
+    {
+        editTextBox.Focus();
+    }), System.Windows.Threading.DispatcherPriority.Input);
+}
+```
+* Dispatcher
+  * WPF의 스레드 간 작업 조정기, UI 요소를 만든 스레드에서 실행되도록 작업을 예약할 수 있게 해줌
+  * editTextBox.Dispatcher: 텍스트박스를 만든 UI 스레드에 접근할 수 있는 Dispatcher
+* Dispatcher.BeginInvoke
+  * 지정한 작업(예: Focus)을 UI 스레드에 **비동기적**으로 요청
+* new Action(() => { editTextBox.Focus(); })
+  * 익명 메서드
+* DispatcherPriority.Input
+  * 요청된 작업의 우선 순위
+  * 키보드/마우스 입력보다 조금 높은 우선 순위
+  * Render, Loaded, Layout 같은 UI 갱신이 끝난 후, 가장 빠른 사용자 입력 레벨에서 실행
+
