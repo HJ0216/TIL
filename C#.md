@@ -559,6 +559,27 @@ public List<string> Holidays { get; set; } = new List<string>();
 ```
 
 
+### DependencyProperty 값 전달
+* 생성자: InitializeComponent()가 내부적으로 호출 → OnApplyTemplate가 호출
+* Loaded Event: InitializeComponent()가 이미 호출된 이후이므로, OnApplyTemplate 호출 X
+💡 OnApplyTemplate의 필요 여부에 따라 생성자 또는 Loaded Event 사용
+```cs
+public class WindowBase_Extended : WindowBase
+{
+  public static readonly DependencyProperty IsDarkProperty =
+      DependencyProperty.Register("IsDark", typeof(bool), typeof(WindowBase), new PropertyMetadata(true));
+
+  public bool IsDark { get; set; }
+
+  public override void OnApplyTemplate()
+  {
+      base.OnApplyTemplate();
+
+      Border border_Midnight = Template.FindName("border_Midnight", this) as Border;
+  }
+}
+```
+
 
 ### 책임의 분리
 * Progress UI의 Visibility는 어느 메서드에 있는 게 좋을까
