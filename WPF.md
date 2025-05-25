@@ -600,3 +600,12 @@ private void tBlock_PreviewMouseLeftButtonDown(object sender, MouseButtonEventAr
   * 키보드/마우스 입력보다 조금 높은 우선 순위
   * Render, Loaded, Layout 같은 UI 갱신이 끝난 후, 가장 빠른 사용자 입력 레벨에서 실행
 
+
+
+### textBox_PreviewKeyDown / button_Click
+* textBox_PreviewKeyDown
+  * 사용자가 Enter/Esc 누를 때 즉시 실행
+  * LostFocus가 발생하지 않았으므로 업데이트된 데이터로 바인딩 X
+* button_Click
+  * 버튼을 누르면 TextBox는 포커스를 잃음
+  * LostFocus → 바인딩이 자동 반영됨(= DataContext값이 변경된 값으로 들어가 있음)
