@@ -251,7 +251,7 @@ DataTrigger
 * ItemContainerStyle
   * ListBoxItem 자체의 스타일 → ControlTemplate
 * ItemTemplate
-  *  각 아이템의 콘텐츠 모양을 정의 → DataTemplate
+  * 각 아이템의 콘텐츠 모양을 정의 → DataTemplate
 
 ```xml
 <Window>
@@ -609,3 +609,41 @@ private void tBlock_PreviewMouseLeftButtonDown(object sender, MouseButtonEventAr
 * button_Click
   * 버튼을 누르면 TextBox는 포커스를 잃음
   * LostFocus → 바인딩이 자동 반영됨(= DataContext값이 변경된 값으로 들어가 있음)
+
+
+
+### ListBox
+* 주어진 범위 내에서 ListBoxItem을 꽉차게 만들고 싶을 경우, HorizontalAlignment/VerticalAlignment를 Stretch로 설정해야 함
+* ComputedVerticalScrollBarVisibility
+  * ListBox의 속성이 아니라 ListBox 안에 있는 ScrollViewer의 속성
+  * 직접 바인딩하는 방식이 아닌 ScrollViewer로 바인딩을 해야함
+    * 🚨 ComputedVerticalScrollBarVisibility는 UI가 완전히 로드되고 레이아웃 측정이 완료된 후에야 올바른 값을 갖게 됨  
+    → Window나 ListBox가 처음 뜰 때는 아직 ScrollViewer가 스크롤 가능 여부를 판단할 만큼 내용이 완전히 렌더링되지 않은 상태일 수 있어 DataTrigger가 올바르게 동작하지 않을 수 있음
+    * 🚨 이후 레이아웃이 변경되면서 `ComputedVerticalScrollBarVisibility`가 `"Collapsed"`로 바뀌어도 **Trigger는 다시 평가되지 않음
+    → ComputedVerticalScrollBarVisibility는 ScrollViewer의 DependencyProperty지만, INotifyPropertyChanged를 따르지 않기 때문에 Binding 변화에 따른 트리거 재평가가 즉시 일어나지 않음  
+    → ScrollViewer.ComputedVerticalScrollBarVisibility는 ScrollViewer 내 레이아웃이 완전히 갱신되거나 스크롤 컨텐츠 크기 변화가 일어나야 값이 바뀌어서 갱신 타이밍이 다를 수 있음
+
+
+```xml
+<DataTrigger Binding="{Binding ComputedVerticalScrollBarVisibility, ElementName=ListBox_Sample}">
+
+<ListBox x:Name="ListBox_Sample">
+  <ListBox.Template>
+    <ControlTemplate TargetType="ListBox">
+      <ScrollViewer x:Name="ScrollViewer_Sample">
+        <ScrollViewer.Style>
+            <Style TargetType="ScrollViewer">
+                <Setter Property="Width" Value="100"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ComputedVerticalScrollBarVisibility, ElementName=ScrollViewer_Sample}" Value="Collapsed">
+                        <Setter Property="Width" Value="200"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ScrollViewer.Style>
+      </ScrollViewer>
+    </ControlTemplate>
+  </ListBox.Template>
+</ListBox>
+```
+  * 
