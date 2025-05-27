@@ -646,4 +646,20 @@ private void tBlock_PreviewMouseLeftButtonDown(object sender, MouseButtonEventAr
   </ListBox.Template>
 </ListBox>
 ```
-  * 
+
+
+
+### Button
+* Button에서 클릭이나 Hover 영역이 이미지나 Text에 한정될 때, ControlTemplate 안에 있는 ContentPresenter를 Border 같은 걸로 감싸고 `Background="Transparent"` 설정
+```xml
+<ControlTemplate TargetType="{x:Type Button}">
+    <Border Background="Transparent">
+        <ContentPresenter Content="{TemplateBinding Content}"/>
+    </Border>
+    <ControlTemplate.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+            <Setter Property="Opacity" Value="0.7"/>
+        </Trigger>
+    </ControlTemplate.Triggers>
+</ControlTemplate>
+```
