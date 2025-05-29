@@ -662,3 +662,57 @@ using (SqlConnection conn = new SqlConnection(connectionString))
     }
 }
 ```
+
+
+### string vs enum
+* string 값보다 enum 값 타입이 넘어올 때 의도를 더 명확히 할 수 있음
+```cs
+public class Notification
+{
+    private readonly string _type;
+
+    public Notification(string type)
+    {
+        _type = type;
+    }
+}
+
+var n = new Notification("EMAIL");
+```
+* "EMAIL"이라는 문자열은 오타가 날 수도 있고
++ 의미가 뭔지 정확히 알기 어려움
+* 사용할 수 있는 값의 범위도 제한되어 있지 않음
+
+```cs
+public enum NotificationType
+{
+    Email,
+    Sms,
+    Push
+}
+
+public class Notification
+{
+    private readonly NotificationType _type;
+
+    public Notification(NotificationType type)
+    {
+        _type = type;
+    }
+}
+
+var n = new Notification(NotificationType.Email);
+```
+* 어떤 값들이 허용되는지 명확히 알 수 있음
+* 오타 가능성이 사라짐(컴파일러 확인)
+* NotificationType.Email처럼 이 값이 무엇을 의미하는지 명확하게 표현할 수 있음
+
+
+
+### items.FirstOrDefault() vs items[0]
+* items.FirstOrDefault()
+  * 리스트의 첫 번째 요소를 반환하거나, 요소가 없으면 null을 반환
+  * 리스트가 비어 있거나 null일 경우에도 예외가 발생하지 않고, null을 반환  
+    → FirstOrDefault()의 반환 값이 null인지 확인해야 안전하게 사용할 수 있음
+* items[0]
+  * 리스트가 비어 있거나 0번 인덱스에 접근할 수 없는 경우, 즉시 예외(ArgumentOutOfRangeException)가 발생
