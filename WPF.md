@@ -663,3 +663,13 @@ private void tBlock_PreviewMouseLeftButtonDown(object sender, MouseButtonEventAr
     </ControlTemplate.Triggers>
 </ControlTemplate>
 ```
+* 배경을 FFFFFF(흰색)으로 하되 투명도를 최대(00 - 완전 투명)로 설정
+  * Background에 색상을 지정하면 그 버튼 영역이 인식되기 때문에 Transparent로 인식 안되던 버튼 공간이 인식됨
+
+
+
+### Static Resource, Dynamic Resource
+* 리소스가 변경될 일이 없고 성능이 중요할 경우에는 Static 사용
+* 리소스가 변경될 가능성이 있을 경우 Dynamic 사용
+
+
