@@ -423,10 +423,31 @@ public static class HttpClientProvider
 
 ### ObservableCollection
 * 컬렉션 내부의 항목이 추가, 삭제, 변경될 때 CollectionChanged 이벤트를 발생시켜 UI에 변경 사항을 알림
+  * 항목이 추가, 삭제, 변경될 때마다 이벤트가 발생하므로 대량의 데이터를 빠른 속도로 변경해야 하는 경우 성능 저하의 원인이 될 수 있음
 * new ObservableCollection<T>() 처럼 완전히 새로운 인스턴스를 할당하는 것은 그 속성 자체의 값이 바뀌는 것이지, 기존 컬렉션 내부의 내용이 바뀌는 것이 아님 = CollectionChanged가 발생하지 않음
-  * 데이터 양이 많거나 변경이 잦을 경우(예: 슬라이드 페이지 넘김), Clear()와 여러 번의 Add() 호출은 각각 CollectionChanged 이벤트를 발생시켜 UI에서 버벅임이 발생할 수 있음
-    * List<T>()/IEnumerable<T>() + INotifyPropertyChanged  
-    새로운 리스트를 대입
+  * ObservableCollection 자체를 다시 한 번 INotifyPropertyChanged 처리
+  ```cs
+  private ObservableCollection<MyObject> myCollection;
+  public ObservableCollection<MyObject> MyCollection
+  {
+      get { return myCollection; }
+      set
+      {
+          if (myCollection != value)
+          {
+              myCollection = value;
+              OnPropertyChanged(nameof(MyCollection));
+          }
+      }
+  }
+  ```
+  * 새로운 인스턴스 할당 대신 Clear() 메서드 활용
+  ```cs
+  public void ClearData()
+  {
+      MyCollection.Clear();
+  }
+  ```
 
 
 
@@ -539,10 +560,11 @@ Console.WriteLine($"[Main] After await Task.Run - Thread ID: {Thread.CurrentThre
     * UI와 무관한 빠른 세팅 (예: 변수 초기화, 기본값 할당 등)
   * 객체 초기화는 데이터가 생성 시점에 즉시 사용 가능한지, 아니면 UI 로딩 및 환경 정보가 필요한지에 따라 생성자나 Loaded 이벤트를 선택하여 진행
 * `속성` vs `생성자`
-  * 속성
+  * 생성자
     * 초기화에 복잡한 로직이 필요할 때
     * 생성자 매개변수로 값을 받아 초기화할 때
     * 다수의 속성들을 함께 초기화할 때
+    * 클래스의 필드 및 속성 초기화가 모두 끝난 후에 생성자가 호출
 ```cs
 public List<string> Holidays { get; set; }
 
@@ -551,9 +573,10 @@ public MyClass(bool isSpecial)
     Holidays = isSpecial ? new List<string> { "Special" } : new List<string>();
 }
 ```
-  * 생성자
+  * 속성
     * 단순한 기본값을 설정할 때 (무조건 빈 리스트 만들기, 기본 숫자 넣기 등)
     * 복잡한 로직 없이 간단할 때
+    * 생성자 호출 전에 초기화
 ```cs
 public List<string> Holidays { get; set; } = new List<string>();
 ```
