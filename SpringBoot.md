@@ -129,6 +129,44 @@ Member클래스를 공통으로 사용할 때, 한 프로젝트에서 Member 클
 * Root Project settings.gradle 파일에 하위 모듈이 include되어있는지 확인
 
 
+### Could not resolve all files for configuration ':buy-me-common:compileClasspath'
+* 하위 프로젝트의 build.gradle 파일에 org.springframework.boot 플러그인과 io.spring.dependency-management 플러그인이 누락되어 의존성 버전을 제대로 가져오지 못해 발생하는 오류  
+▶ 하위 프로젝트에서도 스프링 부트의 의존성을 사용하려면 이러한 플러그인 설정이 필요
+```json
+// root
+allprojects {
+	group = 'com.comeus'
+	version = '0.0.1-SNAPSHOT'
+
+	repositories {
+		mavenCentral() // 외부 라이브러리 받을 저장소 설정
+	}
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'io.spring.dependency-management'
+
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(17) // 어떤 자바 버전으로 빌드할지 지정
+		}
+	}
+
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.boot:spring-boot-dependencies:3.4.5"
+			// dependency-management 플러그인은 Spring Boot의 BOM을 직접 알지 못함
+			// spring-boot-dependencies BOM은 org.springframework.boot 플러그인이 자동으로 설정
+			// dependency-management 플러그인만 적용하면 BOM을 직접 import
+			// * BOM:라이브러리들의 버전 목록
+		}
+	}
+}
+```
+최상위 프로젝트에서 전체 프로젝트/하위 프로젝트에 적용할 설정을 전역으로 선언  
+진짜 자바 코드가 있는 하위 모듈에만 java 플러그인을 적용
+
 
 
 📚 참고
