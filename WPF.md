@@ -673,3 +673,27 @@ private void tBlock_PreviewMouseLeftButtonDown(object sender, MouseButtonEventAr
 * 리소스가 변경될 가능성이 있을 경우 Dynamic 사용
 
 
+
+### TextBlock vs ContentPresenter
+```xml
+<RadioButton>
+    <RadioButton.Content>
+        <TextBlock>
+            <Run Text="Go" />
+            <LineBreak/>
+            <Run Text="🏃‍➡️" />
+        </TextBlock>
+    </RadioButton.Content>
+</RadioButton>
+```
+```xml
+<TextBlock Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+```
+RadioButton.Content를 TextBlock.Text로 바인딩할 경우, string으로만 처리되므로 <LineBreak/> 같은 XAML 요소를 렌더링할 수 없음  
+```xml
+<ContentPresenter Content="{TemplateBinding Content}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  TextElement.Foreground="{TemplateBinding Foreground}"/>
+```
+💡 ContentPresenter를 사용하면 리치한 Content 구조(TextBlock, StackPanel 등)를 그대로 표시할 수 있음
