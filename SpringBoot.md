@@ -168,6 +168,16 @@ subprojects {
 진짜 자바 코드가 있는 하위 모듈에만 java 플러그인을 적용
 
 
+## 상위 프로젝트의 spring-boot-starter dependency를 못 읽어오는 오류
+```json
+dependencies {
+    implementation project(':web')
+}
+```
+* Gradle의 implementation은 **전이적(transitive)**이지만, 항상 완전히 동작하는 건 아님
+* `@SpringBootApplication`은 Spring Boot의 많은 자동 설정 기능을 쓰기 위한 핵심 애노테이션인데, 그 기반이 되는 자동 구성 메타정보는 직접 선언된 의존성을 통해서만 완전히 인식될 수 있음
+
+
 
 📚 참고
 [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
