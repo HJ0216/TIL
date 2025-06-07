@@ -168,7 +168,7 @@ subprojects {
 진짜 자바 코드가 있는 하위 모듈에만 java 플러그인을 적용
 
 
-## 상위 프로젝트의 spring-boot-starter dependency를 못 읽어오는 오류
+### 상위 프로젝트의 spring-boot-starter dependency를 못 읽어오는 오류
 ```json
 dependencies {
     implementation project(':web')
@@ -177,7 +177,53 @@ dependencies {
 * Gradle의 implementation은 **전이적(transitive)**이지만, 항상 완전히 동작하는 건 아님
 * `@SpringBootApplication`은 Spring Boot의 많은 자동 설정 기능을 쓰기 위한 핵심 애노테이션인데, 그 기반이 되는 자동 구성 메타정보는 직접 선언된 의존성을 통해서만 완전히 인식될 수 있음
 
+### Gradle option
+Gradle에서 Java 프로젝트를 빌드하려면 기본적으로 java 플러그인이 필요  
+java 플러그인을 통해 컴파일, 테스트, jar 파일 생성 등의 작업들(tasks)이 수행 가능
+```json
+plugins {
+    id 'java'
+}
+```
+
+클래스 패스(class path): 자바로 작성된 프로그램을 컴파일(compile: .java → .class)하고 실행(run)할 때 특정 경로에서부터 시작하여 클래스 파일과 패키지를 탐색
+* Compile classpath: Java 코드를 class 파일로 컴파일 할 때 탐색하는 경로
+* Runtime classpath: 컴파일된 자바 코드(class 파일)을 JVM이 실행할 때 탐색하는 경로
+
+컴파일 시점에만 필요로 하는 의존성도 있고, 실행 시점에만 필요로 하는 의존성도 있음  
+→ 그래서 Gradle에서 의존성(dependency)를 추가할 때 어느 범위로 노출시킬 것인지 결정할 수 있도록 도와준다.
+
+complieOnly
+* 컴파일 경로에만 설정
+* 빌드 결과물의 크기가 줄어드는 장점
+runtimeOnly
+* 런타임 경로에만 설정
+* 해당 클래스에서 코드 변경이 발생해도 컴파일을 다시 할 필요가 없음
+implementation, api
+* 두 경로에 모두 설정
+* api는 Java-Library 플러그인 추가 필요
+* implementation으로 설정된 의존성은 전이되지 않으며, 해당 모듈 내부에서만 사용
+  * implementation로 설정된 의존성은 다른 모듈의 컴파일 클래스 경로에 포함되지 않으며, 이로 인해 라이브러리를 제공하는 측에서 의존성을 변경하더라도, 사용하는 측은 재컴파일하지 않아도 됨  
+  이를 통해 컴파일 시간을 단축하고 재빌드 빈도를 줄일 수 있는 이점을 얻을 수 있음
+  * runtime이 deprecated 되고 나온 것은 implementation
+* api로 설정된 의존성은 전이되어 다른 모듈의 컴파일 클래스 경로(compileClasspath)에도 추가
+  * 예를 들어, 현재 모듈이 httpclient 라이브러리를 사용하고 있다면, 이 모듈을 의존하는 다른 모듈도 자동으로 httpclient 라이브러리를 사용할 수 있게 됨
+  * compile이 deprecated 되고 나온 것이 api
+
+예시
+* 모듈 B가 모듈 A를 api로 의존 + 모듈 C가 모듈 B를 api로 의존: 모듈 C에서 모듈 A의 클래스를 사용할 수 있음
+* 모듈 B가 모듈 A를 api로 의존 + 모듈 C가 모듈 B를 implementation으로 의존: 모듈 C에서 모듈 A의 클래스를 사용할 수 있음
+* 모듈 B가 모듈 A를 implementation으로 의존 + 모듈 C가 모듈 B를 api로 의존: 모듈 B에서 모듈 A의 클래스를 사용할 수 있지만, 모듈 C에서는 사용할 수 없음
+
+권장
+* Gradle은 가능한 implementation을 사용하는 것을 권장하는데, api는 의존성이 다른 모듈에 전이되지만 implementation은 해당 모듈 내부에서만 사용되고 다른 모듈에는 노출되지 않기 때문
+* 무분별하게 api를 사용하기보다는 상황에 맞게 implementation을 사용하여 의존성을 캡슐화하고, 이를 통해 컴파일 시간을 단축하여 재빌드 빈도를 줄일 수 있는 이점을 얻는 것이 좋음
+  * 해당 모듈에서만 사용하는 경우 implementation을 사용하고, 다른 모듈에서도 함께 사용할 경우 api를 사용
 
 
-📚 참고
-[Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
+<br/>
+
+### 📚 참고
+[Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)  
+[[gradle] implementation, api 차이](https://dkswnkk.tistory.com/759)  
+[[Gradle] Gradle Java 플러그인과 implementation와 api의 차이](https://mangkyu.tistory.com/296)
