@@ -739,3 +739,12 @@ var n = new Notification(NotificationType.Email);
     → FirstOrDefault()의 반환 값이 null인지 확인해야 안전하게 사용할 수 있음
 * items[0]
   * 리스트가 비어 있거나 0번 인덱스에 접근할 수 없는 경우, 즉시 예외(ArgumentOutOfRangeException)가 발생
+
+
+
+### 불변 객체
+* 한번 생성된 후에는 그 내부의 상태(속성 값)를 변경할 수 없는 객체
+* 표현식 하나로 새로운 객체를 생성하여 할당하는 방식을 자주 사용
+```cs
+ImmutableModel model = IsShown ? new ImmutableModel(data, true) : new ImmutableModel(data, false);
+```
