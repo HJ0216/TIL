@@ -748,3 +748,50 @@ var n = new Notification(NotificationType.Email);
 ```cs
 ImmutableModel model = IsShown ? new ImmutableModel(data, true) : new ImmutableModel(data, false);
 ```
+
+
+
+### LockObject
+멀티스레딩 환경에서 코드의 특정 부분을 한 번에 하나의 스레드만 실행하도록 보장하기 위한 '자물쇠' 또는 '열쇠' 역할을 하는 객체  
+여러 스레드가 동시에 접근할 수 있는 싱글턴(Singleton) 패턴을 안전하게 구현하기 위해 lock 키워드와 함께 사용할 수 있음
+
+```cs
+internal static readonly object LockObject = new object();
+
+private static Window instance;
+public static Window Instance
+{
+    get
+    {
+		if (instance == null)
+		{
+			lock(LockObject)
+			{
+				if(instance == null)
+				{
+					instance = new Window();
+				}
+			}
+		}
+		
+		return instance;
+	}
+	
+	set { instance = value; }
+}
+```
+
+### Lazy
+```cs
+private static readonly Lazy<Window> lazyInstance = 
+    new Lazy<Window>(() => new Window());
+
+public static Window Instance
+{
+    // .Value에 처음 접근할 때 단 한번만 객체가 생성
+    get { return lazyInstance.Value; } 
+    set { instance = value; }
+}
+```
+Lazy<Window>는 내부적으로 Value가 한 번 생성되면 변경하거나 초기화할 수 없음  
+윈도우를 닫고 다시 열 때 새로 만들 수 없는 구조
