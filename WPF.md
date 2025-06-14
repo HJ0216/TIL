@@ -697,3 +697,38 @@ RadioButton.Content를 TextBlock.Text로 바인딩할 경우, string으로만 �
                   TextElement.Foreground="{TemplateBinding Foreground}"/>
 ```
 💡 ContentPresenter를 사용하면 리치한 Content 구조(TextBlock, StackPanel 등)를 그대로 표시할 수 있음
+
+
+
+### DataGrid
+DataGridCell의 기본 선택 스타일이 DataGridRow의 배경색을 덮어씀
+→ Selected나 MouseOver 설정 시, DataGridRow뿐만 아니라 DataGridCell도 설정
+```xml
+<DataGrid>
+    <DataGrid.Resources>
+        <Style TargetType="{x:Type DataGridRow}">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#D0E3FF"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type DataGridCell}">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </DataGrid.Resources>
+
+    <DataGrid.Columns>
+    </DataGrid.Columns>
+</DataGrid>s
+```
