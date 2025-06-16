@@ -12,8 +12,57 @@ ngrok http '본인의 로컬 서버 포트'
 ```
 
 
+### Prompt Engineering
+1. 효과적인 코드 프롬프트의 기본 원칙
+* 풍부한 맥락 제공: 사용 언어·프레임워크·라이브러리·에러 메시지·코드 목적 등 관련 정보 명시
+* 명확한 목표나 질문 제시: “왜 코드가 안 돼?”와 같은 모호한 질의 대신, 원하는 결과와 현재 상황을 명확하게 기술
+* 복잡한 작업 분할: 대규모 기능 개발 등은 한 번에 모두 요청하지 않고, 작은 단계로 쪼개어 요구
+* 입출력 예시나 기대 동작 포함: 실제 입력·출력이나 동작 예시 제공
+* 역할(페르소나) 활용: “React 시니어 개발자처럼 코드 검토” “성능 전문 지도로 최적화 요청” 등 책임 있는 역할을 부여
+* 회화적 반복 개선: AI의 첫 번째 답변을 바탕으로 추가 요청이나 수정 요구를 통해 점진적으로 원하는 결과에 도달
+* 코드 일관성 유지: AI가 코드 스타일, 네이밍, 주석을 참고하므로 코드의 일관성과 명확성을 항상 유지함
+2. 디버깅을 위한 프롬프트 패턴
+```javascript
+function mapUsersById(users) {
+  const userMap = {};
+  for (let i = 0; i <= users.length; i++) {  
+    const user = users[i];
+    userMap[user.id] = user;
+  }
+  return userMap;
+}
+const result = mapUsersById([{ id: 1, name: "Alice" }]);
+```
+“왜 mapUsersById 함수가 동작하지 않을까?”
+→ “mapUsersById 함수가 사용자 배열을 id별로 매핑해야 하는데, [ {id: 1, name: "Alice"} ] 입력 시 TypeError: Cannot read property 'id' of undefined 에러 발생. 코드는 다음과 같다: [코드 포함] 기대 결과는 { "1": ... } 이런 현상 원인과 해결책은?”
+* 추가 디버깅 프롬프트 전략
+  * 버그 원인 후보 목록화 요청(“TypeError의 가능한 원인?” 등)
+  * 코드 동작 논리 직접 설명 후 검토 요청(“내 설명이 맞는지, 문제점을 찾아달라”)
+  * 돌발 상황 테스트케이스 요청(“이 함수가 실패할 수 있는 입력 2개만 제안”)
+  * 꼼꼼한 코드 리뷰어 역할 부여(“이 코드를 리뷰하며 문제점과 개선사항을 설명”)
+3. 리팩토링/최적화를 위한 프롬프트 패턴
+```javascript
+async function getCombinedData(apiClient) {
+  // Fetch list of users
+  const usersResponse = await apiClient.fetch('/users');
+  if (!usersResponse.ok) {
+    throw new Error('Failed to fetch users');
+  }
+  // ... (이하 생략)
+}
+```
+“getCombinedData 함수를 리팩토링 하라”
+→ “중복 제거, 성능 개선, 두 fetch 병렬화, 에러 메세지 분리, 데이터 결합은 효율적 방식으로 개선하라. 주석과 개선 포인트 설명까지”
+* 추가 리팩토링 팁
+  * 단계별 요청(“가독성 개선→알고리듬 최적화” 순차 적용)
+  * 다른 접근 방식 요청(“함수형 스타일로도 구현해줘” 등)
+  * 코드+설명 방식 요청을 통한 학습과 튜토리얼화
+  * 결과 코드에 대한 테스트 추가 요청
+
+
 
 <br/>
 
 ### 📚 참고
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)
+[프로그래머를 위한 프롬프트 엔지니어링 플레이북](https://news.hada.io/topic?id=21303)
