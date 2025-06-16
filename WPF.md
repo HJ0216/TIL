@@ -732,3 +732,11 @@ DataGridCell의 기본 선택 스타일이 DataGridRow의 배경색을 덮어씀
     </DataGrid.Columns>
 </DataGrid>s
 ```
+
+
+
+### Border와 Button
+Button 대신 Border를 이용해서 Button과 같은 효과를 낼 수 있음  
+단, Button의 경우 마우스를 누른 상태에서 범위를 벗어날 경우 클릭으로 인식되지 않음
+* MouseDown: Border를 누를 경우, 바로 Event가 동작하므로 범위를 벗어나더라도 클릭으로 인식
+* MouseLeftButtonUp: Button과 동일한 동작
