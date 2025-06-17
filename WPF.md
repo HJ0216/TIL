@@ -740,3 +740,15 @@ Button 대신 Border를 이용해서 Button과 같은 효과를 낼 수 있음
 단, Button의 경우 마우스를 누른 상태에서 범위를 벗어날 경우 클릭으로 인식되지 않음
 * MouseDown: Border를 누를 경우, 바로 Event가 동작하므로 범위를 벗어나더라도 클릭으로 인식
 * MouseLeftButtonUp: Button과 동일한 동작
+
+
+
+### Ellipse
+```xml
+<Ellipse Width="15" Height="15" 
+        StrokeThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=RadioButton}}"/>
+```
+
+태그에서 BorderThickness를 설정해도 Ellipse의 StrokeThickness에 값이 전달되지 않음  
+→ Thickness 객체에서 우리가 필요한 숫자(double) 값을 직접 꺼내오도록 바인딩 경로를 수정
+
