@@ -744,11 +744,30 @@ Button 대신 Border를 이용해서 Button과 같은 효과를 낼 수 있음
 
 
 ### Ellipse
+원 또는 타원을 그리는 기본 도형 클래스
 ```xml
 <Ellipse Width="15" Height="15" 
-        StrokeThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=RadioButton}}"/>
+        StrokeThickness="{TemplateBinding BorderThickness}"/>
+```
+태그에서 BorderThickness를 설정해도 Ellipse의 StrokeThickness에 값이 전달되지 않음  
+→ Thickness 객체에서 필요한 Thickness 숫자 값을 직접 꺼내오도록 바인딩 경로를 수정
+```xml
+<Ellipse Width="15" Height="15" 
+         StrokeThickness="{TemplateBinding BorderThickness.Left}"/>
 ```
 
-태그에서 BorderThickness를 설정해도 Ellipse의 StrokeThickness에 값이 전달되지 않음  
-→ Thickness 객체에서 우리가 필요한 숫자(double) 값을 직접 꺼내오도록 바인딩 경로를 수정
 
+
+### Polygon
+다각형을 그리는 기본 도형 클래스
+```xml
+<Polygon Points="0,7.5 30,0 30,15" Fill="SkyBlue"
+         StrokeThickness="2" Stroke="DarkSlateBlue"/>
+```
+* `Points="0,7.5 30,0 30,15"`: 도형을 구성하는 꼭짓점들의 X,Y 좌표 목록
+  * `0,7.5`: 왼쪽 끝 중앙점
+  * `30,0`: 오른쪽 위 점
+  * `30,15`: 오른쪽 아래 점
+* `Fill="SkyBlue"`: 도형 내부 색상
+* `StrokeThickness="2"`: 외곽선 두께
+* `Stroke="DarkSlateBlue"`: 도형 외곽선 색상
