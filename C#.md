@@ -795,3 +795,44 @@ public static Window Instance
 ```
 Lazy<Window>는 내부적으로 Value가 한 번 생성되면 변경하거나 초기화할 수 없음  
 윈도우를 닫고 다시 열 때 새로 만들 수 없는 구조
+
+
+
+### enum값과 캡슐화
+메서드 return 값과 직접 비교를 할 때, 중복 호출에 유의
+```cs
+if (CheckStatus()== Status.Error) return;
+else if(CheckStatus()== Status.Changed) await RefreshData();
+```
+
+```cs
+Status status = CheckStatus();
+if (status == Status.Error) return;
+else if(status == Status.Changed) await RefreshData();
+```
+
+로직 캡슐화
+```cs
+// async를 사용하는 메서드에서는 Async를 접미사로 붙이는 게 좋음
+public async Task<bool> HandleStatusChangeAsync()
+{
+    Status status = CheckStatus();
+
+    switch (status)
+    {
+        case Status.Unchanged:
+            return true;
+
+        case Status.Changed:
+            return await RefreshDataAsync(); 
+
+        case Status.Error:
+            return false;
+
+        default:
+            return false;
+    }
+}
+
+bool isSuccess = await HandleStatusChangeAsync();
+```
