@@ -61,8 +61,23 @@ async function getCombinedData(apiClient) {
 
 
 
+### Prompt Engineering(2)
+핵심은 프로젝트마다 ‘CLAUDE.md’ 파일을 활용해 컨벤션, 아키텍처, 패턴, 금지사항 등을 명확히 문서화하고, 코드 내 ‘anchor comment’로 AI를 효과적으로 가이드하는 것
+
+테스트 코드는 반드시 사람이 작성해야 하며, AI가 테스트, 마이그레이션, 보안, 등 핵심 영역을 수정하지 못하도록 경계를 엄격히 설정해야 함
+
+[예제 md 파일](https://github.com/julep-ai/julep/blob/dev/AGENTS.md)
+
+세션 관리와 맥락 오염 방지  
+작업별로 Claude 세션을 새로 시작하는 것이 중요
+하나의 긴 대화에 여러 작업(예: DB 마이그레이션, 프론트엔드 디자인 등)을 혼합하면 컨텍스트가 섞여 의도하지 않은 결과 초래  
+규칙: 한 작업 = 한 세션, 완료 시 세션 새로 시작  
+
+
+
 <br/>
 
 ### 📚 참고
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)
 [프로그래머를 위한 프롬프트 엔지니어링 플레이북](https://news.hada.io/topic?id=21303)
+[Claude로 실제 코드를 배포하며 얻은 실전 노트](https://news.hada.io/topic?id=21352)
