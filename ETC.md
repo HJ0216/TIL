@@ -80,6 +80,39 @@ async function getCombinedData(apiClient) {
 * 잠시 테스트한다고 작성하거나 주석 처리한 내역까지 같이 올리지 않도록 유의
 
 
+
+### 관심사 분리
+컴퓨터 프로그램을 만들 때, 서로 다른 역할을 하는 코드들을 독립적인 별개의 모듈(부분)로 나누어 작성하는 설계 원칙  
+각 모듈은 오직 하나의 관심사(역할, 책임)에만 집중  
+* 판단 기준
+  * 클래스/메서드가 한 번에 너무 많은 일을 하고 있지는 않은가
+  * 요구사항이 변경된다면, 코드의 한 부분만 수정해서 해결할 수 있는가
+  * 로직을 다른 곳에서도 사용할 가능성이 있는가
+
+예시
+* View
+  * 사용자에게 정보를 보여주고(Presentation), 사용자 입력을 받는 것에만 집중
+* Business Logic
+  * 잔액을 계산하고, 업데이트하고, 유효성을 검사하는 등 실제 '일'을 처리하는 것에 집중
+```cs
+public partial class wndRegister : Window
+{
+    private void Button_Register_Click(object sender, RoutedEventArgs e)
+    {
+        string username = txtUsername.Text;
+        string password = txtPassword.Password;
+
+        if (!ValidationHelper.IsValid(username, password, out string errorMessage))
+        {
+            MessageBox.Show(errorMessage);
+            return;
+        }
+    }
+}
+```
+
+
+
 <br/>
 
 ### 📚 참고
