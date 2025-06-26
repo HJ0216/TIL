@@ -779,3 +779,157 @@ Button 대신 Border를 이용해서 Button과 같은 효과를 낼 수 있음
 * 로컬 값이 스타일 트리거보다 항상 우선순위가 높음  
 → 스타일 트리거로 바인딩된 값을 변경하려하면 바뀌지 않음
 * C# 코드 비하인드에서 수정
+
+
+
+### Event Routing
+* 터널링(Tunneling): 상위에서부터 이벤트 발생 요소(Element)로 이벤트 발생
+  * 부모 요소가 자식 요소의 특정 동작을 막고 싶을 때 사용(이벤트 **가로채기**, **차단**, 사전 감지 등)
+  * 버블링(Bubbling) : 이벤트 발생 요소(Element)부터 상위로 이벤트 발생
+    * 터널링이 끝난 후 실행됨
+* 다이렉트(Direct) : 하나의 요소(Element)에서만 이벤트 발생
+```txt
+UI 구조: Window > Grid > Button
+
+1. 터널링
+이벤트가 최상위 요소(6Window)에서 시작하여 아래로 내려감
+- Window에서 Preview Event가 있는지 확인
+- Grid에서 Preview Event가 있는지 확인
+- Button에서 Preview Event가 있는지 확인
+
+2. 버블링
+이벤트가 가장 하위 요소(Button)에 도달한 직후, 이제 반대로 위로 올라가기 시작
+- Button에서 MouseDown 발생
+- Grid에서 MouseDown 발생
+- Window에서 MouseDown 발생
+```
+
+**예시**
+```xml
+<Grid>
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition/>
+		<ColumnDefinition/>
+		<ColumnDefinition/>
+	</Grid.ColumnDefinitions>
+	<Grid.RowDefinitions>
+		<RowDefinition/>
+	</Grid.RowDefinitions>
+	<Grid x:Name="TGrid01" Width="300" Height="300" Grid.Row="0" Grid.Column="0" 
+		  Background="LightCyan" ButtonBase.Click="grid01_Click">
+		<Label Content="TGrid01"/>
+		<Grid x:Name="TGrid02" Width="250" Height="250" Background="LightGoldenrodYellow" 
+			  ButtonBase.Click="grid02_Click">
+			<Label Content="TGrid02"/>
+			<Grid x:Name="TGrid03" Width="200" Height="200" Background="LightGreen" 
+				  ButtonBase.Click="grid03_Click">
+				<Label Content="TGrid03"/>
+				<Grid x:Name="TGrid04" Width="150" Height="150" Background="LightPink" 
+					  ButtonBase.Click="grid04_Click">
+					<Label Content="TGrid04"/>
+					<Button Content="Tunneling Test" Width="100" Height="30" Click="T_Button_Click"/>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+	<StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+		<Label Content="◀ Tunneling Event"/>
+		<TextBox x:Name="tunnelTbx" Grid.Row="0" Grid.Column="1" Width="200" Height="100" Margin="10,0,10,10"/>
+		<Label HorizontalAlignment="Right" Content="Bubbleing  Event ▶"/>
+		<TextBox x:Name="bubbleTbx" Grid.Row="0" Grid.Column="1" Width="200" Height="100" Margin="10,0,10,0"/>
+	</StackPanel>
+	<Grid x:Name="BGrid01" Width="300" Height="300" Grid.Row="0" Grid.Column="2" 
+		  Background="LightCyan" PreviewMouseDown="grid01_Click">
+		<Label Content="BGrid01"/>
+		<Grid x:Name="BGrid02" Width="250" Height="250" Background="LightGoldenrodYellow" 
+			  PreviewMouseDown="grid02_Click">
+			<Label Content="BGrid02"/>
+			<Grid x:Name="BGrid03" Width="200" Height="200" Background="LightGreen" 
+				  PreviewMouseDown="grid03_Click">
+				<Label Content="BGrid03"/>
+				<Grid x:Name="BGrid04" Width="150" Height="150" Background="LightPink" 
+					  PreviewMouseDown="grid04_Click">
+					<Label Content="BGrid04"/>
+					<Button Content="Bubbling Test" Width="100" Height="30" PreviewMouseDown="B_Button_Click"/>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+</Grid>
+```
+```cs
+private void grid01_Click(object sender, RoutedEventArgs e)
+{
+    Grid grid = sender as Grid;
+    string eventType = (grid.Name == "TGrid01") ? "Tunneling" : "Bubbling";
+    InputText(eventType, grid);
+}
+
+private void grid02_Click(object sender, RoutedEventArgs e)
+{
+    Grid grid = sender as Grid;
+    string eventType = (grid.Name == "TGrid02") ? "Tunneling" : "Bubbling";
+    InputText(eventType, grid);
+}
+private void grid03_Click(object sender, RoutedEventArgs e)
+{
+    Grid grid = sender as Grid;
+    string eventType = (grid.Name == "TGrid03") ? "Tunneling" : "Bubbling";
+    InputText(eventType, grid);
+    e.Handled = true;   // true이면 이벤트 전달 차단
+}
+private void grid04_Click(object sender, RoutedEventArgs e)
+{
+    Grid grid = sender as Grid;
+    string eventType = (grid.Name == "TGrid04") ? "Tunneling" : "Bubbling";
+    InputText(eventType, grid);
+}
+
+private void InputText(string evnetType, Grid grid)
+{
+    if (evnetType == "Tunneling")
+        tunnelTbx.AppendText($"[Tunnling Event] {grid.Name}  \n");
+    else
+        bubbleTbx.AppendText($"[Bubbling Event] {grid.Name}  \n");
+}
+
+private void T_Button_Click(object sender, RoutedEventArgs e)
+{
+    tunnelTbx.AppendText($"Button_Click event!! \n");
+}
+
+private void B_Button_Click(object sender, RoutedEventArgs e)
+{
+    bubbleTbx.AppendText($"Button_Click event!! \n");
+}
+```
+Tunneling Test  
+`ButtonBase.Click`은 버블링(Bubbling) 이벤트  
+Button_Click event!! → [Tunnling Event] TGrid04 → [Tunnling Event] TGrid03
+
+Bubbling Test  
+`PreviewMouseDown`은 터널링(Tunneling) 이벤트  
+[Bubbling Event] BGrid01 → [Bubbling Event] BGrid02 → [Bubbling Event] BGrid03
+
+
+
+### AddHandler
+지정된 라우트된 이벤트에 대해 라우트된 이벤트 처리기를 추가하여 처리기를 현재 요소의 처리기 컬렉션에 추가
+```cs
+public void AddHandler (System.Windows.RoutedEvent routedEvent, Delegate handler, bool handledEventsToo);
+```
+* routedEvent: 처리할 라우트된 이벤트에 대한 식별자
+* handler: 처리기 구현에 대한 참조
+* handledEventsToo: 이벤트 경로를 따라 다른 요소에 의해 처리된 것으로 이미 표시된 라우트된 이벤트에 대해 제공된 처리기를 호출하도록 true
+  즉, 이 값을 true로 설정하는 것은 "다른 컨트롤이 이미 처리한(e.Handled = true) 이벤트까지도 무시하고, 이 이벤트 핸들러를 무조건 실행하겠다"는 선언
+  * 주로 자식 컨트롤이 이벤트를 "독점"하여 부모 컨트롤까지 이벤트가 도달하지 못하는 상황을 해결하기 위해 사용
+  * 예시: `ScrollViewer`와 `TextBox`
+    1. 사용자가 `TextBox` 내부를 클릭하면, `TextBox`는 캐럿(커서)을 옮기기 위해 `MouseDown` 이벤트를 사용하고, "이 클릭은 내가 처리했어!"라는 의미로 `e.Handled = true`를 설정
+    2. 이 때문에 부모인 `ScrollViewer`는 일반적인 방법으로는 `TextBox`에서 발생한 클릭 이벤트를 감지할 수 없음
+    3. 하지만 `ScrollViewer`는 내부에서 어떤 클릭이 일어나든 스크롤 상태를 제어해야 할 수 있어야 함 → 이때 `ScrollViewer`는 내부적으로 `AddHandler(..., true)`를 사용하여, `TextBox`가 막아버린 클릭 이벤트까지도 감지하여 필요한 로직(예: 마우스 휠 스크롤을 위한 포커싱)을 처리
+
+
+<br/>
+
+### 📚 참고
+[[WPF] 이벤트 라우팅, 터널링(Tunneling), 버블링(Bubbling)](https://memoo-list.tistory.com/19)  
