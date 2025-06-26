@@ -836,3 +836,43 @@ public async Task<bool> HandleStatusChangeAsync()
 
 bool isSuccess = await HandleStatusChangeAsync();
 ```
+
+
+
+### Instance간 데이터 공유
+K를 상속하는 A Instance와 B Instance
+A Instance에서 B Instance를 만들 때, B Instance는 A Instance의 정보를 갖고 있지 않음
+* 부모 → 자식 데이터 전달
+  * 생성자 매개변수 사용
+```cs
+// wndInstanceA
+wndInstanceB wnd = wndInstanceB.Instance as wndInstance;
+wnd.Show(this);
+
+// wndInstanceB
+public void Show(wndInstance parents)
+{
+    Age = parents.Age;
+
+    // ...
+}
+```
+* 자식 → 부모 데이터 전달
+  * Action<T> 사용
+    * 값을 사용할 경우, 변경 알림을 사용하지 못함
+```cs
+// wndInstanceB
+public event Action<int> OnAgeChanged;
+
+private int age;
+private void IncreaseAge()
+{
+    credit++;
+    OnCreditChanged?.Invoke(credit);
+}
+
+// wndInstanceA
+wndInstanceB wnd = wndInstanceB.Instance as wndInstance;
+wnd.OnAgeChanged += (changedAge) => Age = changedAge; 
+wnd.Show(this);
+```
