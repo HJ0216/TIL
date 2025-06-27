@@ -1010,6 +1010,29 @@ MyButton.Content = "Click Me";
 
 
 
+### Show() vs ShowDialog()
+* Show()
+  * Modeless
+  * 비차단(Non-blocking) 방식으로 창을 오픈
+  * 코드 실행 흐름: Show() 메서드를 호출하면, 새 창이 화면에 나타나고 코드는 즉시 다음 줄로 진행(새 창이 닫힐 때까지 기다리지 않음)
+  * 상호작용: 새로 열린 창과 기존의 다른 창들을 자유롭게 오가며 작업할 수 있음
+  * 프로세스 종료: 애플리케이션의 메인 창이 닫히는 등 정상적인 종료 조건이 만족되면, 열려있던 모덜리스 창들도 함께 닫히고 프로세스가 종료
+* ShowDialog()
+  * Modal
+  * 차단(Blocking) 방식으로 창을 오픈
+  * 코드 실행 흐름: ShowDialog() 메서드를 호출하면, 새 창이 화면에 나타나고 코드는 그 자리에서 실행을 멈추고 대기 → 사용자가 새로 열린 창을 닫아야만 ShowDialog() 메서드가 값을 반환하고 다음 줄의 코드가 실행
+  * ShowDialog()로 열린 창의 생명주기가 애플리케이션의 종료 조건을 방해하는 경우 프로세스가 종료되지 못함(staic field가 남아있는 경우 등)
+
+
+
+### Singleton Instance와 Process
+ShowDialog()로 open한 윈도우에서 static Instance가 null이 아닐 경우, static Instance 변수가 닫힌 창 객체를 계속 붙잡고 있으므로 창을 꺼도 프로세스가 종료가 안됨  
+→ 창 객체를 참조하는 한, 그 창 객체는 가비지 컬렉터에 의해 수거되지 않고 계속 메모리에 남아있게 됨  
+→ 화면에 보이진 않지만 아직 메모리상에 Window 객체가 하나 존재한다고 판단하여 OnLastWindowClose 조건, 즉 '마지막 창이 닫혔다'는 조건이 충족되지 않아  WPF 애플리케이션은 종료되지 않고, 프로세스는 계속 살아있게 됨
+* WPF 애플리케이션은 App.xaml에 설정된 ShutdownMode에 따라 언제 종료될지 결정(기본값:  OnLastWindowClose)
+
+
+
 <br/>
 
 ### 📚 참고
