@@ -913,6 +913,69 @@ Bubbling Test
 
 
 
+### DragMove()
+```xml
+<Border x:Name="border">
+    <Button x:Name="button"/>
+</Border>
+```
+```cs
+if (border != null)
+{
+	border.AddHandler(Border.MouseLeftButtonDownEvent, new MouseButtonEventHandler((sender, e) =>
+	{
+		try
+		{
+			DragMove();
+		}
+		catch { }
+	}), true);
+}
+
+// MouseLeftButtonUpEvent
+if (button != null)
+{
+	button.AddHandler(Button.MouseLeftButtonUpEvent, new RoutedEventHandler((sender, e) =>
+	{
+		try
+		{
+            // ...
+		}
+		catch { }
+	}), true);
+}
+
+// PreviewMouseLeftButtonUpEvent
+if (button != null)
+{
+	button.AddHandler(Button.PreviewMouseLeftButtonUpEvent, new RoutedEventHandler((sender, e) =>
+	{
+		try
+		{
+            // ...
+		}
+		catch { }
+	}), true);
+}
+```
+1. MouseLeftButtonUpEvent  
+마우스 왼쪽 버튼 누르기 → MouseLeftButtonDownEvent 발생 → DragMove() → 마우스 왼쪽 버튼 떼기 → MouseLeftButtonUpEvent 터널링 후, 최하위 요소인 button에 도달하면 버블링 시작  
+동시에 DragMove()에서 버튼 떼기 동작을 감지하고, 창 이동 모드를 종료하는 데 해당 이벤트를 사용(MouseLeftButtonUp 이벤트는 DragMove() 시스템에 의해 소모(handled)됨)  
+이벤트가 시스템 레벨에서 소모되었기 때문에, 이벤트의 원래 발생지인 `button`에서부터 시작되는 버블링(`MouseLeftButtonUp`)은 아예 시작될 기회조차 얻지 못함  
+결과적으로 `button`의 `MouseLeftButtonUp` 핸들러는 호출되지 않음
+2. PreviewMouseLeftButtonUp
+마우스 왼쪽 버튼 누르기 → MouseLeftButtonDownEvent 발생 → DragMove() → 마우스 왼쪽 버튼 떼기 → MouseLeftButtonUpEvent 터널링 후, 최하위 요소인 button에 도달하면 버블링 시작  
+동시에 DragMove()에서 버튼 떼기 동작을 감지하고, 창 이동 모드를 종료하는 데 해당 이벤트를 사용하기 전에 **터널링 과정에서 PreviewMouseLeftButtonUp**가 먼저 발생
+* DragMove 종료 이벤트보다 터널링은 빠르게 동작하고, 버블링은 늦게 동작하여 무시됨
+
+\+ handledEventsToo: true가 동작하지 않는 이유
+* DragMove()가 호출되면, Window는 마우스 캡처(마우스 입력 독점) 상태에 들어감
+* MouseLeftButtonUp 이벤트는 DragMove()라는 특수 프로세스를 종료시키기 위한 신호로 사용
+* DragMove()는 이 종료 신호를 받는 즉시, 자신의 임무(프로세스 종료)를 완수하고 MouseLeftButtonUp 이벤트를 시스템 레벨에서 소모  
+(= 버블링을 위한 MouseLeftButtonUp 이벤트가 애초에 발생조차 하지 않도록 근원지에서 차단)
+
+
+
 ### AddHandler
 지정된 라우트된 이벤트에 대해 라우트된 이벤트 처리기를 추가하여 처리기를 현재 요소의 처리기 컬렉션에 추가
 ```cs
@@ -921,12 +984,30 @@ public void AddHandler (System.Windows.RoutedEvent routedEvent, Delegate handler
 * routedEvent: 처리할 라우트된 이벤트에 대한 식별자
 * handler: 처리기 구현에 대한 참조
 * handledEventsToo: 이벤트 경로를 따라 다른 요소에 의해 처리된 것으로 이미 표시된 라우트된 이벤트에 대해 제공된 처리기를 호출하도록 true
-  즉, 이 값을 true로 설정하는 것은 "다른 컨트롤이 이미 처리한(e.Handled = true) 이벤트까지도 무시하고, 이 이벤트 핸들러를 무조건 실행하겠다"는 선언
+  즉, 이 값을 true로 설정하는 것은 "다른 컨트롤이 이미 처리한(e.Handled = true) 이벤트까지도 무시하고, 자신의 순서가 되면 무조건 이 이벤트 핸들러를 무조건 실행하겠다"는 선언
   * 주로 자식 컨트롤이 이벤트를 "독점"하여 부모 컨트롤까지 이벤트가 도달하지 못하는 상황을 해결하기 위해 사용
   * 예시: `ScrollViewer`와 `TextBox`
     1. 사용자가 `TextBox` 내부를 클릭하면, `TextBox`는 캐럿(커서)을 옮기기 위해 `MouseDown` 이벤트를 사용하고, "이 클릭은 내가 처리했어!"라는 의미로 `e.Handled = true`를 설정
     2. 이 때문에 부모인 `ScrollViewer`는 일반적인 방법으로는 `TextBox`에서 발생한 클릭 이벤트를 감지할 수 없음
     3. 하지만 `ScrollViewer`는 내부에서 어떤 클릭이 일어나든 스크롤 상태를 제어해야 할 수 있어야 함 → 이때 `ScrollViewer`는 내부적으로 `AddHandler(..., true)`를 사용하여, `TextBox`가 막아버린 클릭 이벤트까지도 감지하여 필요한 로직(예: 마우스 휠 스크롤을 위한 포커싱)을 처리
+
+
+
+
+
+### Visibility="Collapsed"
+Visibility="Collapsed"인 요소는 XAML.cs 코드에서 FindName이나 x:Name으로 접근은 가능하지만, 그 내부의 자식 요소는 `Loaded`되지 않아서 `null`일 수 있음
+```xml
+<Grid x:Name="MyGrid" Visibility="Collapsed">
+    <Button x:Name="MyButton"/>
+</Grid>
+```
+```cs
+MyButton.Content = "Click Me";
+// MyGrid는 Collapsed 상태여도 인스턴스가 만들어져 있고 접근 가능
+// 내부의 MyButton은 Collapsed 상태에 따라 아직 Visual Tree에 올라오지 않았을 수 있으므로 null이 될 수 있음
+```
+
 
 
 <br/>
