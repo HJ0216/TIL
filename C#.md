@@ -483,6 +483,37 @@ private async Task HandleButtonClickAsync()
 }
 ```
 
+\+ 생성자, set 등 동기(synchronous) 코드 블록이므로, 비동기 메서드에 await을 할 수 없는 경우
+1. void 대신 Task를 선언한 후, await을 할 수 없으므로 자체적으로 오류를 처리할 수 있도록 try-catch 블럭 사용
+  * 외부에서 await을 사용하지 않으므로 오류 발생 시, 호출 부에서 오류 처리를 할 수 없음
+2. 호출부에서는 _(discard)를 사용하여 컴파일 경고창 제거
+```cs
+public mMember Member
+{
+    get { return member; }
+    set
+    {
+        if (Member != value)
+        {
+            member = value;
+
+            _ = MethodAsync(member);
+        }
+    }
+}
+
+private async Task MethodAsync(mMember member)
+{
+    try
+    {
+    }
+    catch (Exception ex)
+    {
+        // 예외를 호출한 쪽으로 전파되지 않고 비동기 메서드에서 직접 처리
+    }
+}
+```
+
 
 
 ### await vs await Task.Run()
