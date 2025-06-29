@@ -907,3 +907,406 @@ wndInstanceB wnd = wndInstanceB.Instance as wndInstance;
 wnd.OnAgeChanged += (changedAge) => Age = changedAge; 
 wnd.Show(this);
 ```
+
+
+
+### Delegate
+* 메서드에 대한 참조를 저장할 수 있는 타입
+* 메서드를 변수처럼 저장하고 나중에 호출할 수 있게 함
+```cs
+public delegate int CalculatorDelegate(int x, int y);
+
+public class SimpleCalculator
+{
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
+
+    public int Subtract(int a, int b)
+    {
+        return a - b;
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        SimpleCalculator calc = new SimpleCalculator();
+
+        CalculatorDelegate addDelegate = new CalculatorDelegate(calc.Add);
+        CalculatorDelegate subtractDelegate = calc.Subtract; // 단축 문법
+
+        int sum = addDelegate(10, 5);
+        int difference = subtractDelegate(10, 5);
+
+        Console.WriteLine($"덧셈 결과: {sum}");       // 출력: 덧셈 결과: 15
+        Console.WriteLine($"뺄셈 결과: {difference}"); // 출력: 뺄셈 결과: 5
+    }
+}
+```
+```cs
+public delegate void MessageDelegate(string message);
+
+public class Processor
+{
+    public void PerformAction(MessageDelegate callback)
+    {
+        Console.WriteLine("작업을 시작합니다...");
+        
+        System.Threading.Thread.Sleep(1000); // 1초 대기
+
+        callback("작업이 완료되었습니다!");
+    }
+}
+
+public class Program
+{
+    public static void ShowMessage(string msg)
+    {
+        Console.WriteLine($"[알림] {msg}");
+    }
+
+    public static void LogMessage(string msg)
+    {
+        Console.WriteLine($"[로그] {DateTime.Now}: {msg}");
+    }
+
+    public static void Main()
+    {
+        Processor processor = new Processor();
+        
+        MessageDelegate alertCallback = ShowMessage;
+        processor.PerformAction(alertCallback);
+        // 작업을 시작합니다...
+        // [알림] 작업이 완료되었습니다!
+
+        Console.WriteLine("----------");
+
+        MessageDelegate logCallback = LogMessage;
+        processor.PerformAction(logCallback);
+        // 작업을 시작합니다...
+        // [로그] 2025-06-28 오전 7:54:30: 작업이 완료되었습니다!
+
+    }
+}
+```
+Processor 클래스는 구체적으로 어떤 메시지 처리 방법(ShowMessage 또는 LogMessage)이 실행될지 알지 못하고, MessageDelegate 형식의 대리자를 호출  
+Processor 클래스의 변경 없이도 메시지를 화면에 출력하거나 로그 파일에 쓰는 등 다양한 동작을 외부에서 주입할 수 있음
+
+```cs
+public delegate void Notify();
+
+public class Broadcaster
+{
+    public event Notify SendNotification;
+
+    public void Broadcast()
+    {
+        Console.WriteLine("알림을 보냅니다!");
+        SendNotification?.Invoke(); // 연결된 메서드가 있을 경우에만 호출 (?. 연산자)
+    }
+}
+
+public class Subscriber1
+{
+    public void ReceiveNotification()
+    {
+        Console.WriteLine("구독자 1: 알림을 받았습니다.");
+    }
+}
+
+public class Subscriber2
+{
+    public void ReceiveNotification()
+    {
+        Console.WriteLine("구독자 2: 저도 알림을 받았습니다!");
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        Broadcaster broadcaster = new Broadcaster();
+        Subscriber1 sub1 = new Subscriber1();
+        Subscriber2 sub2 = new Subscriber2();
+
+        // += 연산자를 사용하여 메서드를 delegate에 추가 (구독)
+        broadcaster.SendNotification += sub1.ReceiveNotification;
+        broadcaster.SendNotification += sub2.ReceiveNotification;
+
+        // delegate 호출 (알림 발생)
+        broadcaster.Broadcast();
+        // 알림을 보냅니다!
+        // 구독자 1: 알림을 받았습니다.
+        // 구독자 2: 저도 알림을 받았습니다!
+
+        Console.WriteLine("\n--- 구독자 1 해지 ---\n");
+        
+        // -= 연산자를 사용하여 메서드를 delegate에서 제거 (구독 취소)
+        broadcaster.SendNotification -= sub1.ReceiveNotification;
+
+        broadcaster.Broadcast();
+        // 알림을 보냅니다!
+        // 구독자 2: 저도 알림을 받았습니다!
+    }
+}
+```
++= 와 -= 연산자를 사용하여 SendNotification이라는 하나의 delegate 변수에 여러 메서드를 자유롭게 추가하거나 제거  
+Broadcast() 메서드를 호출하면 연결된 모든 메서드가 순차적으로 실행
+
+
+
+### 제네릭 대리자
+* 대표적인 제네릭 대리자: Func, Action, Predicate
+* .NET에서는 매번 delegate를 선언하는 불편함을 덜어주기 위해 가장 일반적으로 사용되는 형태의 제네릭 대리자를 미리 정의
+1. Func<T, TResult>
+반환 값이 반드시 있는 메서드를 위한 제네릭 대리자  
+T는 입력 매개변수의 타입을 의미하고, 가장 마지막에 오는 TResult가 항상 반환 타입  
+최대 16개의 입력 매개변수를 가질 수 있음
+2. Action<T>
+반환 값이 없는(void) 메서드를 위한 제네릭 대리자  
+입력 매개변수만 지정
+3. Predicate<T>
+특정 조건을 검사하고 bool 값을 반환하는 특별한 형태의 제네릭 대리자  
+주로 리스트 등에서 특정 조건을 만족하는 항목을 찾을 때 사용  
+사실상 Func<T, bool>와 동일하지만, '조건을 검사한다'는 의미를 명확히 하기 위해 사용
+
+
+
+### Func
+* 반환 값이 있는 메서드를 위한 미리 정의된 편리한 delegate
+* 반환 값이 있는 메서드를 빠르고 간편하게 대리자로 사용하고 싶을 때, 특히 LINQ나 람다식과 함께 자주 사용
+```cs
+public class Program
+{
+    public static int Add(int x, int y)
+    {
+        return x + y;
+    }
+
+    public static void Main()
+    {
+        // Func<int, int, int>는 int형 매개변수 두 개를 받고, int형을 반환한다는 의미
+        Func<int, int, int> addFunc = Add;
+
+        int result = addFunc(10, 5);
+
+        Console.WriteLine($"결과: {result}"); // 결과: 15
+    }
+}
+```
+```cs
+public class Program
+{
+    public static void Main()
+    {
+        Func<int, int, int> multiplyFunc = (a, b) => a * b;
+
+        int result = multiplyFunc(10, 5);
+        Console.WriteLine($"곱셈 결과: {result}"); // 곱셈 결과: 50
+
+        string[] fruits = { "Apple", "Banana", "Cherry", "Grape" };
+        
+        // Enumerable.Count 메서드는 Func<TSource, bool> 타입의 대리자를 인자로 받음
+        // Count 메서드는 이 판별 결과를 보고, true일 때만 자기 내부의 카운터를 1씩 증가시킴
+        int longNameCount = fruits.Count(name => name.Length > 5); // 이름의 길이가 5보다 큰 과일의 개수
+
+        Console.WriteLine($"이름이 5글자보다 긴 과일의 개수: {longNameCount}"); // 이름이 5글자보다 긴 과일의 개수: 2
+    }
+}
+```
+
+### Action
+* .NET에 미리 정의된 제네릭 대리자 중 하나로, 반환 값이 없는(void) 메서드를 참조할 때 사용
+* 무언가를 실행하고 끝나기만 하는, 즉 반환 값이 필요 없는 메서드를 위한 것
+```cs
+public class Program
+{
+    public static void SayHello()
+    {
+        Console.WriteLine("안녕하세요!");
+    }
+
+    public static void ShowTime()
+    {
+        Console.WriteLine($"현재 시간: {DateTime.Now.ToShortTimeString()}");
+    }
+
+    public static void Main()
+    {
+        Action simpleAction = SayHello;
+
+        simpleAction = ShowTime;
+
+        simpleAction(); // 현재 시간: (현재 시간)
+
+        Action multiAction = SayHello;
+        multiAction += ShowTime;
+
+        multiAction();
+        // 안녕하세요!
+        // 현재 시간: (현재 시간)
+    }
+}
+```
+```cs
+using System;
+using System.Collections.Generic;
+
+public class Program
+{
+    public static void LogMessage(string message)
+    {
+        Console.WriteLine($"[LOG] {DateTime.Now}: {message}");
+    }
+    
+    public static void DisplayProduct(int id, string name)
+    {
+        Console.WriteLine($"상품 코드: {id}, 상품명: {name}");
+    }
+
+    public static void Main()
+    {
+        Action<string> logger = LogMessage;
+        logger("서버가 시작되었습니다."); // [LOG] (현재 시간): 서버가 시작되었습니다.
+
+        Action<int, string> productDisplayer = DisplayProduct;
+        productDisplayer(1001, "노트북"); // 상품 코드: 1001, 상품명: 노트북
+    }
+}
+```
+```cs
+public class Program
+{
+    public static void Main()
+    {
+        List<string> names = new List<string> { "Alice", "Bob", "Charlie" };
+
+        Action<string> printName = name => Console.WriteLine($"이름: {name}");
+        names.ForEach(printName);
+        // 이름: Alice
+        // 이름: Bob
+        // 이름: Charlie
+        
+        Console.WriteLine("\n--- 구분선 ---");
+
+        names.ForEach(name => Console.WriteLine($"Hello, {name}!"));
+
+        List<int> numbers = new List<int> { 10, 20, 30 };
+        numbers.ForEach(num =>
+        {
+            int doubled = num * 2;
+            Console.WriteLine($"{num}의 2배는 {doubled}입니다.");
+        });
+    }
+}
+```
+
+
+### EventHandler
+* .NET에서 이벤트를 처리하기 위해 특별히 만들어진 **표준 대리자(Standard Delegate)**
+* "이벤트"라는 특정 목적을 위해 설계되었기 때문에 명확한 규약과 패턴을 가지고 있음
+* EventHandler는 다음과 같이 정해진 형식의 메서드만 참조할 수 있음
+```cs
+void MethodName(object sender, EventArgs e)
+```
+1. void 반환 형식
+2. object sender: 이벤트를 **발생시킨 객체(인스턴스)**  
+예: 버튼 클릭 이벤트: sender=해당 버튼 객체 → 어떤 객체가 이벤트를 보냈는지 알 수 있음
+3. EventArgs e: 이벤트와 관련된 추가 데이터를 담는 객체  
+만약 전달할 추가 데이터가 없다면, 기본 EventArgs.Empty가 사용  
+더 많은 정보를 전달하고 싶다면 EventArgs를 상속하는 새로운 클래스를 만들어 사용
+```cs
+public class MessageEventArgs : EventArgs
+{
+    public string Message { get; }
+    public DateTime TimeSent { get; }
+
+    public MessageEventArgs(string message)
+    {
+        Message = message;
+        TimeSent = DateTime.Now;
+    }
+}
+
+public class Publisher
+{
+    public event EventHandler<MessageEventArgs> EmergencyEvent;
+
+    public void CheckMessage(string input)
+    {
+        Console.WriteLine($"입력 확인: '{input}'");
+        if (input.Contains("fire"))
+        {
+            OnEmergencyEvent(new MessageEventArgs(input));
+        }
+    }
+
+    // 이벤트를 발생시키는 메서드 (protected virtual로 만드는 것이 표준 패턴)
+    protected virtual void OnEmergencyEvent(MessageEventArgs e)
+    {
+        // 구독자가 있는지 확인하고, 있다면 이벤트를 호출(Invoke)
+        EmergencyEvent?.Invoke(this, e);
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        Publisher publisher = new Publisher();
+
+        publisher.EmergencyEvent += HandleEmergency;
+        publisher.EmergencyEvent += Call119;
+
+        publisher.CheckMessage("The weather is nice."); // 아무 일도 일어나지 않음
+        Console.WriteLine();
+        publisher.CheckMessage("Warning! There is a fire in the building!"); // 이벤트 발생!
+        /*
+        입력 확인: 'Warning! There is a fire in the building!'
+                    >> 긴급 상황 처리반: 이벤트 감지!
+                    보낸 객체: Publisher
+                    메시지: 'Warning! There is a fire in the building!'
+                    발생 시각: 2025-06-28 오전 8:45:38
+                    >> 119 자동 신고 시스템: 긴급 상황 접수 및 출동 요청!
+        */
+
+        publisher.EmergencyEvent -= Call119;
+        Console.WriteLine("\n--- 119 신고 핸들러 제거 후 ---");
+        publisher.CheckMessage("fire! fire!");
+        /*
+        입력 확인: 'Warning! There is a fire in the building!'
+                    >> 긴급 상황 처리반: 이벤트 감지!
+                    보낸 객체: Publisher
+                    메시지: 'Warning! There is a fire in the building!'
+                    발생 시각: 2025-06-28 오전 8:45:38
+        */
+    }
+
+    public static void HandleEmergency(object sender, MessageEventArgs e)
+    {
+        Console.WriteLine(">> 긴급 상황 처리반: 이벤트 감지!");
+        Console.WriteLine($"   보낸 객체: {sender.GetType().Name}");
+        Console.WriteLine($"   메시지: '{e.Message}'");
+        Console.WriteLine($"   발생 시각: {e.TimeSent}");
+    }
+
+    public static void Call119(object sender, MessageEventArgs e)
+    {
+        Console.WriteLine(">> 119 자동 신고 시스템: 긴급 상황 접수 및 출동 요청!");
+    }
+}
+```
+
+
+
+### Event
+* 대리자(delegate)에 적용하는 한정자(modifier)로, 해당 대리자를 안전한 이벤트 발행/구독 모델로 만들어주는 역할
+* event가 붙은 대리자는 외부 클래스에서 오직 구독(+=)과 구독 취소(-=)만 할 수 있음  
+외부에서 = 연산자로 직접 할당하거나 null로 만드는 것이 불가능해집니다. 이로써 한 구독자가 다른 구독자들의 구독 정보를 실수로 지우는 것을 방지
+* event가 붙은 대리자는 오직 해당 이벤트를 선언한 클래스 내부에서만 호출(Invoke)할 수 있음  
+외부에서는 절대로 이벤트를 강제로 발생시킬 수 없고, 이벤트의 발생 시점은 오직 이벤트를 소유한 클래스만이 결정할 수 있음
+
