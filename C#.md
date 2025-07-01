@@ -1305,8 +1305,46 @@ public class Program
 
 ### Event
 * 대리자(delegate)에 적용하는 한정자(modifier)로, 해당 대리자를 안전한 이벤트 발행/구독 모델로 만들어주는 역할
-* event가 붙은 대리자는 외부 클래스에서 오직 구독(+=)과 구독 취소(-=)만 할 수 있음  
-외부에서 = 연산자로 직접 할당하거나 null로 만드는 것이 불가능해집니다. 이로써 한 구독자가 다른 구독자들의 구독 정보를 실수로 지우는 것을 방지
-* event가 붙은 대리자는 오직 해당 이벤트를 선언한 클래스 내부에서만 호출(Invoke)할 수 있음  
-외부에서는 절대로 이벤트를 강제로 발생시킬 수 없고, 이벤트의 발생 시점은 오직 이벤트를 소유한 클래스만이 결정할 수 있음
+* `event` 한정자를 쓰는 이유
+    - **구독자 목록 덮어쓰기 (`=`) 방지:** 다른 구독자가 실수로 기존 구독자들을 모두 지워버리는 것을 막습니다.
+    - **이벤트 임의 발생 방지 (`Invoke`) 방지:** 오직 이벤트를 소유한 클래스만이 이벤트를 발생시킬 수 있도록 합니다.
+* `event` 한정자를 쓰지 않는 경우
+    * `public Action`이나 `public Func`처럼 `event` 없이 델리게이트를 그대로 노출하는 경우는, 알림이 아니라 외부에서 클래스의 행동 방식 자체를 교체하도록 허용하고 싶을 때 사용
+    * 여러 구독자(`+=`)를 갖는 것이 아니라, 단 하나의 메서드만 할당(`=`)하여 **클래스의 특정 로직을 위임**하는 것이 목적
+    ```cs
+    // "문자열 하나를 받아 아무것도 안하는" 로직을 위임받을 설계도
+    public delegate void LogStrategy(string message);
 
+    public class Worker
+    {
+        // 이 Worker의 "로그 기록 전략"은 외부에서 주입/교체할 수 있음
+        public LogStrategy Logger;
+
+        public void DoWork()
+        {
+            Console.WriteLine("작업을 시작합니다...");
+            // ... 어떤 작업 수행 ...
+
+            Logger?.Invoke("작업이 완료되었습니다.");
+        }
+    }
+
+    // --- 사용하는 쪽 ---
+    public static class Program
+    {
+        public static void Main()
+        {
+            var worker1 = new Worker();
+            // 작업자1의 로그 기록 전략은 "콘솔에 출력하는 것"으로 설정
+            worker1.Logger = (message) => Console.WriteLine($"[Console] {message}");
+            worker1.DoWork();
+
+            Console.WriteLine("---");
+
+            var worker2 = new Worker();
+            // 작업자2의 로그 기록 전략은 "파일에 쓰는 것"으로 설정
+            worker2.Logger = (message) => File.AppendAllText("log.txt", message + "\n");
+            worker2.DoWork();
+        }
+    }
+    ```
