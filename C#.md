@@ -1348,3 +1348,140 @@ public class Program
         }
     }
     ```
+
+
+
+### `abstract` / `virtual`
+* 추상 메서드(Abstract Method)
+    * `abstract`(추상) 메서드로 선언하면 그 클래스를 상속받는 모든 자식 클래스가 반드시 해당 메서드를 구현(override)해야함
+    * 부모: 규칙(추상 메서드)만 정의
+    * 자식: 부모가 정의한 그 규칙을 자신에 맞게 구체적으로 구현(override)
+    
+    ```cs
+    // Child
+    public partial class wndChild : Window
+    {
+        // "멤버가 변경되었음"을 알릴 이벤트
+        public event Action MemberChanged;
+    
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            // ... 멤버 정보 저장 로직 ...
+    
+            // 구독자들에게 알림
+            MemberChanged?.Invoke();
+            this.Close();
+        }
+    }
+    
+    // 자식 클래스가 반드시 구현해야 할 메서드를 포함하므로, wndBase는 abstract 클래스
+    public abstract partial class wndBase : Window
+    {
+        // ... wndBase의 다른 코드들 ...
+    
+    		private void OpenWindow()
+        {
+            wndChild childWindow = new wndChild();
+    
+            // 자식 창의 MemberChanged 이벤트가 발생하면,
+            // 이 클래스를 상속받은 자식 클래스가 구현할 OnChildMemberChanged 메서드를 호출하도록 구독
+            childWindow.MemberChanged += OnChildMemberChanged;
+    
+            childWindow.ShowDialog();
+        }
+    
+        /// <summary>
+        /// 자식 창에서 멤버가 변경되었을 때 호출될 추상 메서드입니다.
+        /// { } 몸통이 없으며, 이 클래스를 상속받는 클래스는 반드시 이 메서드를 구현(override)
+        /// </summary>
+        protected abstract void OnChildMemberChanged();
+    }
+    
+    public partial class wndParents : wndBase // wndBase를 상속
+    {
+        // 목표: 이 필드의 값을 "arrived"로 변경하기
+        public string Test;
+    
+        public wndParents()
+        {
+            InitializeComponent();
+        }
+    
+        // wndBase에 있는 OpenChildWindow()를 호출하는 버튼 (예시)
+        private void SomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 부모 클래스에 정의된 자식 창 열기 메서드를 호출
+            base.OpenChildWindow();
+        }
+    
+        /// 부모 클래스(wndBase)에 abstract로 선언된 메서드를 override 키워드를 사용하여 구체적으로 구현
+        protected override void OnChildMemberChanged()
+        {
+            // 이 로직은 wndParents 클래스에만 존재
+            this.Test = "arrived";
+    
+            Debug.WriteLine($"wndParents: 자식 창으로부터 Member 변경 알림 도착!");
+            Debug.WriteLine($"wndParents: Test 필드 값이 '{this.Test}'로 변경되었습니다.");
+        }
+    }
+    ```
+    
+* 가상 메서드(Virtual Method)
+    * 어떤 자식은 구현하고, 어떤 자식은 구현하지 않아도 되는' **선택적인 재정의**가 필요할 때는, `abstract` 대신 **`virtual`(가상)** 키워드를 사용
+    * `wndParents`처럼 알림 처리가 필요한 클래스만 해당 메서드를 재정의하고, 다른 자식 클래스들은 무시할 수 있음
+    
+    ```csharp
+    // wndBase
+    public partial class wndBase : Window
+    {
+        // ...
+    
+        protected void OpenChildWindow()
+        {
+            wndChild childWindow = new wndChild();
+            childWindow.MemberChanged += OnChildMemberChanged;
+            childWindow.ShowDialog();
+        }
+    
+        /// <summary>
+        /// 자식 창에서 멤버가 변경되었을 때 호출될 가상 메서드입니다.
+        /// 'virtual' 이므로 자식 클래스에서 재정의(override)하는 것이 선택사항이 됩니다.
+        /// 기본 동작은 아무것도 하지 않는 것입니다.
+        /// </summary>
+        protected virtual void OnChildMemberChanged() 
+        { 
+            // 기본적으로는 아무 일도 하지 않음
+        }
+    }
+    
+    public partial class wndParents : wndBase
+    {
+        public string Test;
+    
+        // ...
+    
+        /// <summary>
+        /// 부모의 virtual 메서드를 override 하여 자신만의 특별한 동작을 구현합니다.
+        /// </summary>
+        protected override void OnChildMemberChanged()
+        {
+            this.Test = "arrived";
+            Debug.WriteLine($"wndParents: 알림을 받아 Test 필드를 변경했습니다.");
+        }
+    }
+    
+    public partial class wndAnotherParents : wndBase
+    {
+        // OnChildMemberChanged를 재정의(override)하지 않아도 아무 문제가 없습니다.
+        // 만약 이 창에서 OpenChildWindow()를 호출하고 자식 창에서 이벤트가 발생하면,
+        // 아무 내용 없는 부모(wndBase)의 OnChildMemberChanged()가 호출되고 조용히 넘어갑니다.
+    }
+    ```
+    
+
+| 구분 | `abstract` 메서드 | `virtual` 메서드 |
+| --- | --- | --- |
+| **구현 강제성** | **강제 (자식은 반드시 `override` 해야 함)** | **선택 (자식이 `override` 해도 되고 안 해도 됨)** |
+| **기본 구현** | **불가능** (몸통 `{}`을 가질 수 없음) | **가능** (기본 동작을 `{}` 안에 구현해 둘 수 있음) |
+| **클래스 선언** | 메서드를 가진 클래스는 `abstract`여야 함 | 일반 클래스에서도 선언 가능 |
+| **주요 용도** | 자식들이 **반드시 가져야 하는** 핵심 기능의 **'규칙'** 정의 | 자식들이 **선택적으로 확장/변경할 수 있는 '기본 동작'** 제공 |
