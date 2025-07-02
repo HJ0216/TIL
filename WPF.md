@@ -18,9 +18,11 @@
 
 
 ### `<Style.Triggers>` vs `<ControlTemplate.Triggers>`
-* “컨트롤 자체 속성 바꾸고 싶다” → Style.Triggers
-* “템플릿 안의 요소를 바꾸고 싶다” → ControlTemplate.Triggers
-
+| 구분 | `Style.Triggers` | `ControlTemplate.Triggers` |
+| --- | --- | --- |
+| **목적** | 요소 **자체**의 스타일을 동적으로 변경 | **컨트롤 템플릿 내부 요소들**의 모양을 동적으로 변경 |
+| **감시 대상** | 스타일이 적용된 **요소 자체**의 속성 | **템플릿이 적용된 부모 컨트롤**의 속성 |
+| **영향 범위** | 스타일이 적용된 **요소 자체** | 템플릿 **내부의 특정 요소** (`TargetName`으로 지정) |
 
 ### `Style 내부 Setter` vs `Inline Property`
 1. Style 내부 `Setter`: **공통 스타일을 적용**하고 싶을 때
