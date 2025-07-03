@@ -1494,3 +1494,72 @@ C# 런타임은 `OnChildMemberChanged()`를 호출하는 시점에, 변수의 �
 그리고 그 실제 객체에 `override`된 메서드가 있다면, 언제나 부모의 `virtual` 메서드보다 **자식의 `override`된 메서드를 우선적으로 호출**
 
 따라서 `wndBase`에 있는 코드가 `OnChildMemberChanged()`를 호출하더라도, 그 코드를 실행하는 실제 객체가 `wndParents`의 인스턴스라면 `wndParents`에 있는 `override`된 버전이 실행
+
+
+
+### Casting
+ItemsSource의 실제 타입이 무엇이든 관계없이, 그 내용물을 새로운 List<T>로 안전하게 만들고 싶다면 LINQ의 ToList() 확장 메서드를 사용
+```cs
+IEnumerable<Item> itemsSourceAsEnumerable = treeview.ItemsSource as IEnumerable<Item>;
+
+List<Item> treeviewItemList = null;
+
+if (itemsSourceAsEnumerable != null)
+{
+    // 3. ToList(): 새로운 List<T> 생성
+    treeviewItemList = itemsSourceAsEnumerable.ToList();
+}
+```
+
+
+
+### BuildHierarchy, FlatHierarchy
+```cs
+private List<Item> BuildHierarchy(List<Item> items)
+{
+    var nodeDict = new Dictionary<string, Item>();
+
+    foreach (var item in items)
+    {
+        nodeDict[item.Id] = new Item(item);
+    }
+
+    var rootNodes = new List<Item>();
+
+    foreach (var item in items)
+    {
+        Item currentNode = nodeDict[item.Id];
+        string parentId = item.ParentId;
+
+        if (!string.IsNullOrEmpty(parentId) && nodeDict.ContainsKey(parentId))
+        {
+            nodeDict[parentId].Children.Add(currentNode);
+        }
+        else
+        {
+            rootNodes.Add(currentNode);
+        }
+    }
+
+    return rootNodes;
+}
+
+
+public List<Item> FlattenHierarchy(IEnumerable<Item> hierarchicalItems)
+{
+    var flatList = new List<Item>();
+    if (hierarchicalItems == null) return flatList;
+
+    foreach (var item in hierarchicalItems)
+    {
+        flatList.Add(item);
+
+        if (item.Children != null && item.Children.Any())
+        {
+            flatList.AddRange(FlattenHierarchy(item.Children));
+        }
+    }
+
+    return flatList;
+}
+```
