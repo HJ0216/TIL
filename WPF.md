@@ -1035,6 +1035,230 @@ ShowDialog()로 open한 윈도우에서 static Instance가 null이 아닐 경우
 
 
 
+### Drag & Drop
+```xml
+<DataGrid x:Name="dataGrid" AllowDrop="True" 
+          PreviewMouseLeftButtonDown="PreviewMouseLeftButtonDown"
+          MouseMove="MouseMove"
+          DragEnter="DragEnter" Drop="Drop">
+```
+```cs
+public class DragAdorner : Adorner // 기본 UI가 아닌, 그 위에 덮인 별개의 투명한 레이어에 존재하는 특별한 객체
+{
+    private readonly UIElement adorningUIElement; // 실제로 표시될 UI 요소
+    private Point currentPosition; // adorner가 화면에서 표시될 위치
+
+    public DragAdorner(UIElement adornedElement, UIElement adorningElement) : base(adornedElement)
+    {
+        adorningUIElement = adorningElement;
+        this.IsHitTestVisible = false;
+        AddVisualChild(adorningUIElement);
+        currentPosition = new Point(0, 0);
+    }
+
+    public void UpdatePosition(Point newPosition)
+    {
+        currentPosition = new Point(newPosition.X, newPosition.Y + 20);
+        InvalidateArrange();
+    }
+
+    protected override int VisualChildrenCount => 1; // Adorner 태그 내 요소 개수
+
+    protected override Visual GetVisualChild(int index) => adorningUIElement; // index에 있는 Adorner 내 요소
+
+    // Adorner 크기 판단
+    protected override Size MeasureOverride(Size constraint)
+    {
+        adorningUIElement.Measure(constraint);
+        return adorningUIElement.DesiredSize;
+    }
+
+    // Adorner 크기 및 위치 설정
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        adorningUIElement.Arrange(new Rect(currentPosition, adorningUIElement.DesiredSize));
+        return finalSize;
+    }
+}
+```
+```cs
+public static class VisualTreeHelperExtensions
+{
+    public static T GetVisualParent<T>(this DependencyObject obj) where T : DependencyObject
+    {
+        while (obj != null)
+        {
+            if (obj is T parent)
+                return parent;
+            obj = VisualTreeHelper.GetParent(obj);
+        }
+        return null;
+    }
+}
+```
+```cs
+{
+    private bool isDragging = false;
+    private Point dragStartPoint;
+
+    private void PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        dragStartPoint = e.GetPosition(null);            
+    }
+
+    private void MouseMove(object sender, MouseEventArgs e)
+    {
+        Model selectedModel = dataGrid.SelectedItem as Model;
+        if(selectedModel == null) return;
+
+        if (e.LeftButton == MouseButtonState.Pressed && !isDragging)
+        {
+            Point currentPoint = e.GetPosition(null);
+            Vector diff = dragStartPoint - currentPoint;
+
+            if(Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
+            {
+                StartDrag(selectedModel);
+            }
+        }
+    }
+
+    private void StartDrag(Model selectedModel)
+    {
+        isDragging = true;
+
+        var adornerLayer = AdornerLayer.GetAdornerLayer(dataGrid); // Adorner를 그릴 수 있는 표면 확인
+        if (adornerLayer != null)
+        {
+            var textBlock = new TextBlock
+            {
+                Text = $"Dragging 1 record:\r\n{selectedModel.VisibleName}",
+                Background = (Brush)TryFindResource("MainBackgroundColor"),
+                Foreground = (Brush)TryFindResource("MainForegroundColor"),
+                FontSize = 12,
+                Padding = new Thickness(5),
+                Opacity = 0.8
+            };
+
+            dragAdorner = new DragAdorner(dataGrid, textBlock);
+            adornerLayer.Add(dragAdorner);
+        }
+
+        DragEventHandler dragOverHandler = null;
+        dragOverHandler += (sender, e) =>
+        {
+            if (dragAdorner != null)
+            {
+                var adornerPos = e.GetPosition(dataGrid); // dataGrid 기준 현재 마우스 위치
+                dragAdorner.UpdatePosition(adornerPos);
+            }
+
+            e.Handled = true;
+        };
+
+        dataGrid.PreviewDragOver += dragOverHandler;
+
+        GiveFeedbackEventHandler giveFeedbackHandler = null;
+        giveFeedbackHandler = (sender, e) =>
+        {
+            e.UseDefaultCursors = false; // 드래그 커서 모양 제거
+
+            if (e.Effects.HasFlag(DragDropEffects.Move))
+            {
+                Mouse.SetCursor(Cursors.Arrow);
+            }
+            else
+            {
+                Mouse.SetCursor(Cursors.No);
+            }
+
+            e.Handled = true;
+        };
+
+        dataGrid.GiveFeedback += giveFeedbackHandler;
+
+        try
+        {
+            DataObject dragData = new DataObject(typeof(Model), selectedLayer);
+            DragDrop.DoDragDrop(dataGrid, dragData, DragDropEffects.Move);
+        }
+        finally
+        {
+            dataGrid.PreviewDragOver -= dragOverHandler;
+            dataGrid.GiveFeedback -= giveFeedbackHandler;
+
+            if (dragAdorner != null)
+            {
+                adornerLayer?.Remove(dragAdorner);
+                dragAdorner = null;
+            }
+
+            isDragging = false;
+        }
+    }
+
+    private void DragEnter(object sender, DragEventArgs e)
+    {
+        if(e.Data.GetDataPresent(typeof(Model)))
+        {
+            e.Effects = DragDropEffects.Move;
+        }
+        else
+        {
+            e.Effects = DragDropEffects.None;
+        }
+    }
+
+    private void Drop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(typeof(Model)))
+        {
+            var draggedItem = (Model)e.Data.GetData(typeof(Model));
+            var targetRow = GetDataGridRowFromPoint(e.GetPosition(dataGrid));
+
+            if (targetRow?.Item is Model targetItem && draggedItem != targetItem)
+            {
+                MoveItem(draggedItem, targetItem);
+            }
+
+            e.Effects = DragDropEffects.Move;
+        }
+        else
+        {
+            e.Effects = DragDropEffects.None;
+        }
+
+        e.Handled = true;
+    }
+
+
+    private DataGridRow GetDataGridRowFromPoint(Point point)
+    {
+        var element = dataGrid.InputHitTest(point) as FrameworkElement;
+        return element?.GetVisualParent<DataGridRow>();
+    }
+
+    private void MoveItem(Model sourceItem, Model targetItem)
+    {
+        var items = dataGrid.ItemsSource as ObservableCollection<Model>;
+
+        int sourceIndex = items.IndexOf(sourceItem);
+        int targetIndex = items.IndexOf(targetItem);
+
+        if (sourceIndex >= 0 && targetIndex >= 0 && sourceIndex != targetIndex)
+        {
+            items.RemoveAt(sourceIndex);
+            items.Insert(targetIndex, sourceItem);
+
+            dataGrid.SelectedItem = sourceItem;
+        }
+    }
+}
+```
+
+
+
 <br/>
 
 ### 📚 참고
