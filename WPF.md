@@ -1259,6 +1259,19 @@ public static class VisualTreeHelperExtensions
 
 
 
+### 성능
+WPF는 가장 깊은 요소에 접근할 때 모든 부모 요소들을 거쳐야 하므로, 필요한 만큼만 중첩하고, 가능하면 속성(Margin, Alignment)으로 해결
+```xml
+<Grid>
+  <Button Margin="10,5" 
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top">버튼</Button>
+</Grid>
+```
+
+
+
+
 <br/>
 
 ### 📚 참고
