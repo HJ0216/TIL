@@ -8,11 +8,61 @@
   "chatInput": "안뇽"
 }
 ```
+* Make Chat Publicly Available On 설정을 통해 Chat Url에 접근해서 메시지를 보낼 수 있음
+  * Workflow Active 필수
+
+
 ### Manual Trigger
 * Execute Workflow를 통해 실행
   * Edit Field 노드를 통해 원하는 input 전달 가능
     * query, value
   * 다음 노드에서는 `{{ $json.query }}`로 key값을 통해 value에 접근 가능
+
+### Web hook Trigger
+* Webhook 기반 Trigger를 사용할 경우, http가 아닌 https 통신이 가능해야 함
+* ngrok 설치 후, auth-token 설정
+```bash
+ngrok authtoken '본인의 authtoken 코드'
+ngrok http '본인의 로컬 서버 포트'
+```
+docker-compose.yml 수정
+```yml
+x-n8n: &service-n8n
+  environment:
+    - WEBHOOK_URL='ngrok에서 전달받은 https 주소 추가'
+```
+docker 재시작
+```bash
+docker compose up -d
+-- docker compose: 현재 디렉토리의 docker-compose.yml 파일을 기준으로 컨테이너들을 실행
+-- up: 컨테이너들을 생성하고 실행
+-- -d: detached 모드로 실행 → 터미널에 계속 붙어 있지 않고 백그라운드로 실행됨
+```
+
+* PowerShell 자동화
+1. ngrok 환경변수로 설정해서 실행파일이 위치한 곳 뿐만 아니라 전역으로 ngrok 명령어 사용할 수 있도록 설정
+2. n8n docker-compose.yml이 위치한 폴더에 *.ps1파일 생성
+```sh
+Start-Process "cmd.exe" "/k ngrok.exe http 5678"
+Start-Sleep -Seconds 5
+
+# Get public ngrok URL
+$response = Invoke-RestMethod -Uri "http://127.0.0.1:4040/api/tunnels"
+$ngrokUrl = $response.tunnels[0].public_url
+
+# Update docker-compose.yml
+$composeFile = "C:\N8N\self-hosted-ai-starter-kit\docker-compose.yml"
+$content = Get-Content $composeFile
+$content = $content -replace '    - WEBHOOK_URL=.*', "    - WEBHOOK_URL=$ngrokUrl"
+Set-Content $composeFile $content
+
+# Restart Docker
+cd "C:\N8N\self-hosted-ai-starter-kit"
+docker compose down
+docker compose up -d
+```
+
+
 
 ## AI
 ### AI Agent
@@ -60,14 +110,28 @@
         * Header: X-Naver-Client-Id, X-Naver-Client-Secret
         * Query Param: query
       * 일일 호출 허용량: 25,000
+    * Google Drive
+      * Google Cloud Console에서 프로젝트 생성 후, API 사용을 등록
+      * Create file을 할 경우, 소유권한이 해당 Google Service의 이메일로 등록되어있으므로 Share 단계가 필요
 
 
 ## Others
+### HTTP Request
+* 유튜브 자막 API
+  * https://kome.ai/api/transcript
+    * POST
+    * Header: {content-type: application/json}, {origin, https://kome.ai}
+    * Body: {"video_id": "{{ $json.url }}", "format": true}
+
 ### Merge
 다중 Output 값을 1개의 결과로 병합
 
 ### Aggregate
 Input field의 이름을 기준으로 output 재구성
+
+
+
+
 
 
 <br/>
