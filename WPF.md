@@ -1271,6 +1271,94 @@ WPF는 가장 깊은 요소에 접근할 때 모든 부모 요소들을 거쳐�
 
 
 
+### TreeView, DataType
+* 특정 데이터 타입에 대한 암시적 데이터 템플릿(Implicit DataTemplate)을 정의
+* x:Key를 사용하여 템플릿에 이름을 붙이고 수동으로 적용하는 것과 달리, DataType을 사용하면 WPF가 데이터의 타입을 보고 알아서 적절한 템플릿을 찾아 적용
+```xml
+<Window x:Class="TreeViewSample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TreeViewSample"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <!-- 부모(폴더)를 위한 템플릿 -->
+        <HierarchicalDataTemplate DataType="{x:Type local:mTreeViewItem}" ItemsSource="{Binding Children}">
+        <!-- ItemsSource: 각 항목의 자식들 설정 -->
+            <TextBlock Text="{Binding Title}" />
+        </HierarchicalDataTemplate>
+
+        <!-- 동물 자식(파일)을 위한 템플릿 -->
+        <DataTemplate DataType="{x:Type local:mTreeViewAnimalItem}">
+            <TextBlock Text="{Binding Title}" Background="AliceBlue" />
+        </DataTemplate>
+
+        <!-- 과일 자식(파일)을 위한 템플릿 -->
+        <DataTemplate DataType="{x:Type local:mTreeViewFruitItem}">
+            <TextBlock Text="{Binding Title}" Background="Beige"/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <TreeView x:Name="Tree_Sample"/>
+
+    </Grid>
+</Window>
+```
+```cs
+namespace TreeViewSample
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var rootItem = new mTreeViewItem { Title="동물과 과일" };
+
+            rootItem.Children.Add(new mTreeViewAnimalItem { Title="강아지" });
+            rootItem.Children.Add(new mTreeViewFruitItem { Title="사과" });
+            rootItem.Children.Add(new mTreeViewAnimalItem { Title="고양이" });
+            rootItem.Children.Add(new mTreeViewFruitItem { Title="수박" });
+
+            Tree_Sample.ItemsSource = new List<mTreeViewItem> { rootItem };
+        }
+    }
+
+    public class mTreeViewItem 
+    {
+        public string Id { get; set; }
+        public string ParentId { get; set; }
+        public int NodeType { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+
+        public List<mTreeViewItem> Children { get; set; } = new List<mTreeViewItem> { };
+    }
+
+    public class mTreeViewAnimalItem : mTreeViewItem
+    {
+        public mTreeViewAnimalItem() { }
+
+    }
+
+    public class mTreeViewFruitItem : mTreeViewItem
+    {
+        public mTreeViewFruitItem() { }
+    }
+}
+```
+
+
+
 
 <br/>
 
