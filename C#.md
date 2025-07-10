@@ -1563,3 +1563,28 @@ public List<Item> FlattenHierarchy(IEnumerable<Item> hierarchicalItems)
     return flatList;
 }
 ```
+
+
+### 다형성과 List
+```cs
+public class Animal { }
+public class Dog : Animal { }
+public class Cat : Animal { }
+
+// 만약 List<T>가 공변성을 지원한다면...
+List<Animal> animals = new List<Dog>();
+
+// 가정: 이게 허용된다면
+animals.Add(new Cat());
+
+// 💥 런타임 에러! Dog 리스트에 Cat을 넣으려고 함
+```
+
+
+
+### TreeView, TreeViewItem
+`CommonTreeView` class와 `CommonTreeViewItem` class를 함께 두는 것이 좋음
+1. **밀접한 관계**: `CommonTreeViewItem`은 `CommonTreeView`의 전용 컨테이너로만 사용됨
+2. **단순성**: 하나의 기능을 위한 두 클래스를 한 곳에서 관리
+3. **WPF 관례**: 많은 WPF 커스텀 컨트롤들이 이런 방식 사용
+
