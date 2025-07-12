@@ -221,6 +221,106 @@ implementation, api
   * 해당 모듈에서만 사용하는 경우 implementation을 사용하고, 다른 모듈에서도 함께 사용할 경우 api를 사용
 
 
+
+### JPA 연관 관계
+```sql
+-- table
+create table Person(
+  id bigint auto_increment,
+  name varchar(255),
+  primary key (id)
+);
+
+create table Address(
+  id bigint auto_increment,
+  city varchar(255),
+  street varchar(255),
+  person_id bigint,
+  primary key (id)
+);
+```
+
+```java
+@Entity
+public class Person {
+  // Address가 person_id를 보유
+  
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
+
+  @Column(nullable = false)
+  private String name;
+
+  @OneToOne(mappedBy = "person")
+  private Address address;
+
+  // 양방향 연관관계 설정
+  public void setAddress(Address address) {
+      this.address = address;
+  }
+}
+
+@Entity
+public class Address {
+  // person_id를 보유
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
+
+  @Column(nullable = false)
+  private String city;
+
+  @Column(nullable = false)
+  private String street;
+
+  @OneToOne
+  // @JoinColumn(name = "person_id")
+  private Person person;
+
+  protected Address() {}
+
+  public Address(String city, String street, Person person) {
+    this.city = city;
+    this.street = street;
+    this.setPerson(person);
+  }
+  
+  // 양방향 연관관계일 때는 한 번에 연결하는 것이 좋음
+  public void setPerson(Person person) {
+    this.person = person;
+    if (person != null) {
+        person.setAddress(this);
+    }
+  }
+}
+
+@Service
+@Transactional
+public class PersonService {
+
+  private final PersonRepository personRepository;
+  private final AddressRepository addressRepository;
+
+  public PersonService(PersonRepository personRepository, AddressRepository addressRepository) {
+    this.personRepository = personRepository;
+    this.addressRepository = addressRepository;
+  }
+
+  public void savePerson(){
+    Person saved = personRepository.save(new Person());
+    // 연관관계 주인쪽에 설정
+    Address address = addressRepository.save(new Address("seoul", "gangnamdaero", saved));
+  }
+}
+```
+* cascade: 저장, 삭제 시 연관 관계 테이블까지 함께 동작
+* orphanRemoval: 부모 컬렉션에서 제거된 자식 엔티티가 자동으로 DB에서 삭제
+* FetchType.Lazy: 지연 로딩, 연관된 엔티티에 실제로 접근하는 시점에 필요한 데이터를 조회하는 방식
+
+
+
 <br/>
 
 ### 📚 참고
