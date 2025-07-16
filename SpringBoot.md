@@ -321,6 +321,34 @@ public class PersonService {
 
 
 
+### Spring Security
+```bash
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+}
+```
+```java
+@Configuration
+public class SecurityConfig {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) // 모든 HTTP 요청에 대한 접근 허용
+        .csrf(csrf -> csrf.disable()) // CSRF 보호 기능 비활성화
+        .headers(headers -> headers
+            .frameOptions(frameOptions -> frameOptions.disable()) // X-Frame-Options 헤더 비활성화
+        );
+    return http.build();
+  }
+}
+```
+* frameOptions
+  * 보안 때문에 Spring Security는 자기 페이지가 `<iframe>`(액자)에 들어가는 것을 금지
+  * 내 애플리케이션이 H2 콘솔 화면을 프레임(`<iframe>`) 구조로 만들어서 응답
+    * H2 데이터베이스 콘솔 화면은 이 '액자' 기술을 이용해서 만들어짐
+  * frameOptions.disable()을 통해 액자 금지 규칙 비활성화
+
+
+
 <br/>
 
 ### 📚 참고
