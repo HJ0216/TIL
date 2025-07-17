@@ -1588,3 +1588,31 @@ animals.Add(new Cat());
 2. **단순성**: 하나의 기능을 위한 두 클래스를 한 곳에서 관리
 3. **WPF 관례**: 많은 WPF 커스텀 컨트롤들이 이런 방식 사용
 
+
+
+### IDisposable
+* IDisposable를 인터페이스로 구현하는 클래스의 객체는 사용이 끝난 후 Dispose()를 호출하여 메모리를 정리해줘야한다.
+* 정리해주지 않아도 GC에서 정리를 해주지만 정리 타이밍을 알 수 없고, 정리 중 오류가 날 경우 TryCatch로도 잡을 수 없기 때문에 정리를 해줘야한다.
+
+StreamReader(IDisposable 구현)
+```cs
+StreamReader reader = new StreamReader("content.txt");
+
+try {
+    string content = reader.ReadToEnd();
+} catch(IOException e) {
+    Debug.Log ("Error: " + e.Message);
+} finally {
+    reader.Close();
+    // StreamReader의 Close()에서는 해당 객체를 Dispose()
+
+}
+
+// using을 사용할 경우 생략할 수 있음
+using (StreamReader reader = new StreamReader("content.txt"))
+{
+    string content = reader.ReadToEnd();
+}
+// {}을 벗어나는 순간 reader.Close()을 자동으로 해줌
+```
+
