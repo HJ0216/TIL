@@ -1,6 +1,6 @@
 ### Ngrok
 로컬 개발 서버를 안전하게 외부에 노출시킬 수 있는 HTTPS 터널링 도구 
-* 터널링: 로컬(내 컴퓨터에서만 접근 가능한) 서버를 외부 인터넷에서도 접근할 수 있도록 ‘가상 통로’를 만드는 것
+* 터널링: 로컬 컴퓨터에서 실행 중인 웹 서버를 외부 인터넷에서 접근할 수 있도록 임시 HTTPS 주소를 만들어주는 기술
 
 로컬 개발환경인 localhost에서 구동 중인 웹 서비스를 외부 인터넷 환경에서 접근할 수 있도록 만들어줌  
 Webhook 테스트, 실시간 데모, 로컬 개발환경 접근 등에 유용
@@ -110,6 +110,126 @@ public partial class wndRegister : Window
     }
 }
 ```
+
+* JSON 구조를 계층화시키는 것이 좋은 이유
+```json
+{
+  "userId": 1,
+  "email": "chrome123@naver.com", 
+  "nickname": "nick",
+  "accessToken": "...",
+  "tokenType": "Bearer"
+}
+
+{
+  "accessToken": "...",
+  "tokenType": "Bearer",
+  "userInfo": {
+    "email": "chrome123@naver.com",
+    "nickname": "nick"
+  }
+}
+```
+1. **관심사 분리**: LoginResponse는 인증 정보, UserResponse는 사용자 정보
+2. **재사용성**: UserResponse를 다른 API에서도 활용 가능
+3. **유지보수성**: 사용자 정보 구조 변경 시 UserResponse만 수정하면 됨
+4. **확장성**: 나중에 UserResponse에 필드 추가해도 LoginResponse는 영향 없음
+5. **책임 분담**: 각 클래스가 명확한 역할을 가짐
+
+
+
+### Log Level
+**ERROR**
+* 반드시 확인해야 할 심각한 문제 발생
+  * 데이터베이스 연결 실패, 외부 API 호출 실패
+  * 처리되지 않은 예외 발생
+  * 시스템 장애를 유발할 수 있는 문제
+  * `log.error("DB Connection Failed!", exception);`
+
+**WARN**
+* 에러는 아니지만, 잠재적인 문제 또는 주의가 필요한 상황
+  * 비정상적인 파라미터 요청 (ex: 음수 값의 페이지 번호)
+  * 곧 사용 중지될(Deprecated) API 호출
+  * 재시도하는 작업
+  * `log.warn("Invalid page number requested: {}", pageNum);`
+
+**INFO**
+* 서비스의 주요 흐름 및 의미 있는 이벤트 (정상 상황)
+  * 사용자 로그인/로그아웃, 회원가입
+  * 주요 기능(핵심 비즈니스 로직)의 시작과 끝
+  * 중요한 설정 값 변경, 서버 시작/종료
+  * `log.info("User '{}' logged in successfully.", userId);`
+
+**DEBUG**
+* 개발 단계에서 상세한 정보 확인
+  * SQL 쿼리 파라미터 확인
+  * 외부 API 요청/응답 전문(full text) 확인
+  * 변수의 상세한 값 추적
+  * `log.debug("Executing query with params: {}", params);`
+
+**TRACE**
+* 가장 상세한 정보 (DEBUG보다 더 깊게)
+  * 메서드의 시작과 끝, 루프의 매 반복마다의 상태 등
+  * 매우 드물게 사용됨
+
+| 계층 | 주요 로그 레벨 | 로깅 내용 예시 |
+| --- | --- | --- |
+| Controller | `INFO`, `WARN` | `GET /users/123 요청 들어옴`, `잘못된 요청 파라미터` |
+| Service | `INFO`, `ERROR` | `주문 시작`, `재고 부족으로 주문 실패` |
+| Repository | DEBUG | 프레임워크가 쿼리 실행 로그를 자동으로 남겨주므로, 직접 로그를 남기는 경우는 드묾 |
+| Global Handler | ERROR | 처리되지 않은 예외 발생 |
+
+
+
+### PowerShell vs CMD
+| 항목     | `cmd` (Command Prompt) | `PowerShell` |
+| -------- | ---------------------- | ------------ |
+| 출시 시기 | DOS 시절부터 존재 | Windows PowerShell: 2006년 |
+| 기반     | 문자열 기반 셸 (텍스트 파싱) | 객체 기반 셸 (.NET 객체 사용) |
+| 목적     | 전통적인 명령어 실행, 배치 스크립트용  | 시스템 관리 자동화, 복잡한 작업 처리 |
+| 사용 언어 | 배치(batch) 스크립트 | PowerShell 스크립트 (.ps1), C# 유사 |
+
+| 기능           | `cmd`               | `PowerShell`       |
+| ------------- | ------------------- | ------------------- |
+| 파이프라인 처리 | 문자열만 전달         | .NET 객체 전달 가능   |
+| 스크립트 확장자 | `.bat`, `.cmd`      | `.ps1`              |
+| 루프 및 조건    | `if`, `for` 제한적   | `foreach`, `if`, `switch` 등 프로그래밍 언어 수준 |
+| JSON, XML 처리 | 매우 어려움          | 내장 Cmdlet으로 쉽게 처리 가능 |
+| 관리자 권한 실행 | 가능                | 가능 + 더 강력한 권한 사용 가능 |
+
+| 상황                                     | 추천 셸          |
+| ---------------------------------- -----| --------------- |
+| 간단한 명령 실행 (ex: `ping`, `ipconfig`) | `cmd`도 충분      |
+| 복잡한 자동화, 시스템 관리, 스크립트 작업    | `PowerShell` 추천 |
+| 리눅스와 비슷한 명령어를 원함               | `PowerShell` (Ubuntu 스타일 alias 많음) |
+| 최신 Windows 스크립트 작성                 | `PowerShell Core` 또는 `Windows PowerShell` 권장 |
+
+### gradle-wrapper.jar
+* Gradle 프로젝트를 빌드할 때 로컬에 Gradle이 설치되어 있지 않아도 자동으로 Gradle을 다운로드하고 실행할 수 있도록 도와주는 도구
+1. ./gradlew 실행 →
+2. gradle/wrapper/gradle-wrapper.jar 실행 →
+3. gradle-wrapper.properties 읽고 Gradle 다운로드 →
+4. 프로젝트 빌드
+* **git에서 함께 관리되어야 함**
+```bash
+java.lang.ClassNotFoundException: org.gradle.wrapper.GradleWrapperMain
+```
+
+
+
+### .jar
+✅ library-app-0.0.1-SNAPSHOT.jar
+* 실행 가능한 JAR (fat/uber jar)
+* Spring Boot에서 기본으로 생성되는 JAR 파일
+* 내부에 애플리케이션 클래스 + 모든 의존 라이브러리가 포함됨.
+* `java -jar library-app-0.0.1-SNAPSHOT.jar`로 실행 가능
+* MANIFEST.MF 파일에 Main-Class, Start-Class 등의 정보가 있음
+
+❌ library-app-0.0.1-SNAPSHOT-plain.jar
+* 실행 불가능한 순수 클래스 파일만 포함된 JAR
+* 오직 프로젝트의 .class 파일만 들어 있음 (의존 라이브러리는 없음)
+* 보통 IDE나 다른 빌드 환경에서 참고용으로 사용
+* java -jar 명령으로 실행하면 Main-Class not found 오류 발생
 
 
 
