@@ -232,6 +232,24 @@ java.lang.ClassNotFoundException: org.gradle.wrapper.GradleWrapperMain
 * java -jar 명령으로 실행하면 Main-Class not found 오류 발생
 
 
+### 인코딩과 디코딩/암호화와 복호화
+* Encoding
+  * 데이터를 특정 형식이나 규칙에 따라 다른 형태로 변환하는 과정
+  * 주요 목적은 데이터의 효율적인 저장, 전송, 그리고 시스템 간 호환성을 확보
+* Decoding
+  * 인코딩된 데이터를 원래의 형태로 되돌리는 역과정
+* 특징
+  * 보안이 주목적이 아님
+  * 공개된 표준 알고리즘 사용
+  * 인코딩 규칙만 알면 누구나 디코딩 가능
+* Encryption
+  * 데이터를 제3자가 읽을 수 없도록 의도적으로 변환하는 과정
+* Decryption
+  * 암호화된 데이터를 원래 형태로 되돌리는 과정
+* 특징
+  * 보안이 주목적
+  * 키 기반 접근 제한(올바른 키 없이는 원본 데이터 복원 불가능)
+
 
 <br/>
 
