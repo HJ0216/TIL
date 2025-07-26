@@ -251,6 +251,69 @@ java.lang.ClassNotFoundException: org.gradle.wrapper.GradleWrapperMain
   * 키 기반 접근 제한(올바른 키 없이는 원본 데이터 복원 불가능)
 
 
+
+### private 필드값 테스트
+1. ReflectionTestUtils
+* private 필드에도 직접 값을 주입할 수 있어, Entity의 구조를 변경하지 않고도 손쉽게 테스트 할 수 있음
+```java
+@Test
+void myTest() {
+    // given
+    User user = new User("test@email.com", "nickname", "password"); // 기존 생성자 사용
+    
+    // Reflection을 사용해 private인 id 필드에 값을 설정
+    ReflectionTestUtils.setField(user, "id", 1L); 
+    
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+    // then
+    assertThat(user.getId()).isEqualTo(1L);
+}
+```
+
+2. 테스트 데이터 빌더(Test Data Builder) 패턴 사용
+테스트용 객체 생성을 전담하는 별도의 빌더 클래스를 생성
+```java
+// 테스트 소스 폴더(src/test/java)에 빌더 클래스 생성
+public class UserTestBuilder {
+    private Long id = 1L;
+    private String email = "test@example.com";
+    // ... 기본값 설정 ...
+
+    public static UserTestBuilder builder() {
+        return new UserTestBuilder();
+    }
+
+    public UserTestBuilder id(Long id) {
+        this.id = id;
+        return this;
+    }
+    
+    // ... 다른 필드 설정 메서드 ...
+    
+    public User build() {
+        User user = new User(email, ...); // 엔티티의 프로덕션 생성자 사용
+        ReflectionTestUtils.setField(user, "id", this.id); // 빌더 내부에서 리플렉션 사용
+        return user;
+    }
+}
+```
+
+
+
+### Mockito vs. BDD Mockito
+* Mockito
+  * 언제(when) 이 메서드가 호출되면, 이것을 반환해라(thenReturn)
+  * `when(mock.method()).thenReturn(value);`
+  * `when(...).thenThrow(new Exception());`
+  * `verify(mock).method();`
+* BDDMockito
+  * `given(mock.method()).willReturn(value);`
+  * `given(...).willThrow(new Exception());`
+  * `then(mock).should().method();`
+
+
+
 <br/>
 
 ### 📚 참고
