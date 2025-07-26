@@ -299,7 +299,7 @@ public class UserTestBuilder {
 
 
 
-### Mockito vs. BDD Mockito
+### Mockito vs BDD Mockito
 * Mockito
   * 언제(when) 이 메서드가 호출되면, 이것을 반환해라(thenReturn)
   * `when(mock.method()).thenReturn(value);`
@@ -310,6 +310,40 @@ public class UserTestBuilder {
   * `given(...).willThrow(new Exception());`
   * `then(mock).should().method();`
 
+
+
+### andExpect vs assertThat
+* .andExpect()
+  * MockMvc 체인 안에서
+  * HTTP 응답 관련 검증
+    * 상태 코드: status().isOk()
+    * JSON 응답: jsonPath("$.field").value("value")
+    * 헤더: header().string("Location", "url")
+    * 쿠키: cookie().value("name", "value")
+```java
+mockMvc.perform(post("/signup"))
+    .andExpect(status().isCreated())           // ✅ MockMvc 체인
+    .andExpect(jsonPath("$.email").exists())   // ✅ MockMvc 체인
+    .andExpect(header().string("Location", "/api/v1/users/1")); // ✅ MockMvc 체인
+```
+
+* assertThat()
+  * MockMvc 체인 밖에서
+  * 비즈니스 로직/데이터 검증
+    * DB 저장 확인
+    * 서비스 로직 결과 검증
+    * 객체 상태 검증
+```java
+// DB 저장 확인
+User savedUser = userRepository.findByEmail(email).orElseThrow();
+assertThat(savedUser.getEmail()).isEqualTo(VALID_EMAIL);    // ✅ 별도 검증
+assertThat(savedUser.getPassword()).isNotEqualTo(rawPassword); // ✅ 별도 검증
+
+// 비즈니스 로직 검증
+List<User> users = userService.findActiveUsers();
+assertThat(users).hasSize(3);                               // ✅ 별도 검증
+assertThat(users.get(0).getName()).isEqualTo("John");       // ✅ 별도 검증
+```
 
 
 <br/>
