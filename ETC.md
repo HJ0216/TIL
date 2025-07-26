@@ -215,8 +215,6 @@ public partial class wndRegister : Window
 java.lang.ClassNotFoundException: org.gradle.wrapper.GradleWrapperMain
 ```
 
-
-
 ### .jar
 ✅ library-app-0.0.1-SNAPSHOT.jar
 * 실행 가능한 JAR (fat/uber jar)
