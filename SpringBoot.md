@@ -349,6 +349,157 @@ public class SecurityConfig {
 
 
 
+### private 필드값 테스트
+1. ReflectionTestUtils
+* private 필드에도 직접 값을 주입할 수 있어, Entity의 구조를 변경하지 않고도 손쉽게 테스트 할 수 있음
+```java
+@Test
+void myTest() {
+    // given
+    User user = new User("test@email.com", "nickname", "password"); // 기존 생성자 사용
+    
+    // Reflection을 사용해 private인 id 필드에 값을 설정
+    ReflectionTestUtils.setField(user, "id", 1L); 
+    
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+    // then
+    assertThat(user.getId()).isEqualTo(1L);
+}
+```
+
+2. 테스트 데이터 빌더(Test Data Builder) 패턴 사용
+테스트용 객체 생성을 전담하는 별도의 빌더 클래스를 생성
+```java
+// 테스트 소스 폴더(src/test/java)에 빌더 클래스 생성
+public class UserTestBuilder {
+    private Long id = 1L;
+    private String email = "test@example.com";
+    // ... 기본값 설정 ...
+
+    public static UserTestBuilder builder() {
+        return new UserTestBuilder();
+    }
+
+    public UserTestBuilder id(Long id) {
+        this.id = id;
+        return this;
+    }
+    
+    // ... 다른 필드 설정 메서드 ...
+    
+    public User build() {
+        User user = new User(email, ...); // 엔티티의 프로덕션 생성자 사용
+        ReflectionTestUtils.setField(user, "id", this.id); // 빌더 내부에서 리플렉션 사용
+        return user;
+    }
+}
+```
+
+
+
+### Mockito vs BDD Mockito
+* Mockito
+  * 언제(when) 이 메서드가 호출되면, 이것을 반환해라(thenReturn)
+  * `when(mock.method()).thenReturn(value);`
+  * `when(...).thenThrow(new Exception());`
+  * `verify(mock).method();`
+* BDDMockito
+  * `given(mock.method()).willReturn(value);`
+  * `given(...).willThrow(new Exception());`
+  * `then(mock).should().method();`
+
+
+
+### andExpect vs assertThat
+* .andExpect()
+  * MockMvc 체인 안에서
+  * HTTP 응답 관련 검증
+    * 상태 코드: status().isOk()
+    * JSON 응답: jsonPath("$.field").value("value")
+    * 헤더: header().string("Location", "url")
+    * 쿠키: cookie().value("name", "value")
+```java
+mockMvc.perform(post("/signup"))
+    .andExpect(status().isCreated())           // ✅ MockMvc 체인
+    .andExpect(jsonPath("$.email").exists())   // ✅ MockMvc 체인
+    .andExpect(header().string("Location", "/api/v1/users/1")); // ✅ MockMvc 체인
+```
+
+* assertThat()
+  * MockMvc 체인 밖에서
+  * 비즈니스 로직/데이터 검증
+    * DB 저장 확인
+    * 서비스 로직 결과 검증
+    * 객체 상태 검증
+```java
+// DB 저장 확인
+User savedUser = userRepository.findByEmail(email).orElseThrow();
+assertThat(savedUser.getEmail()).isEqualTo(VALID_EMAIL);    // ✅ 별도 검증
+assertThat(savedUser.getPassword()).isNotEqualTo(rawPassword); // ✅ 별도 검증
+
+// 비즈니스 로직 검증
+List<User> users = userService.findActiveUsers();
+assertThat(users).hasSize(3);                               // ✅ 별도 검증
+assertThat(users.get(0).getName()).isEqualTo("John");       // ✅ 별도 검증
+```
+
+
+### value() vs is()
+* value() 사용
+  * 단순 값 비교
+```java
+.andExpect(jsonPath("$.email").value("test@email.com"))
+.andExpected(jsonPath("$.id").value(123))
+.andExpected(jsonPath("$.active").value(true))
+.andExpected(jsonPath("$.name").value(user.getName()))
+```
+
+* Hamcrest 매처 사용
+  * 조건/패턴 검증
+  * 크기, 포함, 범위, 패턴, 존재여부 등
+```java
+.andExpected(jsonPath("$", hasSize(3)))                      // 배열 크기
+.andExpected(jsonPath("$", is(emptyList())))                 // 빈 배열
+.andExpected(jsonPath("$.password").doesNotExist())          // 존재하지 않음
+.andExpected(jsonPath("$.age", greaterThan(18)))             // 범위 비교
+.andExpected(jsonPath("$.email", containsString("@")))       // 부분 포함
+.andExpected(jsonPath("$[*].id", containsInAnyOrder(1,2,3))) // 배열 내용
+```
+
+
+### 테스트 코드 접근 제한자
+1. private - 같은 클래스에서만 접근
+2. package-private (default) - 같은 패키지에서 접근 가능
+3. protected - 같은 패키지 + 상속받은 클래스에서 접근
+4. public - 어디서든 접근 가능
+
+* 테스트 메서드
+  * private이면 접근할 수 없어서 실행 불가
+  * 반드시 package-private 이상이어야 함
+  * JUnit이 리플렉션으로 테스트 메서드를 찾음
+* 헬퍼 메서드
+  * 테스트 클래스 내부에서만 사용
+  * 캡슐화 원칙 적용 -> private
+  * JUnit이 실행하지 않는 메서드
+
+
+
+### JPA 영속성 컨텍스트
+```java
+User user = createUser(VALID_EMAIL, VALID_NICKNAME, passwordEncoder.encode(VALID_PASSWORD));
+// user.getId() = null
+
+userRepository.save(user);
+// user.getId() = 1
+```
+JPA가 save() 할 때
+1. 데이터베이스 INSERT 실행
+2. 데이터베이스 ID 자동 생성
+3. JPA가 생성된 ID를 원본 객체에 다시 설정
+
+
+
 <br/>
 
 ### 📚 참고
