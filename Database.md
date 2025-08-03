@@ -303,3 +303,154 @@ select user_id from users;
 '2'
 '1'
 ```
+
+
+
+### JOIN의 특징
+* 조인 시 행의 개수가 변하는지 여부는 테이블 간의 관계(PK-FK)와 조인 방향에 따라 결정
+* 자식 테이블에서 부모 테이블로 조인(FK -> PK)하면 자식 테이블의 각 행은 부모의 단 하나의 행과 연결되므로 행 개수가 유지
+* 부모 테이블에서 자식 테이블로 조인(PK -> FK)하면 부모 테이블의 한 행이 자식의 여러 행과 연결될 수 있으므로 행 개수가 증가할 수 있음
+* 조인으로 인한 행 수 변화를 이해해야 `SUM` , `COUNT` 같은 집계 함수를 정확하게 사용할 수 있음
+
+```txt
+t_customers
+customer_id | name    | city
+1          | 김철수   | 서울
+2          | 이영희   | 부산
+3          | 박민수   | 대구
+
+t_orders
+order_id | customer_id | amount | order_date
+101      | 1          | 50000  | 2024-01-15
+102      | 1          | 30000  | 2024-01-20
+103      | 2          | 80000  | 2024-01-18
+104      | 1          | 25000  | 2024-01-25
+
+t_order_details
+detail_id | order_id | product_id | quantity
+1         | 101      | P001      | 2
+2         | 101      | P002      | 1
+3         | 102      | P001      | 3
+4         | 103      | P003      | 1
+5         | 104      | P001      | 2
+```
+
+```sql
+SELECT 
+    c.name,
+    SUM(o.amount) as total_amount,
+    COUNT(od.detail_id) as total_items
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+LEFT JOIN order_details od ON o.order_id = od.order_id
+GROUP BY c.customer_id, c.name;
+-- 김철수의 주문 101번이 상세 항목 2개 때문에 2번 중복 계산되어 amount가 잘못 합산
+```
+* 1:N 조인 시 주의: 하나의 레코드가 여러 번 복제되어 집계 결과가 부정확해질 수 있음
+* 각 집계를 별도로 계산한 후 조인하는 방법이 가장 정확
+```sql
+SELECT 
+    c.name,
+    COALESCE(order_totals.total_amount, 0) as total_amount,
+    COALESCE(order_totals.order_count, 0) as order_count,
+    COALESCE(item_totals.total_items, 0) as total_items
+FROM customers c
+LEFT JOIN (
+    SELECT 
+        customer_id,
+        SUM(amount) as total_amount,
+        COUNT(*) as order_count
+    FROM orders
+    GROUP BY customer_id
+) order_totals ON c.customer_id = order_totals.customer_id
+LEFT JOIN (
+    SELECT 
+        o.customer_id,
+        COUNT(od.detail_id) as total_items
+    FROM orders o
+    JOIN order_details od ON o.order_id = od.order_id
+    GROUP BY o.customer_id
+) item_totals ON c.customer_id = item_totals.customer_id;
+```
+
+
+
+### SELF JOIN
+* 테이블 별칭을 활용하여 자기 참조 관계를 풀어내는 기법
+* 조직도뿐만 아니라 웹사이트의 카테고리와 서브카테고리, 게시판의 원본 글과 답변 글 같은 계층형 데이터를 다룰 때 사용
+```sql
+select
+	e.name as employee_name,
+  m.name as manager_name
+from employees e
+left join employees m on e.manager_id = m.employee_id;
+```
+
+
+
+### INSERT INTO ... SELECT
+```sql
+insert into product_options (product_name, size, color)
+select
+	concat('기본 티셔츠: ', s.size, '-', c.color) as product_name,
+    s.size,
+    c.color
+from sizes s
+cross join colors c;
+```
+
+
+
+### BETWEEN
+```sql
+select * 
+from orders o
+where o.order_date >= '2025-07-01' and o.order_date < '2025-08-01' ;
+-- where o.order_date between '2025-07-01' and '2025-07-31';
+-- between은 날짜만 입력할 경우, 시간이 00시 00분 00초 기준으로 들어가기 때문에 과소 집계되거나 과다 집계될 수 있음
+```
+
+
+
+### GROUP BY
+```sql
+SELECT 
+    c.name,
+    SUM(o.amount) as total_amount
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.name;  -- name만으로 그룹화
+```
+1. 동명이인 문제
+2. 대부분의 데이터베이스에서는 GROUP BY에 포함되지 않은 컬럼을 SELECT에서 사용하면 오류가 발생
+
+**Primary Key를 GROUP BY에 포함**
+
+
+
+### ANY, ALL
+* `ANY` 와 `ALL` 은 주로 `>` , `<` 와 같은 비교 연산자와 함께 사용되어, 서브쿼리가 반환한 여러 값들과 비교하는 역할을 함
+* `> ANY (서브쿼리)` : 서브쿼리가 반환한 여러 결과값 중 **어느 하나보다만 크면** 참  
+즉, **최소값보다 크면** 참
+* `> ALL (서브쿼리)` : 서브쿼리가 반환한 여러 결과값 **모두보다 커야만** 참  
+즉, **최대값보다 커야** 참
+* `= ANY (서브쿼리)` : `IN` 과 완전히 동일한 의미  
+목록 중 어느 하나와 같으면 참
+```sql
+select name, price
+from product
+where price > any(select price
+				  from products
+				  where category='전자기기');
+-- min(price)가 직관적이라서 any보다 집계 함수를 주로 사용
+
+select name, price
+from product
+where price > all(select price
+				  from products
+				  where category='전자기기');
+-- max(price)가 직관적이라서 any보다 집계 함수를 주로 사용
+
+```
+
+
