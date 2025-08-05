@@ -532,3 +532,62 @@ where exists
   * 특히 인라인 뷰를 사용해야만 깔끔하게 풀리는 문제의 경우
 
 
+
+### 제약 조건
+* `UNIQUE` **: **중복 불가 항목 지정**
+  * 이 제약 조건이 걸린 열의 값은 테이블 내에서 항상 고유해야 한다.  
+  * 고객의 아이디(ID), 이메일 주소, 사업자 등록번호 등은 다른 사람과 중복되면 안 되므로 `UNIQUE` 제약 조건을 사용
+  * `PRIMARY KEY` 와의 차이점: `PRIMARY KEY` 는 테이블 당 단 하나만 존재할 수 있지만, `UNIQUE` 는 여러 열에 설정할 수 있음  
+  `PRIMARY KEY` 는 `UNIQUE` 와 `NOT NULL` 속성을 모두 포함
+
+
+
+### DDL
+* DEFAULT CURRENT_TIMESTAMP
+  * 새로운 데이터 행(row)이 추가될 때, 해당 컬럼에 별도의 값을 지정하지 않으면 현재의 날짜와 시간이 자동으로 입력
+* DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  * 새로운 데이터 행(row)이 추가될 때는 물론이고, 같은 행의 컬럼 값이 변경되어 업데이트될 때, 이 컬럼의 값은 현재 날짜와 시간으로 자동 갱신
+```sql
+CREATE TABLE test (
+  ...
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+* ALTER TABLE
+  * 수백만, 수천만 건의 데이터가 들어있는 거대한 테이블의 구조를 변경하는 작업은 엄청나게 많은 시간과 시스템 자원을 소모 -> 작업
+중에는 테이블이 잠겨서 서비스가 일시적으로 멈출 수도 있음
+  * 대부분의 라이브 변경 작업은 데이터베이스 버전에 맞는 매뉴얼을 확인한 다음에 어느정도 잠금이 발생하는지, 라이브 상황에 수행할 수 있는지 확인한 다음에 실행하는 것을 권장
+
+
+
+### DML
+* INSERT
+  * 열 목록을 생략하고 `INSERT INTO products VALUES (NULL, '베이직 반팔 티셔츠', ...)` 와 같이 값만 순서대로 나열하는 방법은 추천하지 않음
+  * 나중에 테이블 구조가 변경(예: `ALTER TABLE` 로 열 추가)되면 기존의 `INSERT` 코드는 모두 오류를 일으키기 때문이다. 항상 데이터를 추가할 열의 목록을 명시적으로 작성하는 것이 안전
+  * 한 번에 등록
+  ```sql
+  INSERT INTO products (name, price, stock_quantity) VALUES ('검정 양말', 5000, 100), ('갈색 양말', 5000, 150), ('흰색 양말', 5000, 200);
+  ```
+  * AUTO_INCREMENT` , `DEFAULT` 가 있는 컬럼은 생략가능
+  * NULL을 입력할 수 있는 컬럼도 생략 가능
+* UPDATE/DELETE
+  * `UPDATE` 나 `DELETE` 문을 실행하기 전에는, **반드시 동일한 `WHERE` 절을 사용한 `SELECT` 문을 먼저 실행해서 내가 변경하려는 데이터가 정확히 맞는지를 눈으로 확인**
+* SELECT
+  * 실무에서는 `SELECT *` 사용을 최소화하고, 꼭 필요한 열만 명시적으로 지정해서 조회
+  * AS 사용 시, 명시적으로 작성하는 것이 좋음
+
+
+### DELETE vs TRUNCATE
+* DELETE FROM table;
+  * 한 줄씩, 조건에 따라 삭제 가능
+  * 속도 느림 (각 행의 삭제를 기록)
+  * AUTO_INCREMENT 초기화되지 않음
+  * 트랜잭션 내에서 `ROLLBACK` 가능 
+* TRUNCATE TABLE table;
+  * 테이블 전체를 한 번에 삭제 ( `WHERE` 사용 불가)
+  * 매우 빠름 (테이블을 잘라내고 새로 만드는 개념)
+  * AUTO_INCREMENT 1부터 다시 시작하도록 초기화
+  * ROLLBACK` 불가능
+
+
