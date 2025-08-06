@@ -702,3 +702,68 @@ CONCAT_WS(separator, string1, string2, ...);
 * 러 데이터베이스 환경에서 코드가 문제없이 작동하도록 하려면, 설명한 대로 `HAVING` 절에 `SUM(price * quantity)` 와 같이 집계 함수 표현식을 직접 사용하는 것이 **안전하고 호환성이 높은 방법
 
 
+
+### UNION
+* `UNION` 으로 연결되는 모든 `SELECT` 문은 **컬럼의 개수가 동일해야  함**
+* 각 `SELECT` 문의 같은 위치에 있는 컬럼들은 서로 **호환 가능한 데이터 타입**이어야 함(예: 숫자 타입은 숫자 타입끼리, 문자 타입은 문자 타입끼리)
+* 최종 결과의 컬럼 이름은 첫 번째 `SELECT` 문의 컬럼 이름을 사용
+* 기본적으로 두 결과 집합을 합친 뒤, 완전히 중복되는 행은 자동으로 제거하여 고유한 값만 남김
+  * **`UNION ALL`**: 중복 제거 과정 없이, 두 결과 집합을 **그대로 모두 합침**
+* 중복을 제거해야만 하는 명확한 요구사항이 있을 때만 `UNION` 을 사용
+  * (예: 고유한 이메일 주소 목록, 고유한 고객 ID 목록 등)
+  * **그 외의 모든 경우에는 `UNION ALL` 을 우선적으로 사용**
+    * 두 결과 집합에 중복이 발생할 수 없다는 것을 명확히 아는 경우
+    * 중복이 발생해도 비즈니스 로직상 상관없는 경우
+* 이름이 다른 컬럼이 있다면 별칭을 사용하는 것을 권장
+```sql
+SELECT name, email, created_at AS event_date FROM users
+UNION ALL
+SELECT name, email, retired_date AS event_date FROM retired_users
+ORDER BY event_date DESC; 
+-- 별칭을 사용하여 정렬
+-- order by에 사용하는 column이름은 첫번째 select문만 가능
+```
+* `JOIN` 이 테이블을 수평으로 붙여 컬럼을 늘리는 기술이라면 `UNION` 은 여러 결과 집합을 수직으로 붙여 행을 늘
+리는 기술
+
+
+
+### CASE
+```sql
+-- 상품을 '고가', '중가', '저가' 순서로 정렬하고 싶다면 `ORDER BY` 절에 `CASE` 문을 사용
+SELECT
+  name,
+  price,
+  CASE
+    WHEN price >= 100000 THEN '고가'
+    WHEN price >= 30000 THEN '중가'
+    ELSE '저가'
+  END AS price_label
+FROM products
+ORDER BY
+  CASE
+    WHEN price >= 100000 THEN 1 -- 고가: 1
+    WHEN price >= 30000 THEN 2 -- 중가: 2
+    ELSE 3 -- 저가: 3
+  END ASC, -- 숫자가 작은 순서대로 정렬
+price DESC; -- 같은 등급 내에서는 가격 내림차순
+```
+
+* 원칙적으로는 `SELECT` 절에서 정의한 별칭( `birth_decade` )을 `GROUP BY` 절에서 사용할 수 없다. 하지만 MySQL을 포함한 최신 버전의 많은 데이터베이스들은 사용자 편의를 위해 이러한 별칭 사용을 예외적으로 허용
+
+* `CASE` 문은 `SELECT` 절뿐만 아니라 `ORDER BY` , `GROUP BY` , `WHERE` 절에서도 사용되어 데이터의 표현, 정렬, 그룹화 등 다양한 로직에 활용
+
+* 일반적으로 범위가 좁고 구체적인 조건을 더 넓고 포괄적인 조건보다먼저 배치
+  * 포괄적인 조건이 먼저 오면 구체적인 조건들이 "가려져서" 절대 실행될 수 없음  
+./
+* 조건부 합계
+```sql
+SELECT
+  COUNT(*) AS total_orders,
+  SUM(CASE WHEN status = 'COMPLETED' THEN 1 ELSE 0 END) AS completed_count,
+  SUM(CASE WHEN status = 'SHIPPED' THEN 1 ELSE 0 END) AS shipped_count,
+  SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) AS pending_count
+FROM orders;
+```
+
+
