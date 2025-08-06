@@ -539,6 +539,8 @@ where exists
   * 고객의 아이디(ID), 이메일 주소, 사업자 등록번호 등은 다른 사람과 중복되면 안 되므로 `UNIQUE` 제약 조건을 사용
   * `PRIMARY KEY` 와의 차이점: `PRIMARY KEY` 는 테이블 당 단 하나만 존재할 수 있지만, `UNIQUE` 는 여러 열에 설정할 수 있음  
   `PRIMARY KEY` 는 `UNIQUE` 와 `NOT NULL` 속성을 모두 포함
+* NOT NULL
+* 외래 키(FK) 제약 조건
 
 
 
@@ -589,5 +591,114 @@ CREATE TABLE test (
   * 매우 빠름 (테이블을 잘라내고 새로 만드는 개념)
   * AUTO_INCREMENT 1부터 다시 시작하도록 초기화
   * ROLLBACK` 불가능
+
+
+
+### 권장되는 명명 규칙 
+* 영문 소문자와 밑줄 사용(snake_case)
+* 예약어 피하기
+
+
+
+### LIMIT
+* 조회할 결과의 최대 개수를 제한
+```sql
+SELECT 열이름
+FROM 테이블이름
+WHERE 조건
+ORDER BY 정렬기준
+LIMIT 개수;
+```
+* 특정 범위의 결과만 조회하기: LIMIT, 오프셋(OFFSET)
+  * LIMIT 건너뛸개수(offset), 가져올개수(row_count);
+  * offset = (페이지번호 - 1) * 페이지당_게시물수
+
+
+
+### DISTINCT
+* 데이터의 '종류'를 파악할 때 유용
+```sql
+SELECT customer_id, product_id FROM orders;
+
+-- customer_id와 product_id 두 컬럼을 하나의 묶음으로 보고, 이 묶음이 중복되는지를 판단
+```
+
+
+
+### NULL
+* 알 수 없음
+* `WHERE` 절은 조건의 결과가 '참(TRUE)'인 행만 반환하므로, '알 수 없음(UNKNOWN)'으로 판별된 행은 결과에 포함시키지 않음
+* MySQL의 NULL 정렬 규칙
+  * MySQL은 `NULL` 을 가장 작은 값으로 취급
+* NULL 위치를 강제로 바꾸고 싶을 떄
+```sql
+SELECT product_id, name, description
+FROM products
+ORDER BY description IS NULL DESC, description DESC
+```
+* NULL 값 포함
+```sql
+-- order_stat` 테이블에서 '도서' 카테고리를 제외한( `WHERE` ) 주문들 중에서
+
+select *
+from order_stat
+where category != '도서' or category is null;
+
+```
+
+
+
+### ORDER BY
+```sql
+SELECT * FROM products ORDER BY price ASC, stock_quantity DESC;
+
+--- 정렬 순서 뒤 생략되면 ASC
+```
+
+
+
+### 함수
+* CONCAT_WS
+```sql
+CONCAT_WS(separator, string1, string2, ...);
+-- CONCAT` 과 비슷하지만, 첫 번째 인자로 '구분자'를 받아 각 문자열 사이에 자동으로 넣어줌
+--`WS` 는 'WithSeparator'의 약자
+```
+* `LENGTH()`
+  * 문자열의 길이를 바이트 단위로 반환
+  * 세종대왕: 12(UTF-8 인코딩 기준 한글은 3바이트)
+* `CHAR_LENGTH()`
+  * 글자 수를 반환
+  * 세종대왕: 4
+* COALESCE()
+  * 괄호 안에 여러 개의 인자를 전달할 수 있으며, 왼쪽부터 차례대로 확인해서 **처음으로 `NULL` 이 아닌 값**을 반환
+  * 모든 인자가 `NULL` 이면 결국 `NULL` 을 반환
+
+
+
+
+### 집계와 그룹화
+* COUNT
+  * `COUNT(*)` 는 **NULL 값에 상관없이테이블의 모든 행의 개수**
+  * `COUNT(컬럼명)` 은 해당 컬럼의 값 중에서 ** `NULL` 이 아닌 값의 개수
+
+
+
+### GROUP BY
+* `GROUP BY` 는 `NULL` 값 또한 하나의 독립된 그룹으로 취급하여 집계
+* 실무에서는 이런 `NULL` 그룹을 통해 데이터가 누락되었음을 발견하고 데이터 정제의 필요성을 인지할 수 있음
+* `GROUP BY` 를 사용할 때 `SELECT` 절에는 **`GROUP BY` 에 사용된 컬럼**과 **집계 함수**만 사용할 수 있음
+* HAVING
+  * 그룹으로 묶은 결과에 대해 다시 필터링을 하고 싶을 때 사용
+  * `WHERE` 절은 그룹화가 이루어지기 전, 즉 테이블의 개별 행 하나하나에 대해 조건을 검사
+  * `WHERE` 절에서는 집계 함수 사용이 불가능하지만, `HAVING` 절에서는 사용 가능
+
+
+
+### 동작 순서
+`FROM` `WHERE` `GROUP BY` `HAVING` `SELECT` `ORDER BY`
+* 표준 SQL 문법에 따르면 `HAVING` 절은 `SELECT` 절보다 먼저 처리
+* 따라서 `SELECT` 절에서 지정한 별칭( `alias` )을 `HAVING` 절에서 사용하는 것은 원칙적으로 불가능
+* 러 데이터베이스 환경에서 코드가 문제없이 작동하도록 하려면, 설명한 대로 `HAVING` 절에 `SUM(price * quantity)` 와 같이 집계 함수 표현식을 직접 사용하는 것이 **안전하고 호환성이 높은 방법
 
 
