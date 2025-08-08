@@ -1616,3 +1616,12 @@ using (StreamReader reader = new StreamReader("content.txt"))
 // {}을 벗어나는 순간 reader.Close()을 자동으로 해줌
 ```
 
+
+
+### Server Model
+* 서버에서 Id를 자동 생성하려면 서버 쪽 모델에서 Id 필드를 optional로 선언해야 함
+```cs
+public string? Id { get; set; }
+
+// public string Id { get; set; } // C# 8.0+ 에서는 자동으로 Required
+```
