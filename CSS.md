@@ -59,3 +59,19 @@
 }
 /* 필수 속성 → content (없으면 안 보임) */
 ```
+
+
+
+### +, ~
+```html
+<div class="fortune-option">
+  <input type="checkbox" id="a">
+  <input type="checkbox" id="n"> 
+  <label>라벨 B</label>
+</div>
+```
+* `+`
+  * 체크된 input 바로 뒤가 label이어야 적용됨
+* `~`
+  * 뒤에 있는 label이면 다 적용됨
+
