@@ -499,6 +499,42 @@ JPA가 save() 할 때
 3. JPA가 생성된 ID를 원본 객체에 다시 설정
 
 
+### Submit
+```java
+@PostMapping
+public String submit(
+    @Valid @ModelAttribute BirthInfoForm birthInfoForm,
+    BindingResult result,
+    Model model
+) throws Exception {
+
+  model.addAttribute("birthInfo", birthInfoForm);
+
+  return "redirect:/fortune/option";
+}
+```
+* 문제점
+  * POST 요청에서 템플릿을 직접 반환하고 있어서 URL이 변경되지 않음
+  * 브라우저 주소창이 사용자가 보고 있는 화면이 일치하지 않음
+```java
+@PostMapping
+public String submit(
+    @Valid @ModelAttribute BirthInfoForm birthInfoForm,
+    BindingResult result,
+    RedirectAttributes redirectAttributes
+) throws Exception {
+
+  redirectAttributes.addFlashAttribute("birthInfo", birthInfoForm);
+
+  return "redirect:/fortune/option";
+}
+
+```
+* 해결
+  * 브라우저가 302 리다이렉트 응답을 받음
+  * 브라우저가 자동으로 GET 요청을 보냄
+  * 서버가 새로운 html 반환
+
 
 <br/>
 
