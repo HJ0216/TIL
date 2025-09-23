@@ -1625,3 +1625,62 @@ public string? Id { get; set; }
 
 // public string Id { get; set; } // C# 8.0+ 에서는 자동으로 Required
 ```
+
+
+
+### Tuple
+* Tuple<uint, uint>
+    * Item1, Item2로만 접근 (의미 불명확)
+    * 힙 메모리 사용 (느림)
+    * .NET Framework 4.0+에서 사용 가능
+```cs
+// 선언
+private static Tuple<uint, uint> GetSize()
+{
+    return new Tuple<uint, uint>(1920, 1080);
+}
+
+// 사용
+var result = GetSize();
+uint width = result.Item1;   // 😵 Item1이 뭔지 모호
+uint height = result.Item2;  // 😵 Item2가 뭔지 모호
+```
+* (uint width, uint height)
+    * 이름으로 접근 (의미 명확)
+    * 스택 메모리 사용 (빠름)
+    * 분해(destructuring) 지원
+    * C# 7.0+ 필요
+```cs
+// 선언
+private static (uint width, uint height) GetSize()
+{
+    return (1920, 1080);
+}
+
+// 사용
+var (width, height) = GetSize();
+// 또는
+var result = GetSize();
+uint w = result.width;   // 😍 의미가 명확
+uint h = result.height;  // 😍 의미가 명확
+```
+
+* Stack Memory / Heap Memory
+    * Stack Memory
+        * 빠름 - 바로 접근 가능
+        * 자동 정리 - 함수 끝나면 자동으로 사라짐
+        * 크기 제한 - 보통 1MB 정도
+        ```cs
+        int age = 25;
+        bool isActive = true;
+        (int x, int y) point = (10, 20);
+        ```
+    * Heap Memory
+        * 느림 - 찾아서 가야 함
+        * 수동 정리 - 가비지 컬렉터가 나중에 청소
+        * 크기 자유 - 큰 데이터도 OK
+        ```cs
+        string name = "홍길동";
+        List<int> numbers = new List<int>();
+        Tuple<int, int> tuple = new Tuple<int, int>(1, 2);
+        ```
