@@ -1367,6 +1367,30 @@ namespace TreeViewSample
 
 
 
+### BitmapImage vs system:String
+```xml
+<BitmapImage x:Key="Image1" UriSource="pack://application:,,,/Image_Project;component/Images/sample1.jpg" />
+<Image Source="{StaticResource Image1}" />
+```
+* BitmapImage
+    * 실제 이미지를 메모리에 로드
+    * 바로 사용 가능 - Image.Source에 직접 할당
+    * 메모리 사용량 높음 - 이미지 데이터를 메모리에 보관
+    * 표시 속도 빠름 - 이미 로드되어 있음
+    * 자주 바뀌는 이미지, 성능 중요할 때 사용
+
+```xml
+<system:String x:Key="Image2">pack://application:,,,/Image_Project;component/Images/sample2.jpg</system:String>
+<Image Source="{StaticResource Image2}" />
+```
+* system:String
+    * URI 문자열만 저장
+    * 메모리 사용량 적음 - 문자열만 보관
+    * 사용할 때마다 로드 - 표시할 때 이미지 파일 읽음
+    * 표시 속도 느림 - 매번 파일에서 읽어야 함
+    * 메모리 절약이 중요하거나 이미지가 많을 때
+
+
 <br/>
 
 ### 📚 참고
