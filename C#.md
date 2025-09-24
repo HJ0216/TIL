@@ -1763,3 +1763,26 @@ uint h = result.height;  // 😍 의미가 명확
 * return null
     * 실패를 정상적인 흐름으로 처리할 때
     * 간단한 성공/실패만 구분하면 될 때
+
+
+
+### var
+* 🎯 var를 쓰는 게 좋은 경우
+    ```cs
+    var bitmapImage = new BitmapImage();
+    var list = new List<string>();  
+    var path = GetImagePath();
+
+    var imageDict = new Dictionary<string, List<BitmapImage>>();
+    ```
+    * 타입이 명확할 때
+    * 긴 제네릭 타입
+* 📋 명시적 타입이 좋은 경우
+    ```cs
+    BitmapImage image = GetSomeImage();
+
+    IList<string> items = new List<string>();
+    ```
+    * 타입이 불분명할 때
+    * 인터페이스 사용할 때
+
