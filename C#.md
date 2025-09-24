@@ -1684,3 +1684,28 @@ uint h = result.height;  // 😍 의미가 명확
         List<int> numbers = new List<int>();
         Tuple<int, int> tuple = new Tuple<int, int>(1, 2);
         ```
+
+### Tuple List vs Dictionary
+* Tuple List
+    ```cs
+    List<(string Key, int Value)> tupleList = new List<(string, int)>
+    {
+        ("apple", 10),
+        ("banana", 5),
+        ("orange", 8)
+    };
+    ```
+    * 순서가 보장됨
+    * 중복 키 허용
+* Dictionary
+    ```cs
+    Dictionary<string, int> dictionary = new Dictionary<string, int>
+    {
+        {"apple", 10},
+        {"banana", 5},
+        {"orange", 8}
+    };
+    ```
+    * 순서 보장 안됨
+    * 중복 키 불허용
+    * 해시테이블 기반으로 빠른 조회
