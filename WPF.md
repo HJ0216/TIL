@@ -1391,6 +1391,18 @@ namespace TreeViewSample
     * 메모리 절약이 중요하거나 이미지가 많을 때
 
 
+
+### Width vs PixelWidth
+* Width
+    * UI 레이아웃에서 실제 보여지는 크기
+    * WPF가 "이건 UI에서 얼마나 공간 차지해야 하지?"라고 계산한 값 📏
+    * UI 그릴 때 사용
+* PixelWidth
+    * 실제 물리적 픽셀 크기
+    * 이미지 파일 자체의 원본 해상도
+    * 이미지 조작할 때 사용
+
+
 <br/>
 
 ### 📚 참고
