@@ -242,7 +242,43 @@ public static async Task<BitmapImage> GetBitmapImageFromWebAsync(string imagePat
         * `Must create DependencySource on same Thread as the DependencyObject.`
     * Freeze된 객체는 WPF 내부에서 성능 최적화가 가능해지고, 메모리 사용도 줄어듦
 * 이미지가 바이트 배열에서 로드된 경우라면 UriSource는 null이고, StreamSource가 설정
+* StreamSource 방식을 사용할 경우, Image의 FilePath는 Image의 Tag 속성에 저장해서 사용(UriSource를 사용할 수 없고, BitmapImage 자체에는 Tag 속성이 없음)
 
+#### Stream 방식 vs Uri 방식
+* Stream
+    * 파일이 잠기지 않음 → 이미지 표시 중에도 파일 삭제/수정 가능
+        * 임시 파일 처리: 편집 중간 결과물들 자유롭게 관리
+        * 배치 처리: 여러 파일 동시에 처리할 때 파일 잠금 방지
+    * CacheOption.OnLoad → 이미지 데이터를 메모리에 완전히 로드 후 스트림 닫음
+        * 안전성: 원본 파일 손상 위험 없음
+* Uri
+    * 파일이 잠길 수 있음 → 이미지 사용 중 파일 삭제/수정 불가능
+
+>1. Stream 방식 + OnLoad  
+BitmapImage 생성 및 초기화  
+Stream 데이터를 즉시 메모리에 완전 로드  
+Stream Dispose되어도 메모리에 데이터 유지 ✅  
+WPF에서 이미지 로드  
+메모리에 데이터가 있으므로 ✅ 정상 표시  
+
+>2. Uri 방식 + OnLoad  
+BitmapImage 생성 및 초기화  
+파일에서 데이터를 즉시 메모리에 완전 로드  
+파일 연결 끊음  
+WPF에서 이미지 로드 → ✅ 정상 표시
+
+>3. Stream 방식 + OnDemand  
+BitmapImage 생성 및 초기화  
+데이터 로드 안함, 스트림 참조만 저장  
+Stream Dispose → 접근 경로 차단 🚫  
+WPF가 렌더링 시 데이터 요청  
+죽은 스트림에 접근 불가 → ❌ 표시 안됨
+
+>4. Uri 방식 + OnDemand  
+BitmapImage 생성 및 초기화  
+데이터 로드 안함, 파일 경로만 저장  
+WPF가 렌더링 시 필요할 때마다 파일에서 읽음  
+✅ 정상 표시 (파일이 살아있으니까)
 
 
 ### 디스카드(discard) 패턴
