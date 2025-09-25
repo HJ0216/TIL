@@ -23,3 +23,9 @@ const sideBar = document.querySelector('.side-bar');
 * id뿐만 아니라 class, 속성, 태그 등 다양한 선택자를 지원
 * 일치하는 첫 번째 요소만 선택
 * 여러 클래스를 동시에 사용할 수도 있음
+
+
+
+### JSON.parse vs JSON.stringify
+* JSON.parse(string): 문자열을 JS 객체로 변환
+* JSON.stringify(object): JS 객체를 JSON 문자열로 변환
