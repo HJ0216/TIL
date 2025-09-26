@@ -536,6 +536,72 @@ public String submit(
   * 서버가 새로운 html 반환
 
 
+
+### @Mock
+* Mockito가 제공하는 **가짜 객체(Mock)**를 만들어 테스트에서 의존성을 대체할 때 사용
+* JUnit 단위 테스트 수준, Spring 컨텍스트를 로드하지 않아도 됨
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository; // 실제 DB X, Mockito mock
+
+    @InjectMocks
+    private UserService userService; // userRepository가 주입됨
+
+    @Test
+    void testFindUser() {
+        User mockUser = new User("hyunji");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+
+        User result = userService.getUser(1L);
+        assertEquals("hyunji", result.getName());
+    }
+}
+```
+
+### @MockBean
+* Spring Boot Test 환경에서 Bean을 대체(Mock)할 때 사용(실제 컨텍스트에 있는 Bean을 Mockito Mock으로 대체해서 테스트)
+* Spring Boot Test (@SpringBootTest, @WebMvcTest, @DataJpaTest) 안에서만 의미 있음
+  * @WebMvcTest도 컨트롤러 단위 테스트라는 의미지만, Spring 컨텍스트를 일부 띄우기 때문에 순수 Mockito @Mock 대신 @MockBean을 써야 함
+```java
+@SpringBootTest
+class UserServiceIntegrationTest {
+
+    @MockBean
+    private UserRepository userRepository; // 실제 DB 접근 X, 컨테이너에서 대체
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    void testFindUser() {
+        User mockUser = new User("hyunji");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+
+        User result = userService.getUser(1L);
+        assertEquals("hyunji", result.getName());
+    }
+}
+```
+
+#### Service는 순수 단위 테스트로 충분한 이유
+* 대부분은 HTTP나 직렬화 같은 외부 요소와 무관
+  * ➡️ 따라서 Spring 컨텍스트 불필요, @Mock으로 Repository 대체하고 메소드 호출/리턴값만 검증하면 충분
+
+#### Controller는 순수 단위 테스트로 부족한 이유
+* Controller는 단순히 메소드 호출만 검증하면 안 되고, Spring MVC가 실제로 처리하는 여러 요소들을 확인해야 하는 경우가 많음
+* @RequestMapping, @GetMapping, @PostMapping 같은 URL 매핑이 올바른지
+* @RequestBody, @PathVariable, @RequestParam이 제대로 바인딩되는지
+* JSON 직렬화/역직렬화(Jackson)
+* Spring Validator 적용 결과 (@Valid)
+* 응답 코드 (200 OK, 400 Bad Request, 404 Not Found 등)
+  * 👉 이런 부분들은 순수 단위 테스트로는 검증 불가능
+  * 👉 그래서 @WebMvcTest + MockMvc로 실제 HTTP 요청을 흉내 내서 검증
+
+
+
 <br/>
 
 ### 📚 참고
