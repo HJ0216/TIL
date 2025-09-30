@@ -1795,3 +1795,16 @@ uint h = result.height;  // 😍 의미가 명확
     * 타입이 불분명할 때
     * 인터페이스 사용할 때
 
+
+
+### Nullable
+* int? (Nullable<int>)
+    * int는 값 타입(value type)
+    * 값 타입은 원래 null을 가질 수 없음
+    * HasValue (bool) : null인지 여부
+    * Value (T) : 실제 값 (null이면 접근 시 예외 발생)
+* string?
+    * string은 참조 타입(reference type)
+    * 참조 타입은 원래부터 null 허용
+    * string과 string?은 런타임 동작이 동일
+    * string에는 Nullable<T> 같은 wrapper가 필요 없고, 따라서 .Value 속성도 없음
