@@ -32,3 +32,10 @@ Jackson은 기본적으로 getter 메서드나 public 필드에 접근하여 값
   * 인덱스 접근: list.get(5) 같은 임의 위치 접근이 필요
   * 중간 삽입/삭제: 특정 인덱스에 요소 삽입/삭제
   * 정렬/검색: Collections.sort(), indexOf() 등 사용
+
+
+
+### equals(), hashCode()
+* "값이 같으면 같은 객체"로 취급해야 하는 경우 → 오버라이드 필수
+* HashMap, HashSet 에 key나 element로 쓸 때 → 오버라이드 필수
+* 그렇지 않으면 → 기본 Object.equals()/hashCode()(참조 동등성)만 써도 됨
