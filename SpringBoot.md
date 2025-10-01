@@ -560,6 +560,10 @@ class UserServiceTest {
     }
 }
 ```
+* @injectmocks
+  * 값 객체들: String, Duration, Money → Mock할 필요 없음
+    * Mock은 필요한 협력 객체(인터페이스)에만 사용하고, 값 객체는 실제 객체를 사용
+  * 테스트마다 다른 값의 경우, Mock할 필요 없음
 
 ### @MockBean
 * Spring Boot Test 환경에서 Bean을 대체(Mock)할 때 사용(실제 컨텍스트에 있는 Bean을 Mockito Mock으로 대체해서 테스트)
