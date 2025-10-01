@@ -1808,3 +1808,49 @@ uint h = result.height;  // 😍 의미가 명확
     * 참조 타입은 원래부터 null 허용
     * string과 string?은 런타임 동작이 동일
     * string에는 Nullable<T> 같은 wrapper가 필요 없고, 따라서 .Value 속성도 없음
+
+
+
+### const vs readonly
+* const
+    * 컴파일 타임 상수
+    * 반드시 컴파일러가 알 수 있는 리터럴 값이어야 함
+        * 리터럴 값: 코드에 직접 적는 값 (숫자, 문자열, true/false 등)
+    * 버전 관리 / 다중 어셈블리 환경에서는 const값 불일치 문제
+        * const를 라이브러리 A에 정의, 라이브러리 B가 참조
+        * B를 빌드할 때, A의 const 값은 그대로 B의 라이브러리에 남아있음(값 복사)
+        * 나중에 A의 const 값을 수정해도, B는 재빌드하지 않으면 옛날 값을 계속 사용하게 됨
+* readonly
+    * 값이 런타임 시점에 결정
+    * 리터럴뿐 아니라, new, DateTime.Now, Guid.NewGuid() 같은 복잡한 표현식도 할당 가능
+    * readonly는 "필드 참조"로 남아있음
+    * 따라서 라이브러리 A의 값을 바꿔도, B는 재컴파일 없이도 새로운 값을 가져옴
+```cs
+// 라이브러리 A
+public class Constants
+{
+    public const string ApiVersionConst = "v1";       // 컴파일 타임에 박힘
+    public static readonly string ApiVersionReadonly = "v1"; // 런타임 참조
+}
+
+// 라이브러리 B
+Console.WriteLine(Constants.ApiVersionConst);
+Console.WriteLine(Constants.ApiVersionReadonly);
+
+// A에서 "v1" → "v2"로 수정 후 A만 빌드해서 배포했을 때:
+// const → 여전히 B는 "v1" 출력 (재컴파일 필요)
+// readonly → 자동으로 "v2" 출력 (재컴파일 불필요)
+```
+
+
+
+### 매개변수 vs 전역변수
+* 매개변수 방식
+    * 테스트 용이
+    * 재사용성
+    * 전역 상태에 의존하지 않음
+* 전역변수 방식
+    * 함수 시그니처만 봐서는 뭐가 필요한지 모름
+    * 특정 전역 상태에 종속되어 재사용 불가
+* 매개변수가 많을 경우
+    * 매개변수 객체 패턴 사용 가능
