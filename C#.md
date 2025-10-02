@@ -229,6 +229,7 @@ public static async Task<BitmapImage> GetBitmapImageFromWebAsync(string imagePat
     * MemoryStream은 IDisposable이니까 메모리 누수 방지를 위해 using을 써서 명확하게 해제하는 게 좋음
         * IDisposable Interface: using 문을 쓰면 작업이 끝난 다음에 자동으로 메모리를 해제(using문으로 해제가 되지 않을 경우, 명시적으로 Dispose()를 호출)
     * StreamSource를 BitmapImage에 연결하는, 즉 정확히 메모리스트림이 필요한 부분까지만 감싸는 게 좋음
+    * using 블록 안에서 예외를 던지면 제대로 Dispose되지 않을 수 있으므로 using 블록이 정상 종료된 후 예외를 던지므로 리소스가 확실히 정리되도록 해야 함
     
 * `BitmapImage.CacheOption = OnLoad`
     * 일반적으로 BitmapImage.CacheOption = OnLoad이면, EndInit() 시점에 스트림 내용을 다 읽고 메모리에 올림
@@ -1874,3 +1875,13 @@ Console.WriteLine(Constants.ApiVersionReadonly);
     * `GET /api/images/123/1`
     * 북마크/공유에 더 적합
         * id, type 같은 파라미터 조합이 많아질 경우 링크가 길어지고, 나중에 API 버전 업이나 쿼리 파라미터 변경 시 깨질 확률이 높음
+
+
+
+### 계층별 Error 처리 방식
+* 하위 계층 (Data/API Layer)
+    * 복구 가능하면 catch에서 복구, 아니면 throw
+* 중간 계층 (Business Logic)
+    * 보통 catch 하지 않음, 또는 로깅만
+* 상위 계층 (UI/Presentation)
+    * 사용자에게 오류 메시지 표시
