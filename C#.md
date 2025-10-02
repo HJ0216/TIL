@@ -1854,3 +1854,23 @@ Console.WriteLine(Constants.ApiVersionReadonly);
     * 특정 전역 상태에 종속되어 재사용 불가
 * 매개변수가 많을 경우
     * 매개변수 객체 패턴 사용 가능
+
+
+
+### finally
+* 리소스 정리, 파일 닫기, 연결 해제 같은 필수 작업
+* return문
+    * try/catch의 return 값을 덮어씀
+    * 예외가 완전히 숨겨짐
+
+
+
+### Query Parameter vs Path Parameter
+* Query Parameter
+    * `GET /api/images?id=123&type=1`
+    * 리소스 계층 구조가 명확하지 않음
+    * 검색/필터링과 같이 선택적 필터 추가 용이
+* Path Parameter
+    * `GET /api/images/123/1`
+    * 북마크/공유에 더 적합
+        * id, type 같은 파라미터 조합이 많아질 경우 링크가 길어지고, 나중에 API 버전 업이나 쿼리 파라미터 변경 시 깨질 확률이 높음
