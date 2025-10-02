@@ -883,3 +883,15 @@ FROM orders;
     * 훨씬 유연하고 테스트가 쉽기 때문
   * CHECK` 제약 조건을 쓴다면, 간단하지만 절대 값이 바뀌면 안 되는
 핵심 데이터에만 '최후의 방어선'으로 사용하는 것이 좋음
+
+
+
+### OUTPUT
+* INSERTED: UPDATE/INSERT 후의 새로운 값을 담은 임시 테이블
+* DELETED: UPDATE/DELETE 전의 이전 값을 담은 임시 테이블
+```sql
+UPDATE Users 
+SET IsActive = 0 
+OUTPUT INSERTED.UserId, INSERTED.Name, INSERTED.UpdatedDate
+WHERE UserId = 123
+```
