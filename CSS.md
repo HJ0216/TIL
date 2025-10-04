@@ -80,7 +80,6 @@
   * 위의 속성을 설정할 `<div>`를 추가적으로 선언하는 방법도 있음
 * float 속성으로 가로정렬할 땐 float 박스들을 싸는 하나의 큰 div 박스를 만들고 폭을 지정해야 모바일에서 안 흘러넘침
 
-
 ### `display : inline-block`
 * <태그> 사이에 스페이스바 공백이 있다면 그대로 보여주기 때문에 가로로 정렬하려면 태그 사이의 공백도 제거해줘야 함
   * 주석 사용해서 줄바꿈 처리 가능
@@ -108,11 +107,35 @@
 ### HTML태그에 클래스 두개 이상 붙이기
 * `<div class="container text-center"> </div>`
 
-### Selector
+### selector
 * 공백: 하위 모든 자식 태그 접근
 * >: 직계 자손
 * 읽기만 해도 어떤 스타일을 주는지 알 수 있는 셀렉터가 좋은 셀렉터 사용법
 * 태그[속성명=속성값]
+* nth-child
+  * 원하는 n번째 요소만 스타일을 주고 싶으면 :nth-child(n) 뒤에 추가
+    ```css
+    .cart-table td:nth-child(2) {
+      color: red;
+    } 
+    /* 계산식도 가능
+    td:nth-child(even)
+    td:nth-child(3n+0)ㄴ */
+    ```
+* 순서: hover, focus, active
+```css
+.btn:hover {
+  background : chocolate; /*마우스를 올려놓을 때*/
+}
+.btn:focus {
+  background : red; /*클릭 후 계속 포커스 상태일 때*/
+}
+.btn:active {
+  background : brown; /*클릭 중일 때*/
+}
+```
+* `.icon-parents-overlay:hover`
+  * .icon-parents-overlay에 마우스를 올렸을 때 그 안에 있는 .icon-overlay에 스타일을 적용하라
 
 ### background
 * background-image: url(../images/bg.jpg);
@@ -190,6 +213,136 @@ https://github.com/necolas/normalize.css/blob/master/normalize.css
 * 테이블 내에서의 상하정렬
 * inline, inline-block 요소 간 상하정렬
 
+### table
+* border-radius가 안먹을 때
+  * `box-shadow : 0 0 0 1px #666;`를 사용할 수 있음
+
+### OOCSS
+뼈대와 살을 분리
+```css
+/*utility class*/
+.main-btn {
+  font-size : 20px;
+  padding : 15px;
+  border : none;
+  cursor : pointer;
+}
+
+.bg-red {
+  background : red;
+}
+.bg-blue {
+  background : blue;
+}
+```
+
+### BEM
+* class-tag
+```html
+<div class="card card--highlight">
+  <img src="./images/photo.jpg" alt="썸네일" class="card__img">
+  <div class="card__body">
+    <h3 class="card__title">카메라</h3>
+    <p class="card__desc">FE 70-200mm F2.8 GM OSS</p>
+    <button class="btn btn--primary">구매하기</button>
+  </div>
+</div>
+```
+
+### font-family
+```css
+body {
+  font-family : 'gulim', 'gothic'
+}
+```
+* 버그없이 사용하려면 폰트의 영문명을 사용
+* 폰트명에 띄어쓰기가 있을 수 있으니 따옴표 안에 작성
+* 웹사이트 이용자의 컴퓨터에 설치가 된 폰트들을 적용
+
+```css
+@font-face {
+  font-family : '이쁜폰트';
+  src : url(nanumsquare.ttf)
+}
+```
+* 사용자의 컴퓨터에 설치되지 않은 폰트를 사이트에서 이용
+* 웹폰트용으로 나온 woff 파일(ttf에 비해 용량이 3분의1 수준)
+
+#### 폰트 Anti-aliasing
+```css
+transform : rotate(0.04deg); 
+```
+* 윈도우에서 각져보이는 폰트를 약간 굴려서 부드럽게 만들기
+
+### flex
+```css
+.flex-container {
+  display : flex;
+  justify-content : center;  /* 좌우정렬 */
+  align-items : center;  /* 상하정렬 */
+  flex-direction : column; /* 세로정렬 */
+  flex-wrap : wrap;  /* 폭이 넘치는 요소 wrap 처리 */
+}
+.box {
+  flex-grow : 2;  /* 폭이 상대적으로 몇배인지 결정 */
+}
+```
+
+### head
+```html
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="html 공부 중">
+  <meta name="keywords" content="HTML,CSS">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+```
+* `<meta charset="UTF-8">`
+  * HTML 문서의 문자 인코딩(encoding)을 지정
+  * HTML 문서의 최상단에 넣어야 브라우저가 올바르게 문자 해석 가능
+* `<meta name="description" content="...">`
+  * 페이지 설명(description)을 검색 엔진에 전달
+* `<meta name="keywords" content="...">`
+  * 페이지와 관련된 키워드를 검색 엔진에 제공
+* `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
+  * 화면 너비에 맞춰 페이지 크기 설정, 페이지 초기 확대 비율 설정
+
+```html
+<head>
+  <meta property="og:image" content="/이미지경로.jpg">
+  <meta property="og:description" content="사이트설명"> 
+  <meta property="og:title" content="사이트제목"> 
+</head>
+```
+* OG 태그(Open Graph tags) 
+  * 페이스북, 카카오톡, 트위터 같은 SNS에서 공유될 때 웹페이지의 미리보기(썸네일, 제목, 설명 등)를 제어하는 메타 태그
+  * `<meta property="og:image" content="/이미지경로.jpg">`
+    * 공유 시 표시할 썸네일 이미지 지정
+  * `<meta property="og:description" content="페이지 설명">
+    * 공유될 때 보이는 페이지 설명
+  * `<meta property="og:title" content="사이트제목">`
+    * 공유될 때 보이는 페이지 제목
+
+### 단위
+```css
+.box {
+  width : 16px; /* 기본 px 단위 */
+  width : 1.5rem; /* html태그 혹은 기본 폰트사이즈의 1.5배 */
+  width : 2em; /* 내 폰트사이즈 혹은 상위요소 폰트사이즈의 2배 */
+  width : 50vw; /* 브라우저(viewport) 화면 폭의 50% */
+  width : 50vh; /* 브라우저(viewport) 화면 높이의 50% */
+}
+```
+
+### media query
+* 권장 Breakpoint: 1200px / 992px / 768px / 576px
+  * 1200px 이하는 태블릿, 768px 이하는 모바일 가장 간편
+
+### animation
+1. 최종 스타일 모양 만들기
+2. 시작 스타일 모양 만들기(트리거가 없는 상황)
+3. 트리거 상황에 최종 스타일 부여
+4. transition으로 부드러운 동작 만들기
 
 
 ### 📚 참고
