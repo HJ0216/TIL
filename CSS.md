@@ -112,6 +112,7 @@
 * 공백: 하위 모든 자식 태그 접근
 * >: 직계 자손
 * 읽기만 해도 어떤 스타일을 주는지 알 수 있는 셀렉터가 좋은 셀렉터 사용법
+* 태그[속성명=속성값]
 
 ### background
 * background-image: url(../images/bg.jpg);
@@ -130,6 +131,66 @@
 * 박스들의 테두리가 만나면 margin이 합쳐짐
   * 둘 중에 더 큰 마진을 하나만 적용
   * 두 박스의 테두리가 겹치지 않도록 부모 박스에 padding을 1px 조금 주는 것으로 쉽게 해결 가능
+
+### 접두어
+* section별로 class명의 접두어를 사용
+
+### position
+* 좌료를 활용하여 위치 선택이 가능하고, float처럼 요소가 다른 요소 위에 띄워짐
+* position : static;
+  * 보통 문서의 흐름(HTML 작성 순서)**에 따라 위에서 아래로, 왼쪽에서 오른쪽으로 배치
+  * top, left, right, bottom, z-index 같은 속성이 아예 적용되지 않음
+* position : relative;
+  * 원래 본인 위치가 기준점
+* position : absolute;
+  * relative를 선언한 부모 태그가 기준점
+  * position : absolute 를 적용한 요소 가운데 정렬
+    * `left: 0; right: 0; margin: 0 auto 0 auto; width: 1px`, width는 존재하기만 하면되므로 값의 의미 X
+* position : fixed;
+  * 브라우저 창(viewport)이 기준점
+
+### width
+* 반응형 페이지 생성 시, width를 %로 max-width를 px로 주면 pc에서는 너무 커지지 않고 휴대폰에서는 너무 커지지 않게 조정할 수 있음
+* width는 content 영역만을 의미하므로 padding을 줄 경우, 넘어설 수 있음
+  * `box-sizing: border-box`시, padding과 border값을 포함한 width로 계산됨
+    * `content-box;`: 박스 폭 - padding 안쪽
+
+### 공통 css
+```css
+html {
+  line-height : 1.15;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+div {
+  box-sizing: border-box;
+}
+
+/* 
+브라우저간 호환성
+https://github.com/necolas/normalize.css/blob/master/normalize.css
+*/
+```
+
+### flex
+* `flex: 0 0 auto;`
+
+| 속성         | 값   | 의미                    |
+| ----------- | ---- | ---------------------- |
+| flex-grow   | 0    | 여유 공간이 있어도 절대 늘어나지 않음  |
+| flex-shrink | 0    | 공간이 부족해도 절대 줄어들지 않음    |
+| flex-basis  | auto | 요소의 크기를 기본(내용 크기)으로 유지 |
+
+### class
+* 작성 시, 재사용 가능하게 작성
+
+### vertical-align 
+* 테이블 내에서의 상하정렬
+* inline, inline-block 요소 간 상하정렬
+
+
 
 ### 📚 참고
 [코딩 애플](https://codingapple.com/)  
