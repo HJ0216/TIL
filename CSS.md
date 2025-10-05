@@ -42,6 +42,16 @@
 * 기준
   * absolute는 자기 부모 중에서 처음으로 position이 설정된 요소를 기준으로 위치함  
     → 없다면 body 기준으로 동작함
+#### fixed
+* top, left 등 위치를 지정하지 않으면 본래 위치부터 fixed됨
+#### sticky
+* 스크롤이 되어서 이미지가 보이는 순간 viewport의 맨 위에서부터 100px 위치에서 고정
+* 부모 박스를 넘어서 스크롤 되면 이미지도 같이 사라짐
+* 주의점
+  * 스크롤을 할 만한 부모 박스가 있어야하고
+  * top 등 좌표속성과 함께 써야 제대로 보임
+
+아무튼 응용하면 남들과는 다른 레이아웃을 만들 수 있습니다. 
 
 ### CSS 가상 요소
 ```css
@@ -511,6 +521,87 @@ transform : rotate(0.04deg);
       @include reset.mixin이름();  /* 다른 파일의 mixin쓰는법 */
       ```
 * 먼저 CSS로 모든 기능을 구현해본 뒤에 눈에띄는 반복적인 속성들을 mixin, extend 등으로 축약
+
+### video
+```html
+<video autoplay muted loop poster="썸네일경로" preload="metadata">
+  <source src="비디오파일경로">
+</video>
+<!--
+muted: 음소거
+autoplay: 자동재생(muted와 함께 넣어야 동작)
+poster: 썸네일이미지
+preload: 영상을 먼저 다운을 받을지 말지를 선택 (auto, metadata, none 사용가능)
+-->
+```
+* source 파일 형식을 여러개 준비할 경우 브라우저에 최적화된 비디오 파일을 스스로 선택하므로 여러가지 확장자의 비디오 파일이 있으면 <source> 사용
+
+### transform
+* 어떤 요소를 독립적으로 움직이게 만들고 싶을 때 사용
+* margin, width, left, 이런거 말고 transform 쓰라는 이유
+  * layout이 바뀌면 layout 부터 transform 까지 쭉 다시 렌더링해야하는데 transform이 바뀌면 transform 부분만 다시 렌더링하면 됨
+  * 뭔가 이동시키고 싶으면 margin 쓰는 것 보다 transform 쓰는게 빠르게 동작
+
+
+### @keyframes
+* 커스텀 애니메이션을 정의하기 위한 공간
+```css
+@keyframes 움찔움찔{
+  0% {
+    transform : translateX(0px); /* 애니메이션이 0%만큼 동작시 */
+  }
+  50% {
+    transform : translateX(-20px); /* 애니메이션이 50%만큼 동작시 */
+  }
+  100% {
+    transform : translateX(20px); /* 애니메이션이 100%만큼 동작시 */
+  }
+}
+
+.box:hover {
+  animation-name : 움찔움찔;
+  animation-duration : 1s;
+  animation-timing-function : linear;
+  animation-delay : 1s; /*시작 전 딜레이*/
+  animation-iteration-count : 3; /*몇회 반복*/
+  animation-play-state : paused;  /*애니메이션을 멈추고 싶은 경우 자바스크립트로 이거 조정*/
+  animation-fill-mode: forwards;  /*애니메이션 끝난 후에 원상복구 하지말고 정지*/
+}
+```
+
+### grid
+* Edge 포함 기타 최신 브라우저에서 사용 가능
+1. 부모<div>에 display : grid를 -> 자식 <div>들은 전부 격자처럼 진열
+2. grid-template-columns: 격자의 열 너비와 갯수
+3. grid-template-rows: 격자의 행 높이와 갯수
+* fr: 몇배만큼 차지할지를 나타내는 값
+```css
+/*1. */
+.grid-nav {
+  grid-column : 1 / 4;
+  grid-row : 2 / 4;
+}
+
+/*2.*/
+.grid-nav {
+  grid-area: 헤더;
+}
+.grid-sidebar {
+  grid-area: 사이드;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 100px 100px 100px;
+  grid-gap: 10px;
+  grid-template-areas: 
+    "헤더 헤더 헤더 헤더"
+    "사이드 사이드 . ."
+    "사이드 사이드 . ."
+}
+```
+
 
 ### 📚 참고
 [코딩 애플](https://codingapple.com/)  
