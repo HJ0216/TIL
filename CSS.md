@@ -385,6 +385,132 @@ transform : rotate(0.04deg);
 
 ```
 
+### 가로선, 세로선
+* 가로선 `<hr/>`
+* 세로선 `<div class="vr"></div> `
+
+### scss
+* SASS로 코드를 짰으면 그걸 CSS 파일로 변환해주는 변환기를 돌려서 변환된 CSS 파일을 HTML 파일과 함께 써야함
+* SASS 문법
+  * 값을 저장해놓고 쓰는 '변수' 
+    ```css
+    $main-color: #5d58ff;
+
+    .box {
+        width: 100%;
+        color: $main-color;
+    }
+
+    /*기존 css*/
+    root: {
+      --main-color: red;
+    }
+    .box {
+        width: 100%;
+        color: var(--main-color);
+    }
+
+    ```
+    * 덧셈, 뺄셈: px 단위는 px 단위끼리, % 단위는 % 단위끼리
+    * 곱셈 나눗셈은 보통 뒤에 단위를 쓰지 않음
+    * 곱셈 나눗셈은 괄호 안에 작성
+  * Nesting
+    * Nesting할 때 괄호를 3개 4개 타고 들어가는 대신 새로운 class를 부여
+      ```css
+      .navbar {
+        ul {
+          width : 100%;
+        }
+        li {
+          color : black;
+        }
+      }
+
+      .navbar ul { 
+        width : 100%; 
+      }
+      .navbar li { 
+        color : black; 
+      }
+
+
+      div.container {
+        >div {
+          p.first {
+            >span {
+            }
+          }
+        }
+      }
+
+      div.container > div p.first > span {}
+
+
+      .navbar {
+        :hover {
+          color : blue;
+        }
+      }
+
+      .navbar :hover {}
+
+
+      .navbar {
+        &:hover {
+          color : blue;
+        }
+      }
+
+      .navbar:hover {}
+      ```
+  * @extend 
+    * 이미 있는 클래스를 확장
+      ```css
+      .btn {
+        font-size : 16px;
+        padding : 10px;
+        background : grey;
+      }
+
+      .btn-green {
+        @extend .btn;
+        background : green;
+      }
+      /*% 기호는 .대신 쓸 수 있는 임시클래스, CSS파일에서 클래스로 컴파일하지 않고싶을 때 쓰는 기호*/
+      ```
+    * @mixin
+      * 코드를 한단어로 축약
+        ```css
+        @mixin 버튼기본디자인() {
+          font-size : 16px;
+          padding : 10px;
+        }
+
+        .btn-green {
+          @include 버튼기본디자인();
+          background : green;
+        }
+
+        @mixin 버튼기본디자인($구멍) {
+          font-size : 16px;
+          padding : 10px;
+          background : $구멍;
+        }
+
+        .btn-green {
+          @include 버튼기본디자인(#229f72);
+        }
+        ```
+    * @use와 언더바 파일
+      * @use: `scss 파일(css 파일 x)`을 해당 SCSS파일에 전부 복붙
+      * 언더바 _기호를 파일명 맨앞에 사용하시면 "이 파일은 CSS파일로 따로 컴파일하지 말아주세요" 라는 의미
+      ```css
+      @use '_reset.scss';
+
+      reset.$변수명;  /* 다른 파일의 변수쓰는법 */
+      @include reset.mixin이름();  /* 다른 파일의 mixin쓰는법 */
+      ```
+* 먼저 CSS로 모든 기능을 구현해본 뒤에 눈에띄는 반복적인 속성들을 mixin, extend 등으로 축약
 
 ### 📚 참고
 [코딩 애플](https://codingapple.com/)  
