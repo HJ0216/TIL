@@ -344,6 +344,47 @@ transform : rotate(0.04deg);
 3. 트리거 상황에 최종 스타일 부여
 4. transition으로 부드러운 동작 만들기
 
+### tip
+* container에 width와 함께 max-width 설정
+* 모바일에선 어떤 스타일들이 달라지는지 미리 기록
+* 이미지 background overlay  
+  `background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(portfolio-1.jpg);`
+
+### Specificity 
+* 셀렉터를 여러개 나열하면 점수도 높아짐-> Specificity를 동일하게 작성해서 하단에 적거나 Specificity를 높여주면 덮어쓰기가 가능
+  * 덮어쓰기할 상황을 생각하면 class 이름은 하나만 써서 작성하는게 좋은 방법
+
+### Pseudo-element
+* 특정 HTML 요소의 안쪽 일부만 스타일을 주고 싶을 때
+* ::after: 내부의 맨 마지막 부분에 특정 글자 추가
+  * clear: both; 박스 생성
+    ```css
+    .box::after {
+      content : '';
+      display : block;
+      clear : both;
+    }
+    ```
+* ::before: 내부의 맨 앞 부분에 특정 글자 추가
+
+### Shadow DOM
+```html
+<progress value="0.2"></progress>
+<style>
+    progress[value] {
+        appearance: none;
+    }
+    progress::-webkit-progress-bar {
+        background-color: red;
+    }
+    progress::-webkit-progress-value{
+        background-color: blueviolet;
+    }
+
+</style>
+
+```
+
 
 ### 📚 참고
 [코딩 애플](https://codingapple.com/)  
