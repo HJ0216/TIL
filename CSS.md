@@ -603,17 +603,101 @@ preload: 영상을 먼저 다운을 받을지 말지를 선택 (auto, metadata, 
 
 ### grid
 * Edge 포함 기타 최신 브라우저에서 사용 가능
-1. 부모<div>에 display : grid를 -> 자식 <div>들은 전부 격자처럼 진열
-2. grid-template-columns: 격자의 열 너비와 갯수
-3. grid-template-rows: 격자의 행 높이와 갯수
-* fr: 몇배만큼 차지할지를 나타내는 값
+* 부모 `<div>`에 display : grid를 설정하면 자식 `<div>`들은 전부 격자처럼 진열
+* 속성
+  * 컨테이너에 적용하는 속성
+  * 아이템에 적용하는 속성
+* `line-grid`
+  * container가 inline-block처럼 동작
+* grid-template-rows: 격자의 행 높이와 갯수
+  * grid-auto-rows: row 개수를 미리 알 수 없는 경우 사용
+    * grid-template-rows로 미리 세팅해 둔 것이 없는 row에 대해 설정
+    ```css
+    .container {
+      grid-auto-rows: minmax(100px, auto);
+    }
+    ```
+* grid-template-columns: 격자의 열 너비와 갯수
+  * grid-auto-columns
+  ```css
+  .container {
+    grid-template-columns: 50px;
+    grid-auto-columns: 1fr 2fr;
+  }
+  .item:nth-child(1) { grid-column: 2; }
+  .item:nth-child(2) { grid-column: 3; }
+  .item:nth-child(3) { grid-column: 4; }
+  .item:nth-child(4) { grid-column: 5; }
+  .item:nth-child(5) { grid-column: 6; }
+  .item:nth-child(6) { grid-column: 7; }
+  /* end를 생략하면 그냥 한 칸임 */
+  /* 첫번째 column(G)만 grid-template-columns의 통제를 받아 50px로 되고, 나머지 column들은 grid-auto-columns의 규칙에 따라 1:2의 비율이 반복*/
+  ```
+* fr: 숫자 비율대로 트랙의 크기를 나눔
+* repeat(반복횟수, 반복값)
+```css
+.container {
+	grid-template-columns: repeat(5, 1fr);
+	/* grid-template-columns: 1fr 1fr 1fr 1fr 1fr */
+}
+```
+* minmax()
+  * minmax(100px, auto)의 의미는 최소한 100px, 최대는 자동으로(auto) 늘어나게
+```css
+.container {
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(3, minmax(100px, auto));
+}
+```
+* auto-fill
+  * column의 개수를 미리 정하지 않고 설정된 너비가 허용하는 한 최대한 셀을 채움
+```css
+.container {
+	grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+}
+/*auto-fill의 크기를 20%로 설정했으므로, 1개의 row에는 5개의 셀이 들어감*/
+```
+  * auto-fill 대신 auto-fit을 사용하면, 남는 공간을 채움
+* gap
+```css
+.container {
+	row-gap: 10px;
+	/* row의 간격을 10px로 */
+	column-gap: 20px;
+	/* column의 간격을 20px로 */
+  gap: 10px 20px;
+	/* row-gap: 10px; column-gap: 20px; */
+}
+```
+* grid-column, grid-row
+  * grid-column-start가 시작 번호, grid-column-end가 끝 번호
+  * grid-column은 start와 end 속성을 한번에 쓰는 축약형
 ```css
 /*1. */
-.grid-nav {
-  grid-column : 1 / 4;
-  grid-row : 2 / 4;
+.item:nth-child(1) {
+	grid-column-start: 1;
+	grid-column-end: 3;
+	grid-row-start: 1;
+	grid-row-end: 2;
 }
 
+.item:nth-child(1) {
+	grid-column: 1 / 3;
+	grid-row: 1 / 2;
+}
+
+/* 몇 개의 셀을 차지하게 할 것인지를 지정*/
+.item:nth-child(1) {
+	/* 1번 라인에서 2칸 */
+	grid-column: 1 / span 2;
+	/* 1번 라인에서 3칸 */
+	grid-row: 1 / span 3;
+}
+```
+
+* grid-template-areas
+  * 영역 이름으로 그리드 정의
+```css
 /*2.*/
 .grid-nav {
   grid-area: 헤더;
@@ -633,6 +717,39 @@ preload: 영상을 먼저 다운을 받을지 말지를 선택 (auto, metadata, 
     "사이드 사이드 . ."
 }
 ```
+* grid-auto-flow
+  * dense: 셀에 들어갈 자리가 없어서 빈 셀들이 생겼을 때, 빈 셀을 채우는 알고리즘
+* align-items
+  * 컨테이너에 적용, 아이템들을 세로(column축) 방향으로 정렬
+* justify-items
+  * 컨테이너에 적용, 아이템들을 가로(row축) 방향으로 정렬
+* place-items
+  * align-items와 justify-items를 같이 쓸 수 있는 단축 속성
+  ```css
+  .container {
+    place-items: center start;
+  }
+  ```
+* align-content
+  * Grid 아이템들의 높이를 모두 합한 값이 Grid 컨테이너의 높이보다 작을 때 Grid 아이템들을 통째로 정렬
+* justify-content
+  * Grid 아이템들의 너비를 모두 합한 값이 Grid 컨테이너의 너비보다 작을 때 Grid 아이템들을 통째로 정렬
+* place-content
+  * align-content와 justify-content를 같이 쓸 수 있는 단축 속성
+  ```css
+  .container {
+    place-content: space-between center;
+  }
+  ```
+* align-self
+  * 아이템에 적용, 해당 아이템을 세로(column축) 방향으로 정렬
+* justify-self
+  * 아이템에 적용, 해당 아이템을 가로(row축) 방향으로 정렬
+* place-self
+  * align-self와 justify-self를 같이 쓸 수 있는 단축 속성
+* order
+  *  “시각적” 순서일 뿐, HTML 자체의 구조를 바꾸는 것은 아니므로 접근성 측면에서 사용에 주의
+  * 시각 장애인분들이 사용하는 스크린 리더로 화면을 읽을 때, order를 이용해 순서를 바꾼 것은 의미가 없음
 
 ### inline, block, inline-block
 * display: inline; 은 텍스트처럼
