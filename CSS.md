@@ -602,7 +602,21 @@ preload: 영상을 먼저 다운을 받을지 말지를 선택 (auto, metadata, 
 }
 ```
 
+### inline, block, inline-block
+* display: inline; 은 텍스트처럼
+  * inline 요소들은 기본적으로는 옆으로 쭉 나열 되다가, 공간이 모자라면 다음 줄로 넘어감
+  * 기본적으로 사각 박스 형태가 아니기 때문에 width, height로 크기를 설정할 수 없음(img 제외)
+  * HTML 소스 상에서의 “빈 칸”이 만드는 틈은 body태그에 font-size를 0으로 만든 후, 하위 요소에서 font-size 부여
+* display: block; 은 쌓이는 상자처럼
+  * width는 옆으로 늘어날 수 있는 만큼 최대한(자기 부모 요소의 width 만큼) 자리 차지
+  * height는 내용물의 높이만큼 자리 차지
+    * block 요소에 아무것도 넣지 않는다면, height는 0이기 때문에 우리 눈에는 아무것도 안보임
+  * 박스의 width를 300px로 해서 오른쪽에 충분한 공간이 남아있지만, 둘 다 block 요소이기 때문에 다음 줄로 넘어가서 배치
+* inline-block
+  * inline처럼 텍스트 흐름대로 쭉 나열되고, block 처럼 박스 형태라 width, height로 크기 설정이 가능
+
 
 ### 📚 참고
 [코딩 애플](https://codingapple.com/)  
 [코딩 에브리바디](https://codingeverybody.kr/)  
+[1분 코딩](https://studiomeal.com/)  
