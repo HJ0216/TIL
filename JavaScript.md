@@ -58,3 +58,38 @@ $('.slide-btn').on('click', function () {
     updateSlide(index);
 })
 ```
+
+### scroll
+```js
+window.addEventListener('scroll', function(){
+  console.log( window.scrollY ); //  현재 페이지를 얼마나 위에서 부터 스크롤했는지 px 단위로 알려줌
+});
+
+window.scrollTo(x, y);
+// 강제로 스크롤바를 이동
+
+window.scrollBy(0, 100);
+// 현재 위치에서부터 +100px 만큼 스크롤
+
+document.documentElement.scrollHeight;
+// 문서의 전체 높이 (스크롤 포함)
+
+window.innerHeight;
+// 현재 브라우저 창에서 보이는 화면의 높이
+
+
+/*jQuery*/
+$(window).on('scroll', function(){
+  $(window).scrollTop();
+})
+
+$(window).scrollTop(); // 스크롤한 양
+$(window).scrollTop(100) // 스크롤 강제 이동
+
+
+/*div*/
+var 스크롤_양 = document.querySelector('.lorem').scrollTop;
+var 스크롤_가능한_실제_높이 = document.querySelector('.lorem').scrollHeight;
+var padding_border_스크롤바_포함한_전체_높이 = document.querySelector('.lorem').offsetHeight;
+
+```
