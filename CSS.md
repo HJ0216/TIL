@@ -764,6 +764,18 @@ preload: 영상을 먼저 다운을 받을지 말지를 선택 (auto, metadata, 
 * inline-block
   * inline처럼 텍스트 흐름대로 쭉 나열되고, block 처럼 박스 형태라 width, height로 크기 설정이 가능
 
+### visibility: hidden, display: none, opacity: 0
+* display: none
+  * 모달, 알림창 등 완전히 숨기고 공간도 없애야 할 때
+  * 토글 기능
+* visibility: hidden 
+  * 레이아웃 유지하면서 일시적으로 숨겨야 할 때
+  * 애니메이션에서 중간 상태
+  * 자식 요소는 보여야 할 때
+* opacity: 0
+  * 공간 차지
+  * 클릭 이벤트 가능
+  * 애니메이션에 적합
 
 ### 📚 참고
 [코딩 애플](https://codingapple.com/)  
