@@ -208,6 +208,32 @@ https://github.com/necolas/normalize.css/blob/master/normalize.css
 ```
 
 ### flex
+* 속성
+  * 컨테이너에 적용하는 속성
+  * 아이템에 적용하는 속성
+* 특성
+  * Flex 아이템들은 가로 방향으로 배치
+    * inline-flex 사용 시, container가 flex-item width만큼으로 맞춰짐
+  * 자신이 가진 내용물의 width 만큼만 차지(inline 요소 처럼)
+  * height는 컨테이너의 높이만큼 늘어남
+* flex-wrap
+  * nowrap
+  * wrap
+  * wrap-reverse
+* justify: 메인축 방향으로 정렬
+* align: 수직축 방향으로 정렬
+  * baseline: 텍스트 베이스라인 기준으로 정렬
+* align-content
+  * flex-wrap: wrap;이 설정된 상태에서, 아이템들의 행이 2줄 이상 되었을 때의 수직축 방향 정렬을 결정하는 속성
+* flex-basis
+  * Flex 아이템의 기본 크기를 설정
+  * width가 100px이 안되는 item은 100px로 늘어나고, 원래 100px이 넘는 item은 그대로 유지
+    * 반면에 width를 설정하면, 원래 100px을 넘는 item도 100px로 맞춰짐
+* flex-grow
+  * flex-basis의 값보다 커질 수 있는지를 결정하는 속성
+  * flex-grow에 들어가는 숫자: 아이템들의 flex-basis를 제외한 여백 부분을 flex-grow에 지정된 숫자의 비율로 나누어 가짐
+* flex-shrink
+  * 아이템이 flex-basis의 값보다 작아질 수 있는지를 결정
 * `flex: 0 0 auto;`
 
 | 속성         | 값   | 의미                    |
@@ -215,6 +241,12 @@ https://github.com/necolas/normalize.css/blob/master/normalize.css
 | flex-grow   | 0    | 여유 공간이 있어도 절대 늘어나지 않음  |
 | flex-shrink | 0    | 공간이 부족해도 절대 줄어들지 않음    |
 | flex-basis  | auto | 요소의 크기를 기본(내용 크기)으로 유지 |
+
+* align-self
+  * align-items의 아이템 버전입니다. align-items가 전체 아이템의 수직축 방향 정렬이라면, align-self는 해당 아이템의 수직축 방향 정렬
+* order
+  *  “시각적” 순서일 뿐, HTML 자체의 구조를 바꾸는 것은 아니므로 접근성 측면에서 사용에 주의
+  * 시각 장애인분들이 사용하는 스크린 리더로 화면을 읽을 때, order를 이용해 순서를 바꾼 것은 의미가 없음
 
 ### class
 * 작성 시, 재사용 가능하게 작성
