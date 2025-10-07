@@ -93,3 +93,99 @@ var 스크롤_가능한_실제_높이 = document.querySelector('.lorem').scrollH
 var padding_border_스크롤바_포함한_전체_높이 = document.querySelector('.lorem').offsetHeight;
 
 ```
+
+### 좋은 관습
+* 자주쓰는 selector는 변수에 넣어 쓰기
+```js
+$(".tab-button").on("click", function () {
+  // orange
+  let index = $(this).data("index");
+
+  $(".tab-button").removeClass("orange");
+  $(this).addClass("orange");
+
+  // show
+  $(".tab-content").removeClass("show");
+  $(".tab-content").eq(index).addClass("show");
+});
+
+// 변수 치환
+$(".tab-button").on("click", function () {
+  const tabContent = $(".tab-content");
+
+  // orange
+  let index = $(this).data("index");
+
+  tab.removeClass("orange");
+  $(this).addClass("orange");
+
+  // show
+  tabContent.removeClass("show");
+  tabContent.eq(index).addClass("show");
+});
+```
+
+### 이벤트 버블링
+* 어떤 HTML 태그에 이벤트가 발생하면 그의 모든 상위요소까지 이벤트가 실행되는 현상
+* `e.target`은 실제 클릭한 요소(이벤트 발생한 곳)
+* `e.currentTarget`은 지금 이벤트 리스너가 달린 곳(this)
+* `e.preventDefault()` 실행하면 이벤트 기본 동작을 막아줌
+* `e.stopPropagation()` 실행하면 내 상위요소로의 이벤트 버블링을 중단해줌
+```html
+<div class="tab-button">
+  버튼 텍스트
+  <span class="icon">🔥</span>
+</div>
+```
+
+```js
+$('.tab-button').on('click', function(e){
+    console.log('target:', e.target);
+    console.log('currentTarget:', e.currentTarget);
+})
+
+/**
+ * "버튼 텍스트"를 클릭
+ * target: <div class="tab-button">  (div 자체를 클릭)
+ * currentTarget: <div class="tab-button">  (이벤트 등록된 곳)
+ * 
+ * "🔥 아이콘"을 클릭
+ * target: <span class="icon">  (span을 클릭했으니까!)
+ * currentTarget: <div class="tab-button">  (여전히 div)
+ * */
+```
+
+### 이벤트
+* 일반 이벤트
+```js
+$('.tab-button').on('click', function(){
+  // 현재 존재하는 .tab-button에만 이벤트 등록
+});
+
+// 나중에 버튼 추가
+$('.list').append('<li class="tab-button">새 탭</li>');
+// → 새 탭은 클릭 안 됨! ❌
+```
+* 이벤트 위임
+```js
+$('.list').on('click', '.tab-button', function(){
+  // .list에 이벤트 등록하되, .tab-button 클릭만 감지
+});
+
+// 나중에 버튼 추가
+$('.list').append('<li class="tab-button">새 탭</li>');
+// → 새 탭도 클릭 됨! ✅
+```
+
+### 복사
+1. 얕은 복사(객체 내부 값은 공유)
+  * Spread 연산자 `var products1 = [...products];`
+  * slice() `var products1 = products.slice();`
+3. 깊은 복사
+  * `var products1 = JSON.parse(JSON.stringify(products));`
+
+### js libs
+* [swiper](https://swiperjs.com/get-started#use-swiper-from-cdn)
+* [Chart.js](https://www.chartjs.org/docs/latest/)
+* [Animate On Scroll](https://michalsnik.github.io/aos/)
+* [EmailJS](https://www.emailjs.com/docs/introduction/how-does-emailjs-work/)
