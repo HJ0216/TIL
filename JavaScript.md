@@ -195,10 +195,97 @@ $('.list').append('<li class="tab-button">새 탭</li>');
 
 ### 복사
 1. 얕은 복사(객체 내부 값은 공유)
-  * Spread 연산자 `var products1 = [...products];`
+  * Spread 연산자(shallow copy, 맨 위의 오브젝트하나만 카피)
+    ```js
+    // object
+    const original = {
+      name: "John",
+      age: 30,
+      address: {
+        city: "Seoul"
+      }
+    };
+
+    const copied = { ...original };
+
+    // 1단계 속성은 독립적
+    copied.name = "Jane";
+    console.log(original.name); // "John" (영향 없음)
+
+    // 중첩된 객체는 참조를 공유
+    copied.address.city = "Busan";
+    console.log(original.address.city); // "Busan" (변경됨!)
+
+    // array
+    const arr1 = [1, 2, [3, 4]];
+    const arr2 = [...arr1];
+
+    arr2[0] = 99;
+    console.log(arr1[0]); // 1 (영향 없음)
+
+    arr2[2][0] = 99;
+    console.log(arr1[2][0]); // 99 (변경됨!)
+    ```
   * slice() `var products1 = products.slice();`
-3. 깊은 복사
+2. 깊은 복사
   * `var products1 = JSON.parse(JSON.stringify(products));`
+
+### ES6 Spread Operator 
+* 괄호제거 해주는 연산자
+
+```js
+var 어레이 = ['hello', 'world'];
+console.log(어레이); // ['hello', 'world']
+console.log(...어레이); // 'hello', 'world'
+
+var 문자 = 'hello';
+console.log(문자); // hello
+console.log(...문자); // h e l l o
+```
+* 활용
+  * Array 합치기/복사
+    ```js
+    var a = [1,2,3];
+    var b = [4,5];
+    var c = [...a, ...b];
+
+    var a = [1,2,3];
+    var b = [...a]; // 값 복사
+
+    console.log(a);
+    console.log(b)
+    ```
+  * Object 합치기/복사
+  * array를 파라미터형태로 집어넣고 싶을 때
+    ```js
+    function 더하기(a,b,c){
+      console.log(a + b + c)
+    }
+
+    var 어레이 = [10, 20, 30];
+    더하기(...어레이);
+    ```
+
+### apply, call 함수
+* apply: 이 함수를 실행하는데.. 저기 오브젝트에다가 적용해서 실행
+  * 여러가지 유용한 함수들을 내가 원하는 곳에 붙여서 쉽게 실행가능
+  * call은 apply와 동일하나 apply는 파라미터를 [array]로 한꺼번에 집어넣을 수 있고, call은 1,2,3처럼만 집어넣을 수 있음
+```js
+var person = {
+    인사 : function(){
+      console.log(this.name + '안녕')
+    }
+}
+  
+var person2 = {
+    name : '손흥민'
+}
+
+person.인사.apply(person2); // person.인사()라는 함수를 쓰는데 person2라는 오브젝트에 적용해서 실행
+
+person.인사.apply(person2, [1,2,3]);
+person.인사.call(person2, 1,2,3);
+```
 
 ### js libs
 * [swiper](https://swiperjs.com/get-started#use-swiper-from-cdn)
