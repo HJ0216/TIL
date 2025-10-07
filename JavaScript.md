@@ -232,3 +232,56 @@ window.addEventListener('load', function(){
 * Cookies (유저 로그인정보 저장공간)
 * Cache Storage (html css js img 파일 저장해두는 공간)
 
+### this
+```js
+console.log(this);
+// window 객체
+
+function 함수() {
+    console.log(this);
+}
+// window 객체
+// 단 strict 모드에서는 undefined
+```
+* window
+  * 모든 전역변수, 함수, DOM을 보관하고 관리하는 전역객체
+
+```js
+const 오브젝트 = {
+    data: {
+        함수 : function(){
+            console.log(this);
+        },
+    }
+}
+// data 객체
+```
+> `this`를 출력하면 this를 사용한 메소드를 가지고 있는 오브젝트를 출력
+
+```js
+function 객체생성(){
+    this.이름 = '김';
+}
+let 새로운오브젝트 = new 객체생성();
+console.log(새로운오브젝트);
+// this: 새로 생성될 오브젝트
+// 객체가 어떤 생성자 함수로부터 만들어졌는지도 확인 가능
+```
+
+```js
+document.getElementById('버튼').addEventListener('click', function(e){
+  console.log(this);
+  // e.currentTarget
+  // 지금 addEventListener 부착된 HTML 요소
+});
+
+document.getElementById('버튼').addEventListener('click', function(e){
+  var 어레이 = [1,2,3];
+  어레이.forEach(function(){
+    console.log(this);
+    // window 객체 출력
+  });
+});
+```
+* arrow function
+  * 함수 내부의 this값을 재정의하지 않아 상위 요소의 this값 상속
