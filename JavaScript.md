@@ -189,3 +189,35 @@ $('.list').append('<li class="tab-button">새 탭</li>');
 * [Chart.js](https://www.chartjs.org/docs/latest/)
 * [Animate On Scroll](https://michalsnik.github.io/aos/)
 * [EmailJS](https://www.emailjs.com/docs/introduction/how-does-emailjs-work/)
+
+### DOM(Document Object Model)
+* 자바스크립트가 HTML에 대한 정보들 (id, class, name, style, innerHTML 등)을 object 자료로 정리한 것
+  * 자바스크립트가 HTML 조작을 하기 위해선 HTML을 자바스크립트가 해석할 수 있는 문법으로 변환
+  * 실제로 브라우저는 HTML 페이지를 열어줄 때 HTML을 자바스크립트로 쉽게 찾고 바꾸기 위해 object와 비슷한 자료형에 담아둠
+```html
+<script>
+  document.getElementById('test').innerHTML = '안녕'
+</script>
+
+<p id="test">임시글자</p>
+<!--
+아직 <p id="test">를 읽기 전이라 p태그에 대한 DOM이 아직 생성되지 않았으므로 오류 발생
+-->
+```
+```js
+// 대안
+$(document).ready(function(){ 실행할 코드 }) // DOM 생성만 체크하는 함수
+document.addEventListener('DOMContentLoaded', function() { 실행할 코드 }) 
+
+$(window).on('load', function(){
+  //document 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드 
+});
+
+window.addEventListener('load', function(){
+  //document 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드
+})
+```
+
+* Virtual DOM
+  * html DOM의 복사본
+  * html 변경사항이 일어나야하면 Virtual DOM에 먼저 반영하고 거기서 꼭 필요한 내용만 실제 DOM에 반영하는 방식으로 React, Vue 동작
