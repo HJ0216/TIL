@@ -36,9 +36,25 @@ document.getElementById('alert-show-btn-1').addEventListener('click', () => setA
 
 ```
 
-### const, let
+### const, let, var
 * 기본은 const: `const API_KEY = 'abc123';`
 * 값이 변경되어야 하면 let: `let count = 0;`
+```js
+let a = 1;
+var 함수 = function () {
+    a = 2;
+}
+console.log(a); // 1
+
+// 변수의 범위
+for (var i = 1; i < 6; i++) { 
+  setTimeout(function() { console.log(i); }, i*1000 ); 
+}
+
+for (let i = 1; i < 6; i++) { 
+  setTimeout(function() { console.log(i); }, i*1000 ); 
+}
+```
 
 ### time
 * `setTimeout(function(){ 실행할코드~ }, 기다릴시간);`: 기다릴 시간 이후 1번 실행
@@ -285,3 +301,51 @@ document.getElementById('버튼').addEventListener('click', function(e){
 ```
 * arrow function
   * 함수 내부의 this값을 재정의하지 않아 상위 요소의 this값 상속
+
+### Hoisting
+* 변수나 함수의 선언부분을 변수의 범위 맨 위로 강제로 끌고가서 가장 먼저 해석
+```js
+console.log(이름); // 오류가 아닌 undefined
+var 이름 = 'Kim';
+console.log(이름);
+
+함수();
+function 함수() {
+  console.log(안녕); // Cannot access '안녕' before initialization
+  let 안녕 = 'Hello!';
+} 
+
+함수(); // 함수 is not a function, 아직 함수 할당이 아니라 함수 호출 X
+var 함수 = function() {
+  console.log(안녕);
+  var 안녕 = 'Hello!';
+} 
+```
+
+### 전역변수
+* 전역변수를 조금 더 엄격하게 관리하거나 구분짓고 싶으면 전역변수를 만들 때와 사용할 때 window를 추가
+```js
+let a = 1;
+var b = 2;
+window.a = 3;
+window.b = 4;
+
+console.log(a + b); // 5
+// var만 window를 활용한 재할당 가능
+```
+
+### Tagged Literals
+* 문자 중간중간에 있는 단어 순서를 바꾸거나 변수를 제거하거나 할 때 유용
+```js
+var 변수 = '손흥민';
+
+function 해체분석기(문자들, 변수1, 변수2){
+  console.log(문자들); // array
+  console.log(변수1);
+  console.log(변수2);
+}
+
+해체분석기`안녕하세요 ${변수} 입니다`;
+// 첫째 파라미터 문자들은 `백틱` 내의 순수 문자만 골라서 Array로 만들어놓은 파라미터
+// 둘째 파라미터 변수들은 `백틱` 내의 ${} 변수를 담는 파라미터
+```
