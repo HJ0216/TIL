@@ -221,3 +221,14 @@ window.addEventListener('load', function(){
 * Virtual DOM
   * html DOM의 복사본
   * html 변경사항이 일어나야하면 Virtual DOM에 먼저 반영하고 거기서 꼭 필요한 내용만 실제 DOM에 반영하는 방식으로 React, Vue 동작
+
+### Storage
+* Local Storage / Session Storage (key : value 형태로 문자, 숫자 데이터 저장가능)
+  * 문자, 숫자만 key : value 형태로 저장가능하고 5MB까지만 저장 가능
+  * JSON.stringify() 안에 array/object 집어넣으면 JSON으로 바꿔서 문자로 저장 가능
+    * array/object -> JSON 변환하고 싶으면 JSON.stringify()
+    * JSON -> array/object 변환하고 싶으면 JSON.parse()
+* Indexed DB (크고 많은 구조화된 데이터를 DB처럼 저장가능, 문법더러움)
+* Cookies (유저 로그인정보 저장공간)
+* Cache Storage (html css js img 파일 저장해두는 공간)
+
