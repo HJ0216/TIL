@@ -701,15 +701,25 @@ for (let i = 0; i < 1e10; i++) {
 ```
 * 대안: Promise
 ```js
-var 프로미스 = new Promise(function(성공, 실패){
-  // ...
-  성공(data);
+// Producer
+var promise = new Promise(function(resolve, reject){
+  // doing some heavy work(network, file read...)
+  // promise가 생성되는 순간 function이 실행됨
+  // function이 바로 실행되지 않는 상태일 때는 생성 시점에 유의
+  resolve(data);
+  reject(new Error(''));
 });
 
-프로미스.then(function(data){
+// consumer
+promise.then(function(value){
   // 성공(); 시
-}).catch(function(){
+  // then은 현재 promise를 return하므로 method chaining으로 catch를 사용할 수 있음
+  // return 프로미스2; // Promise 객체 리턴 시, 연속적으로 실행 및 실행 결과를 처리할 수 있음
+
+}).catch(function(error){
   // 실패(); 시
+}).finally(function(){
+  //
 });
 ```
 * Promise 상태
@@ -722,25 +732,23 @@ var 프로미스 = new Promise(function(성공, 실패){
   * 일종의 디자인 패턴
   * 원래 자바스크립트는 평상시엔 동기적으로 실행이 되며 비동기 실행을 지원하는 특수한 함수들(Web API,  setTimeout, addEventListener, ajax 관련 함수 등) 덕분에 가끔 비동기적 실행됨
 
+### async, await
+* async
+  * 함수 앞에 붙여서 해당 함수가 항상 Promise를 반환
+* await
+  * async 함수 내에서만 사용 가능하며, Promise가 처리될 때까지 기다림
 ```js
-var 프로미스 = new Promise(function(성공, 실패) {
-    $.get('https://codingapple1.github.io/hello.txt').done(function(결과){
-      성공(결과)
-    });
-});
-
-프로미스.then(function(결과) {
-  console.log(결과);
-
-  var 프로미스2 = new Promise(function(성공, 실패) {
-    $.get('https://codingapple1.github.io/hello2.txt').done(function(결과){
-      성공(결과)
-    })
-  });
-
-  return 프로미스2; // Promise 객체 리턴 시, 연속적으로 실행 및 실행 결과를 처리할 수 있음
-
-}).then(function(결과) {
-    console.log(결과);
-}) 
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
 ```
+
+### 📚 참고
+[코딩 애플](https://codingapple.com/)  
+[드림 코딩](https://www.youtube.com/@dream-coding)  
