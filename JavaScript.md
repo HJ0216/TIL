@@ -500,9 +500,14 @@ class 유저{
 }
 
 class 셀러유저 extends 유저{
+  hello = 'hi'; // 클래스 내부에서 인스턴스 속성 설정
+  // const/let/var는 지역 변수를 만들 때 쓰는 거고, 클래스 필드와는 다름
+
   constructor(id){
     super(id); // 최상단에 작성
-    this.company = 'samsung';
+    this.company = 'samsung'; 
+    // this(현재 인스턴스) 필수
+    // this 없이 쓸 경우 지역/전역 변수를 참조하게 됨
   }
   sayHi2(){
     super.sayHi();
@@ -604,4 +609,138 @@ function 변경(obj){
 
 이름1 = 변경(이름1);  // 반환값을 이름1에 다시 할당
 console.log(이름1.name);  // 'park' ✅
+```
+
+### getter, setter
+```js
+var 사람 = {
+  name : 'Kim',
+  age : 30,
+  setAge(나이){
+    // 내부에 있는 name, age 변수를 직접 건드리지 않아서 실수를 방지할 수 있음
+    this.age = parseInt(나이);
+  }
+
+  set setAge2(나이){
+    this.age = parseInt(나이);
+  }
+}
+
+사람.setAge('200');
+사람.setAge = '200';
+```
+* get 함수는 파라미터가 있으면 안되고 함수 내에 return을 가져야함
+* set 함수는 데이터를 입력해서 수정해주는 함수니까 파라미터가 `한 개만` 꼭 존재해야함
+  * `...rest` 사용 불가능
+
+### Destructuring
+```js
+var [a,b,c] = [2,3,4];
+
+var { name : a, age : b } = { name : 'Kim', age : 30 };
+
+var { name, age } = { name : 'Kim', age : 30 }; // key와 이름이 동일할 경우
+
+var name = 'Kim';
+var age = 30;
+var obj = { name, age } // key와 동일한 이름으로 생성
+
+function 함수( { name, age }){
+  console.log(name);
+  console.log(age);
+}
+
+var obj = { name : 'Kim', age : 20 };
+함수(obj);
+```
+
+### 모듈
+* 리액트 뷰 nodejs 이런거할 때 많이 사용
+```js
+var a = 10;
+var b = 20;
+export default a; // 1회만 사용 가능
+export {a, b}; // 여러번 사용 가능
+```
+```html
+<script type="module">
+  import a from 'library.js'; //export default, 변수명 새롭게 작명 가능
+
+  import {a,b} from 'library.js'; // export
+  import {a as newA,b as newB} from 'library.js'; // export, 변수명 변경
+
+  import a, {a,b} from 'library.js'; // export default 가장 왼쪽에 기재
+
+  import a, * as all from '/libraray.js';
+  // * : export { } 했던 애들을 모두 import
+  // as로 별명을 꼭 부여
+</script>
+```
+
+### js와 성능
+```js
+for (let i = 0; i < 1e10; i++) {
+  i++;
+}
+// 10초가 걸린다고 하면 10초동안 사용자가 버튼클릭 이런게 전혀 동작하지 않음
+```
+1. setTimeout
+2. 다른 자바스크립트 파일을 이용해서  그 파일에서 힘든 연산을 시키고 그게 완료가 되면 값을 가져오라고 명령
+
+### Promise
+* 콜백함수의 문제점
+  * 코드 실행 순서를 보장하는 대신, 가독성이 떨어질 수 있음
+```js
+첫째함수(function(){
+  둘째함수(function(){
+    셋째함수(function(){
+      어쩌구..
+    });
+  });
+}):
+```
+* 대안: Promise
+```js
+var 프로미스 = new Promise(function(성공, 실패){
+  // ...
+  성공(data);
+});
+
+프로미스.then(function(data){
+  // 성공(); 시
+}).catch(function(){
+  // 실패(); 시
+});
+```
+* Promise 상태
+  * 성공/실패 판정 전: <pending>
+  * 성공 후: <resolved>
+  * 실패 후: <rejected>
+* Promise 특징
+  * 동기를 비동기로 만들어주는 코드가 아님
+    * Promise 안에 10초 걸리는 어려운 연산을 시키면 10초동안 브라우저가 멈춤
+  * 일종의 디자인 패턴
+  * 원래 자바스크립트는 평상시엔 동기적으로 실행이 되며 비동기 실행을 지원하는 특수한 함수들(Web API,  setTimeout, addEventListener, ajax 관련 함수 등) 덕분에 가끔 비동기적 실행됨
+
+```js
+var 프로미스 = new Promise(function(성공, 실패) {
+    $.get('https://codingapple1.github.io/hello.txt').done(function(결과){
+      성공(결과)
+    });
+});
+
+프로미스.then(function(결과) {
+  console.log(결과);
+
+  var 프로미스2 = new Promise(function(성공, 실패) {
+    $.get('https://codingapple1.github.io/hello2.txt').done(function(결과){
+      성공(결과)
+    })
+  });
+
+  return 프로미스2; // Promise 객체 리턴 시, 연속적으로 실행 및 실행 결과를 처리할 수 있음
+
+}).then(function(결과) {
+    console.log(결과);
+}) 
 ```
