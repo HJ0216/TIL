@@ -14,7 +14,7 @@
   * 텍스트의 일부만 스타일을 변경하고 싶을 때 사용
   * 폭, 높이 등을 단독으로 결정할 수 없으므로 `<p>`를 이용해서 폭, 높이를 설정
 
-### visibility: hidden, display: none, opacity: 0
+### display: none, visibility: hidden, opacity: 0
 * `display: none`
   * 모달, 알림창 등 완전히 숨기고 공간도 없애야 할 때
   * 토글 기능
