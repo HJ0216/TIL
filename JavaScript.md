@@ -51,7 +51,7 @@ function 함수() {
 ```js
 const 오브젝트 = {
     data: {
-        함수 : function(){
+        함수(){
             console.log(this);
         },
     }
@@ -88,6 +88,7 @@ document.getElementById('버튼').addEventListener('click', function(e){
 * arrow function
   * 함수 내부의 this값을 재정의하지 않아 상위 요소의 this값 상속
 
+## Web
 ### DOM(Document Object Model)
 * 자바스크립트가 HTML에 대한 정보들 (id, class, name, style, innerHTML 등)을 object 자료로 정리한 것
   * 자바스크립트가 HTML 조작을 하기 위해선 HTML을 자바스크립트가 해석할 수 있는 문법으로 변환
@@ -124,15 +125,19 @@ $('.slide-btn').on('click', function () {
 ```
 
 ### 좋은 관습
-* 자주쓰는 selector는 변수에 넣어 쓰기
+* 자주쓰는 selector는 변수에 저장
+  * DOM 탐색은 상대적으로 느린 작업
+  * 동적으로 변하지 않는 요소는 밖에서 한 번만 선택하고 재사용하는 것이 효율적
 ```js
-$(".tab-button").on("click", function () {
-  const tabContent = $(".tab-content");
+// 최초 1회 실행
+const tabButtons = $(".tab-button");
+const tabContent = $(".tab-content");
 
+tabButtons.on("click", function () {
   // orange
   let index = $(this).data("index");
 
-  tab.removeClass("orange");
+  tabButtons.removeClass("orange");
   $(this).addClass("orange");
 
   // show
@@ -193,6 +198,24 @@ $('.tab-button').on('click', function(e){
  * currentTarget: <div class="tab-button">  (여전히 div)
  * */
 ```
+
+### Spread Operator
+* 배열이나 객체를 낱개로 펼쳐주는 역할
+* 활용
+  * 배열 복사/합치기
+  * 객체 복사/합치기
+    ```js
+    const user = { name: "Kim", age: 20 };
+    const copy = { ...user };                    // { name: "Kim", age: 20 }
+    const updated = { ...user, age: 21 };        // { name: "Kim", age: 21 }
+    const merged = { ...user, city: "Seoul" };   // { name: "Kim", age: 20, city: "Seoul" }
+    ```
+  * 함수 인자로 전달
+  * 배열/문자열 펼치기
+    ```js
+    const str = "hello";
+    const chars = [...str];  // ['h', 'e', 'l', 'l', 'o']
+    ```
 
 ### 복사
 1. 얕은 복사(객체 내부 값은 공유)
@@ -275,15 +298,15 @@ $('.tab-button').on('click', function(e){
 
 ### constructor
 ```js
-function MakeInstance(){ // constructor는 대문자로 시작
+function MakeInstance(greeting){ // constructor는 대문자로 시작
   this.name = 'Kim';
   this.age = 15;
   this.sayHi = function(){
-    console.log('안녕하세요');
+    console.log(`${this.name}, ${greeting}`);
   }
 }
 
-var 학생1 = new MakeInstance();
+var 학생1 = new MakeInstance('Good Morning!');
 ```
 * prototype
   * prototype에 추가된 데이터들은 자식들이 직접 가지는게 아니라 부모만 가지고 있음
@@ -370,23 +393,16 @@ console.log(a + b); // 5
 
 ### 오브젝트
 ```js
-function 글자세기(글){
-  var 결과 = {};
-    [...글].forEach(function(a){
-      if( 결과[a] > 0 ){
-         결과[a]++; // 원래 없는 요소를 추가하기 가능 
-      } else {
-         결과[a] = 1 ;
-      } 
-    }); 
-
-  console.log(결과);
-}
+var 이름1 = { name : '김' };
+이름1.lastName = '이박'; // 새로운 속성 추가
 
 var 이름1 = { name : '김' };
 var 이름2 = { name : '김' };
 console.log(이름1==이름2); // false
 // == 등호로 비교한 건 object 두개가 아닌 화살표 두개
+
+var 이름3 = 이름1;
+console.log(이름1==이름3); // true
 
 ```
 * 함수를 이용해 object를 변경
@@ -479,19 +495,6 @@ export {a, b}; // 여러번 사용 가능
   // * : export { } 했던 애들을 모두 import
   // as로 별명을 꼭 부여
 </script>
-```
-
-### Callback 함수
-```js
-// 즉시 실행
-document.getElementById('alert-show-btn-1').addEventListener('click',
-  setAlertMessage('아이디');
-);
-
-// 클릭할 때 나중에 실행됨
-document.getElementById('alert-show-btn-1').addEventListener('click', 
-  () => setAlertMessage('아이디')
-);
 ```
 
 ### Promise
