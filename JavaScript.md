@@ -287,6 +287,38 @@ person.인사.apply(person2, [1,2,3]);
 person.인사.call(person2, 1,2,3);
 ```
 
+### arguments
+*  모든 입력된 파라미터를 [ ] 안에 싸매주는 키워드
+```js
+function 함수(a,b,c){
+  for (var i = 0; i < arguments.length; i++){
+    console.log(arguments[i])
+  }
+}
+
+함수(2,3,4);
+```
+
+### rest 파라미터
+* 원하는 파라미터 왼쪽에 ... 기호를 붙여주면 "이 자리에 오는 모든 파라미터를 [] 중괄호로 감싸준 파라미터"
+  * rest는 항상 마지막 파라미터로 넣어야 함
+  * 2개 이상 사용할 수 없음
+```js
+function 함수2(a, b, ...파라미터들){
+  console.log(파라미터들); // 3,4,5,6,7
+}
+
+함수2(1,2,3,4,5,6,7);
+```
+
+### default parameter
+```js
+function 함수(a = 5, b = a * 2) {
+    console.log(a + b);
+}
+함수(undefined, undefined);
+```
+
 ### js libs
 * [swiper](https://swiperjs.com/get-started#use-swiper-from-cdn)
 * [Chart.js](https://www.chartjs.org/docs/latest/)
@@ -389,6 +421,58 @@ document.getElementById('버튼').addEventListener('click', function(e){
 * arrow function
   * 함수 내부의 this값을 재정의하지 않아 상위 요소의 this값 상속
 
+### constructor
+```js
+function MakeInstance(){ // constructor는 대문자로 시작
+  this.name = 'Kim';
+  this.age = 15;
+  this.sayHi = function(){
+    console.log('안녕하세요');
+  }
+}
+
+var 학생1 = new MakeInstance();
+```
+* 파라미터 문법
+  ```js
+  function MakeInstance(name){
+    this.name = name;
+    this.age = 15;
+    this.sayHi = function(){
+      console.log('안녕하세요' + this.name);
+    }
+  }
+  var 학생1 = new MakeInstance('kim')
+  var 학생2 = new MakeInstance('lee')
+
+  학생1.sayHi()
+  ```
+* prototype
+  * prototype에 추가된 데이터들은 자식들이 직접 가지는게 아니라 부모만 가지고 있음
+  ```js
+  function Product(name, price){
+      this.name = name;
+      this.price = price;
+      this.vat = function(){
+          console.log(this.price * 0.1);
+      }
+  }
+
+  const product1 = new Product('shirts', 50_000);
+  console.log(product1);
+
+  Product.prototype.isBestSeller = true;
+  console.log(product1.isBestSeller); // true
+
+  var arr = [1,2,3];
+  // var arr = new Array(1,2,3);
+  console.log( arr.sort() );
+  // Array라는 Constructor에 prototype으로 sort()가 있음
+  ```
+* 변경이 잦은 변수나 함수는 constructor, 변경이 없는 변수나 함수는 prototype에 보관
+* prototype에 넣은 것들은 복사되지 않기 때문에 "메모리 절약"이라는 이점
+  * 함수같은 경우엔 변동사항이 거의 없어서 prototype에 보관
+
 ### Hoisting
 * 변수나 함수의 선언부분을 변수의 범위 맨 위로 강제로 끌고가서 가장 먼저 해석
 ```js
@@ -435,4 +519,49 @@ function 해체분석기(문자들, 변수1, 변수2){
 해체분석기`안녕하세요 ${변수} 입니다`;
 // 첫째 파라미터 문자들은 `백틱` 내의 순수 문자만 골라서 Array로 만들어놓은 파라미터
 // 둘째 파라미터 변수들은 `백틱` 내의 ${} 변수를 담는 파라미터
+```
+
+### 오브젝트
+```js
+function 글자세기(글){
+  var 결과 = {};
+    [...글].forEach(function(a){
+      if( 결과[a] > 0 ){ 결과[a]++ } else { 결과[a] = 1 } // 원래 없는 요소를 추가하기 가능
+    }); 
+  console.log(결과);
+}
+```
+```js
+var 이름1 = { name : '김' };
+var 이름2 = { name : '김' };
+console.log(이름1==이름2); // false
+// == 등호로 비교한 건 object 두개가 아닌 화살표 두개
+
+var 이름3 = 이름1;
+console.log(이름1==이름3); // true
+```
+* 함수를 이용해 object를 변경
+```js
+var 이름1 = { name : '김' };  // 이름1 → 객체A를 가리킴
+
+function 변경(obj){
+    // obj도 객체A를 가리킴 (같은 곳을 봄)
+    
+    obj = { name : 'park' };  
+    // obj가 새로운 객체B를 가리키도록 변경
+    // 하지만 이름1은 여전히 객체A를 가리킴!
+}
+
+// 이름1에 새로운 객체를 할당하려면
+변경(이름1);
+console.log(이름1.name);  // '김' (객체A는 그대로)
+
+var 이름1 = { name : '김' };
+
+function 변경(obj){
+    return { name : 'park' };  // 새 객체를 반환
+}
+
+이름1 = 변경(이름1);  // 반환값을 이름1에 다시 할당
+console.log(이름1.name);  // 'park' ✅
 ```
