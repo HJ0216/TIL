@@ -135,7 +135,7 @@ private async void Method()
 - 작업이 완료되기 전에 Source에 할당할 경우, 값이 제대로 설정되지 않을 수 있음
 
 ```cs
-public void Method(string source)
+public async void Method(string source)
 {
     Model model = new Model();
     model.Uri = source;
@@ -155,9 +155,6 @@ public void Method(string source)
 }
 ```
 
-- 이미지 로딩이 진행 중일 때 Image.Source = null로 바꾸면, 기존 비동기 로딩은 취소되지 않음 → 로딩이 완료되면 그 이미지가 다시 나타남(null로 바꿔도 이미지가 보일 수 있음)
-  - 동기로 동작하는 데이터 값을 조건문으로 사용하여, 이미지 로딩이 될 수 있도록 할 수 있음
-
 ### Dispatcher
 
 WPF: UI 요소 접근은 반드시 UI 스레드에서만 해야 함
@@ -166,45 +163,30 @@ WPF: UI 요소 접근은 반드시 UI 스레드에서만 해야 함
    - 무거운 작업을 UI 스레드에서 할 경우, 화면이 멈춘 것처럼 보이므로 이런 경우에 `Task.Run`을 사용
 2. 이 상황에서 UI 요소에 접근 할 경우, `InvalidOperationException: The calling thread cannot access this object because a different thread owns it` 예외가 발생
 3. 다시 UI 스레드로 돌아가기 위해 `Dispatcher` 사용
+    - UI 메서드에서 Dispatcher.Invoke 사용 시, `DeadLock` 문제 발생 유의
+    ```cs
+    private async void Button_Click(object sender, RoutedEventArgs e)
+    {
+        await DoWorkAsync(); // 🔹 (1) UI 스레드는 여기서 "await" 상태로 대기
+        MessageBox.Show("완료");
+    }
 
-```cs
-private async void Method()
-{
-	try
-	{
-		Method1(); // UI Thread
-		await Task.Run(() => Method2()); // Background Thread
-		Method3(); // UI Thread(ConfigureAwait(false)를 사용하지 않는 한)
-	}
-	catch(Exception ex)
-	{
-		// UI Thread
-	}
-}
-
-public void Task Method2()
-{
-    Dispatcher.Invoke(() =>
-	{
-		// UI 작업 실행
-	});
-}
-```
-
-- UI 메서드에서 Dispatcher.Invoke 사용 시, `DeadLock` 문제 발생 유의
-
-⭐ Dispatcher 사용법
-
-- Task 메서드에서만 Dispatcher.Invoke 사용
-- UI Event를 제외한 메서드 내부에서는 UI 이벤트, Task 메서드에서 중복으로 사용될 수 있으므로 Dispatcher.Invoke 사용 X
-
-- 간접적으로 바인딩된 데이터를 사용할 때, Dispatcher 사용 여부
-  - CurrentModels: UI 바인딩 O / AllModels: UI 바인딩 X
-    - CurrentModels = AllModels
-      - CurrentList와 AllList가 같은 객체를 참조하므로 UI에도 영향 → AllModels 변경 시 Dispatcher 필요 O
-    - CurrentModels = AllModels.toList()
-      - CurrentList는 독립된 List → AllModels 변경 시 Dispatcher 필요 X
-  - CurrentModel이 UI에 직접적으로 바인딩되어있지 않을 경우, UI 컨트롤에 설정할 때 Dispatcher 선언
+    private Task DoWorkAsync()
+    {
+        // 🔹 (2) Task.Run으로 백그라운드 스레드 실행
+        return Task.Run(() =>
+        {
+            // 🔹 (3) 백그라운드 스레드에서 UI 접근 시도
+            // UI 스레드의 Dispatcher에게 작업을 "Invoke"로 요청 (동기 대기)
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // 이 코드는 UI 스레드에서 실행되어야 함
+                // 그러나 UI 스레드는 (1) await 상태에서 대기 중이라 실행 불가
+                MessageBox.Show("UI 접근");
+            });
+        });
+    }
+    ```
 
 ### `Dispatcher.InvokeAsync` / `Application.Current.Dispatcher.InvokeAsync`
 
@@ -321,38 +303,26 @@ public async Task LoadImageAsync(string source)
 ### `값복사` vs `참조복사`
 
 ```cs
-// TargetImage에 BitmapImage가 설정됨
-BitmapImage TargetImage { get; set; }
-string imageUri = string.empty;
-UpdateBitmapImageAsync(imageUri);
-public async Task UpdateBitmapImageAsync(string source)
-{
-    TargetImage = GetBitmapImageFromWebAsync(source);
-}
-
 // TargetImage에 BitmapImage가 설정되지 않음
 UpdateBitmapImageAsync(Target, imageUri);
 public async Task UpdateBitmapImageAsync(BitmapImage target, string source)
 {
-    target = GetBitmapImageFromWebAsync(source);
+    target = await GetBitmapImageFromWebAsync(source);
+    // 인스턴스를 새로 할당하는 경우, target = GetBitmapImageFromWebAsync(source);는 단순히 지역 변수 target을 바꾸는 것일 뿐, 실제 바인딩 대상인 Target에는 영향을 주지 않음
 }
-```
 
-- 인스턴스를 새로 할당하는 경우, target = GetBitmapImageFromWebAsync(source);는 단순히 지역 변수 target을 바꾸는 것일 뿐, 실제 바인딩 대상인 TargetImage 속성에는 영향을 주지 않음
-- 매개변수의 `일부 속성을 바꾸는 것`과 매개변수의 `참조값 자체를 바꾸는 것`의 차이
-
-```cs
 // 해결1: 매개변수로 넘기지 않고 직접 할당
-BitmapImage TargetImage { get; set; }
-string imageUri = string.empty;
-UpdateBitmapImageAsync(imageUri);
 public async Task UpdateBitmapImageAsync(string source)
 {
-    TargetImage = GetBitmapImageFromWebAsync(source);
+    TargetImage = await GetBitmapImageFromWebAsync(source);
     OnPropertyChanged(nameof(TargetImage));
 }
 
-// 해결2: 인스턴스를 바꾸지 않고 내부 스트림만 업데이트
+/**
+인스턴스를 바꾸지 않고 내부 스트림만 업데이트할 경우
+Freeze()한 BitmapImage는 더 이상 Source나 내부 스트림 같은 걸 바꿀 수 없음(객체 자체가 Read-Only 상태로 고정됨)
+Freeze()는 BitmapImage를 생성한 UI Thread 이외의 Thread에서도 안전하게 접근할 수 있도록 하므로 사용 권장
+*/
 public async Task UpdateBitmapImageAsync(BitmapImage bitmapImage, string source)
 {
     byte[] imageData = await httpClient.GetByteArrayAsync(source);
@@ -369,9 +339,6 @@ public async Task UpdateBitmapImageAsync(BitmapImage bitmapImage, string source)
 
     bitmapImage.Freeze();
 }
-// 해결2의 문제
-// Freeze()한 BitmapImage는 더 이상 Source나 내부 스트림 같은 걸 바꿀 수 없음(객체 자체가 Read-Only 상태로 고정됨)
-// Freeze()는 BitmapImage를 생성한 UI Thread 이외의 Thread에서도 안전하게 접근할 수 있도록 하므로 사용 권장
 ```
 
 ### ref 타입
@@ -420,7 +387,7 @@ private void ChangeMethodRef(ref Model model)
 
     // 결과
     // Change - Before Ref: Original
-    // Change - After Ref: Update Ref
+    // Change - After Ref: Change Ref
 }
 
 private void ChangeMethodNotRef(Model model)
@@ -431,7 +398,7 @@ private void ChangeMethodNotRef(Model model)
 
     // 결과
     // Change - Before Not Ref: Original
-    // Change - After Not Ref: Update Not Ref
+    // Change - After Not Ref: Original
 }
 ```
 
@@ -462,7 +429,7 @@ public static class HttpClientProvider
 {
     public static readonly HttpClient httpClient = new HttpClient();
 
-    public static Task<byte[]> Method(string source)
+    public static async Task<byte[]> Method(string source)
     {
         if(IsWebUrl(source))
             return await httpClient.GetByteArrayAsync(source);
@@ -521,6 +488,9 @@ public static class HttpClientProvider
 - async void는 주로 이벤트 핸들러(Event Handler)를 위해 존재(이벤트 핸들러의 시그니처는 반환 타입이 void여야 하기 때문)
   - 이 경우에도 async void 이벤트 핸들러 내부에서는 가능한 한 빨리 async Task 메서드를 호출
   - async void 메서드 자체에는 최소한의 로직(주로 try-catch로 async Task 메서드 호출 감싸기)만 두는 것이 좋음
+- 생성자, set 등 동기 코드 블록에서 비동기 메서드를 사용하는 경우, await을 사용할 수 없음
+  - async 메서드 내부에서 자체적으로 오류를 처리할 수 있도록 try-catch 블럭 사용
+  - 호출부에서는 \_(discard)를 사용하여 컴파일 경고창 제거
 
 ```cs
 private async void Button_Click(object sender, RoutedEventArgs e)
@@ -540,23 +510,14 @@ private async Task HandleButtonClickAsync()
     await SomeLongOperationAsync();
     // 여기서 예외가 발생하면 Task에 담겨 호출자(Button_Click)에게 전달됨
 }
-```
 
-\+ 생성자, set 등 동기(synchronous) 코드 블록이므로, 비동기 메서드에 await을 할 수 없는 경우
-
-1. void 대신 Task를 선언한 후, await을 할 수 없으므로 자체적으로 오류를 처리할 수 있도록 try-catch 블럭 사용
-
-- 외부에서 await을 사용하지 않으므로 오류 발생 시, 호출 부에서 오류 처리를 할 수 없음
-
-2. 호출부에서는 \_(discard)를 사용하여 컴파일 경고창 제거
-
-```cs
+// Setter with Async
 public mMember Member
 {
     get { return member; }
     set
     {
-        if (Member != value)
+        if (member != value)
         {
             member = value;
 
@@ -877,8 +838,6 @@ public static Window Instance
 
 		return instance;
 	}
-
-	set { instance = value; }
 }
 ```
 
@@ -892,7 +851,6 @@ public static Window Instance
 {
     // .Value에 처음 접근할 때 단 한번만 객체가 생성
     get { return lazyInstance.Value; }
-    set { instance = value; }
 }
 ```
 
@@ -942,14 +900,8 @@ bool isSuccess = await HandleStatusChangeAsync();
 ```
 
 ### Instance간 데이터 공유
-
-K를 상속하는 A Instance와 B Instance
-A Instance에서 B Instance를 만들 때, B Instance는 A Instance의 정보를 갖고 있지 않음
-
-- 부모 → 자식 데이터 전달
-  - 생성자 매개변수 사용
-
 ```cs
+// parent -> child
 // wndInstanceA
 wndInstanceB wnd = wndInstanceB.Instance as wndInstance;
 wnd.Show(this);
@@ -961,21 +913,16 @@ public void Show(wndInstance parents)
 
     // ...
 }
-```
 
-- 자식 → 부모 데이터 전달
-  - Action<T> 사용
-    - 값을 사용할 경우, 변경 알림을 사용하지 못함
-
-```cs
+// child -> parent
 // wndInstanceB
 public event Action<int> OnAgeChanged;
 
 private int age;
 private void IncreaseAge()
 {
-    credit++;
-    OnCreditChanged?.Invoke(credit);
+    age++;
+    OnAgeChanged?.Invoke(age);
 }
 
 // wndInstanceA
@@ -1440,9 +1387,11 @@ public class Program
 ### `abstract` / `virtual`
 
 - 추상 메서드(Abstract Method)
+
   - `abstract`(추상) 메서드로 선언하면 그 클래스를 상속받는 모든 자식 클래스가 반드시 해당 메서드를 구현(override)해야함
   - 부모: 규칙(추상 메서드)만 정의
   - 자식: 부모가 정의한 그 규칙을 자신에 맞게 구체적으로 구현(override)
+
   ```cs
   // Child
   public partial class wndChild : Window
@@ -1465,7 +1414,7 @@ public class Program
   {
       // ... wndBase의 다른 코드들 ...
 
-  		private void OpenWindow()
+    protected void OpenChildWindow()
       {
           wndChild childWindow = new wndChild();
 
@@ -1511,9 +1460,12 @@ public class Program
       }
   }
   ```
+
 - 가상 메서드(Virtual Method)
+
   - 어떤 자식은 구현하고, 어떤 자식은 구현하지 않아도 되는' **선택적인 재정의**가 필요할 때는, `abstract` 대신 **`virtual`(가상)** 키워드를 사용
   - `wndParents`처럼 알림 처리가 필요한 클래스만 해당 메서드를 재정의하고, 다른 자식 클래스들은 무시할 수 있음
+
   ```csharp
   // wndBase
   public partial class wndBase : Window
@@ -1772,7 +1724,7 @@ uint h = result.height;  // 😍 의미가 명확
 
 - Tuple List
   ```cs
-  List<(string Key, int Value)> tupleList = new List<(string, int)>
+  List<(string Key, int Value)> tupleList = new List<(string Key, int Value)>
   {
       ("apple", 10),
       ("banana", 5),
