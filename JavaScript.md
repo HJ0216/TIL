@@ -468,10 +468,50 @@ var 학생1 = new MakeInstance();
   // var arr = new Array(1,2,3);
   console.log( arr.sort() );
   // Array라는 Constructor에 prototype으로 sort()가 있음
+
+  Student.prototype = {
+    sayHi: function(){
+        console.log('안녕 나는 ' + this.name);
+    },
+    getAge: function(){
+        return this.age;
+    },
+    introduce: function(){
+        console.log(`${this.name}이고 ${this.age}살입니다`);
+    }
+  }
   ```
 * 변경이 잦은 변수나 함수는 constructor, 변경이 없는 변수나 함수는 prototype에 보관
 * prototype에 넣은 것들은 복사되지 않기 때문에 "메모리 절약"이라는 이점
   * 함수같은 경우엔 변동사항이 거의 없어서 prototype에 보관
+* 자주 사용할법한 내장함수들을 많이 만들어두시면 더 효율적인 코딩생활이 가능 
+* 혹은 이런 함수들 모아서 나중에 자바스크립트 라이브러리화 해서 사용해도 좋음
+
+### class
+```js
+class 유저{
+  constructor(id){
+    this.id = id;
+    this.email = name;
+  }
+  sayHi(){ // prototype에 저장
+    console.log('안녕');
+  }
+}
+
+class 셀러유저 extends 유저{
+  constructor(id){
+    super(id); // 최상단에 작성
+    this.company = 'samsung';
+  }
+  sayHi2(){
+    super.sayHi();
+  }
+}
+
+var user = new 셀러유저('kim')
+user.sayHi2()
+```
 
 ### Hoisting
 * 변수나 함수의 선언부분을 변수의 범위 맨 위로 강제로 끌고가서 가장 먼저 해석
