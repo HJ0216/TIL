@@ -731,6 +731,8 @@ body {
 ### media query
 * 권장 Breakpoint: 1200px / 992px / 768px / 576px
   * 1200px 이하는 태블릿, 768px 이하는 모바일 가장 간편
+* orientation
+  * landscape(가로 모드), portrait(세로 모드)
 
 ### scss
 * SASS로 코드를 짰으면 그걸 CSS 파일로 변환해주는 변환기를 돌려서 변환된 CSS 파일을 HTML 파일과 함께 써야함
