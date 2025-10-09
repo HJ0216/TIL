@@ -26,10 +26,22 @@
 * `display: none`
   * 모달, 알림창 등 완전히 숨기고 공간도 없애야 할 때
   * 토글 기능
+  * DOM에는 있지만 스크린리더와 SEO에서 무시됨
+    ```css
+    .sr-only {
+      overflow: hidden;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      top: 0;
+      opacity: 0;
+    }
+    ```
 * `visibility: hidden` 
   * 레이아웃 유지하면서 일시적으로 숨겨야 할 때
   * 애니메이션에서 중간 상태
   * 자식 요소는 보여야 할 때
+  * DOM에는 있지만 스크린리더와 SEO에서 무시됨
 * `opacity: 0`
   * 공간 차지
   * 클릭 이벤트 가능
@@ -112,6 +124,8 @@
       flex-grow: 1;
     }
     ```
+* order
+  * order를 부여하지 않은 것은 `order:0`;
 * 반응형 컬럼
 ```css
 /* 고정 + 가변 컬럼 */
@@ -599,6 +613,7 @@ body {
   /*가로 스크롤이 생길 경우, 100vw를 넘어서는 구간은 border가 사라질 수 있으므로 width보다 min-width 사용*/
 }
 ```
+* DOM에는 있지만 스크린리더와 SEO에서 무시됨
 
 ### float
 * float를 쓰면 요소를 띄우다보니 다음에 오는 HTML 요소들이 제자리를 찾지 못하는 문제 발생
@@ -663,6 +678,26 @@ body {
 * `:nth-child(n)`
 * `.icon-parents-overlay:hover .icon-overlay`
   * .icon-parents-overlay에 마우스를 올렸을 때 그 안에 있는 .icon-overlay에 스타일을 적용
+* `+` (인접 형제)
+  * 같은 계층에 있을 때 적용
+  ```html
+  <h2></h2>
+  <p></p>
+  <p></p>
+  <p></p>
+  ```
+  ```css
+  h2 + p {
+    color: red;
+  }
+  /*<h2> 바로 뒤의 첫 번째 <p>만 빨간색
+  h2와 p 태그 사이에 다른 요소가 있을 경우, 적용 X*/
+
+  h2 ~ p {
+    color: blue;
+  }
+  /*<h2> 뒤에 나오는 모든 <p> 가 파란색*/
+  ```
 
 ### Pseudo-element
 * 특정 HTML 요소의 안쪽 일부만 스타일을 주고 싶을 때
