@@ -493,21 +493,36 @@
 * `line-grid`
   * container가 inline-block처럼 동작
 * grid-template-rows: 격자의 행 높이와 갯수
-  * grid-auto-rows: row 개수를 미리 알 수 없는 경우 사용
-    * grid-template-rows로 미리 세팅해 둔 것이 없는 row에 대해 설정
+  * grid-auto-rows: row 개수를 미리 알 수 없는 경우 사용: `grid-auto-rows: minmax(200px, auto)`
 * grid-template-columns: 격자의 열 너비와 갯수
   * grid-auto-columns
+* grid-auto-flow
+  * `row`(기본값) 또는 `column`, `dense` 등의 값을 사용하여 Grid 아이템이 남은 공간을 행 우선 또는 열 우선으로 어떻게 채워나갈지 정의
 * fr: 숫자 비율대로 트랙의 크기를 나눔
 * repeat(반복횟수, 반복값)
+* minmax(최소값, 최대값)
+  ```css
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+    /*min에 맞춰서 반복횟수 결정
+    min을 px로 할 경우, 자동으로 반응형 ui 구현 가능
+
+    단, auto-fill은 개수가 모자를 경우, 빈공간이 생기지만 auto-fit을 쓸 경우 자동으로 빈 공간을 채워줌
+    */
+  }
+  ```
 ```css
 .container {
 	grid-template-columns: repeat(5, 1fr);
 	/* grid-template-columns: 1fr 1fr 1fr 1fr 1fr */
 }
 ```
+
 * grid-column, grid-row
   * grid-column-start가 시작 번호, grid-column-end가 끝 번호
   * grid-column은 start와 end 속성을 한번에 쓰는 축약형
+  * 2개의 셀에 같은 column/row를 줄 경우 겹치기도 가능
 ```css
 /*1. */
 .item:nth-child(1) {
