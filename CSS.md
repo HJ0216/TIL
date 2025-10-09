@@ -14,6 +14,14 @@
   * 텍스트의 일부만 스타일을 변경하고 싶을 때 사용
   * 폭, 높이 등을 단독으로 결정할 수 없으므로 `<p>`를 이용해서 폭, 높이를 설정
 
+### margin: auto
+* 남아있는 여백을 auto에서 모두 소비
+```css
+.flex-item {
+  left-margin: auto; /*가장 마지막 item만 왼쪽 정렬*/
+}
+```
+
 ### display: none, visibility: hidden, opacity: 0
 * `display: none`
   * 모달, 알림창 등 완전히 숨기고 공간도 없애야 할 때
@@ -49,6 +57,21 @@
 * 특성
   * Flex 아이템들은 가로 방향으로 배치
     * inline-flex 사용 시, container가 flex-item width만큼으로 맞춰짐
+      ```css
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+      }
+
+      /* 
+      icon 이미지 사이즈가 다를 경우, padding만으로 조절 시 버튼 크기가 달라짐
+      버튼에 width와 height를 고정시키고, flex를 활용해서 중앙에 위치
+      inline-flex 사용 시, 버튼 옆 글자 위치 가능
+      */
+      ```
   * 자신이 가진 내용물의 width 만큼만 차지(inline 요소 처럼)
   * height는 컨테이너의 높이만큼 늘어남
 * `flex-wrap`
@@ -60,13 +83,392 @@
   * baseline: 텍스트 베이스라인 기준으로 정렬
 * `flex-basis`
   * Flex 아이템의 기본 크기를 설정
+    ```css
+    .flex-item {
+      flex-basic: 0; /*콘텐츠 크기 무시, 0부터 시작해서 flex-grow 비율에 따라 확장*/
+      flex-basic: auto; /*content 크기, width가 있을 경우, width 값*/
+    }
+    /*flex: 1; 설정 시, flex-basic: 0;으로 설정됨*/
+    ```
   * width가 100px이 안되는 item은 100px로 늘어나고, 원래 100px이 넘는 item은 그대로 유지
     * 반면에 width를 설정하면, 원래 100px을 넘는 item도 100px로 맞춰짐
+    * 고정 크기의 column은 width 사용이 편리
+      * flex-basis 설정이 width보다 우선하므로 basis는 auto(기본값)로 두고 width를 설정하는 방식
 * `flex-grow`
   * flex-basis의 값보다 커질 수 있는지를 결정하는 속성
   * flex-grow에 들어가는 숫자: 아이템들의 flex-basis를 제외한 여백 부분을 flex-grow에 지정된 숫자의 비율로 나누어 가짐
 * `flex-shrink`
   * 아이템이 flex-basis의 값보다 작아질 수 있는지를 결정
+  * 0으로 세팅해서 하나의 컬럼의 width를 고정하고 나머지 column의 width를 가변적으로 만들 수 있음
+    ```css
+    .flex-container {
+      display: flex;
+    }
+    .flex-item:nth-child(1) {
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .flex-item:nth-child(2) {
+      flex-grow: 1;
+    }
+    ```
+* 반응형 컬럼
+```css
+/* 고정 + 가변 컬럼 */
+.flex-container [
+  display: flex;
+]
+.flex-item:first-child {
+  width: 100px;
+  flex-shrink: 0;
+}
+.flex-item:nth-child(2) {
+  flex-grow: 1;
+}
+.flex-item:last-child {
+  width: 100px
+  flex-shrink: 0;
+}
+
+/* footer 고정 */
+.flex-container [
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+]
+.flex-item:nth-child(2) {
+  flex-grow: 1;
+}
+```
+
+#### flex UI
+* Menu
+```html
+<ul class="menu-container">
+  <li class="menu-item"><a href="#" class="menu-link">Home</a></li>
+  <li class="menu-item"><a href="#" class="menu-link">About</a></li>
+  <li class="menu-item"><a href="#" class="menu-link">Product</a></li>
+  <li class="menu-item"><a href="#" class="menu-link">Contact</a></li>
+</ul>
+```
+```css
+.menu-container {
+    display: flex;
+}
+.menu-item{
+    background-color: goldenrod;
+    width: 25%;
+}
+.menu-item:hover {
+    background-color: gold;
+    width: 35%;
+    transition: all 0.3s ease;
+}
+.menu-link {
+    display: block;
+    padding: 1rem; /*현재 내 폰트사이즈만큼*/
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #444;
+    text-decoration: none;
+    text-align: center;
+}
+```
+* search
+```html
+<form class="search-form">
+  <input type="search">
+  <input type="submit" value="찾기">
+</form>
+```
+```css
+.search-form {
+    display: flex;
+    height: 40px;
+}
+
+.search-form input[type='search']{
+    border: 0;
+    border-radius: 0.3em;
+    font-size: 1rem;
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.search-form input[type='submit']{
+    width: 4em;
+    border: 0;
+    border-radius: 0.3em;
+    font-size: 1rem;
+    background-color: goldenrod;
+}
+```
+* bullet list
+```html
+	<ul class="info-list">
+		<li class="info-list-item">Lorem ipsum dolor sit amet consectetur, adipisicing elit.</li>
+		<li class="info-list-item">Lorem ipsum dolor sit amet consectetur, adipisicing elit.</li>
+		<li class="info-list-item">Lorem ipsum dolor sit amet consectetur, adipisicing elit.</li>
+	</ul>
+```
+```css
+.info-list-item {
+    display: flex;
+    margin: 0.5em 0;
+}
+
+.info-list-item::before {
+    content: '✌️';
+    margin-right: 0.5em;
+}
+```
+
+### profile
+```html
+<ul class="user-list message-list">
+  <li class="user-item message-item">
+    <!-- DB에서 불러와서 넣어주기가 inline이 편함 -->
+    <figure class="user-photo" style="background-image: url(/images/ilbuni.png);">
+    </figure>
+    <p class="message-content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+  </li>
+  <li class="user-item message-item">
+    <figure class="user-photo" style="background-image: url(/images/ilbuni.png);">
+    </figure>
+    <p class="message-content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+  </li>
+  <li class="user-item message-item">
+    <figure class="user-photo" style="background-image: url(/images/ilbuni.png);">
+    </figure>
+    <p class="message-content">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+  </li>
+</ul>
+```
+```css
+.user-item {
+    display: flex;
+    margin-bottom: 1.5em;
+}
+
+.user-photo {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    background-color: gold;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: 150%;
+    flex-shrink: 0;
+    margin-right: 0.5em;
+}
+```
+* profile2
+```html
+<ul class="user-list friend-list">
+	<li class="user-item friend-item">
+		<!-- DB에서 불러와서 넣어주기가 inline이 편함 -->
+		<figure class="user-photo" style="background-image: url(/images/ilbuni.png);">
+		</figure>
+		<p class="user-name">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+	</li>
+	<li class="user-item friend-item">
+		<figure class="user-photo" style="background-image: url(/images/ilbuni.png);">
+		</figure>
+		<p class="user-name">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+	</li>
+	<li class="user-item friend-item">
+		<figure class="user-photo" style="background-image: url(/images/ilbuni.png);">
+		</figure>
+		<p class="user-name">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+	</li>
+</ul>
+```
+```css
+.friend-item {
+    align-items: center;
+}
+
+.user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+```
+* modal
+```html
+<div class="modal">
+	<div class="dialog">
+		Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere saepe ullam dignissimos unde velit eum consectetur vero. Dolore, dolores! Iusto voluptates numquam ipsum qui accusantium, quod magnam excepturi accusamus ullam.
+	</div>
+</div>
+```
+```css
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.dialog {
+    width: 50vw;
+    padding: 0.5em;
+    border-radius: 1em;
+    background-color: white;
+}
+```
+* card view
+```html
+<div class="card-list-con">
+	<ul class="card-list">
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestias inventore dignissimos deserunt, magni repudiandae reiciendis quo soluta. Sit nisi molestias quis quia natus, laboriosam quas minus! Hic necessitatibus facere eius.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+		<li class="card-item">
+			<figure class="card-image" style="background-image: url(/images/ilbuni.png);">
+				<img src="/images/ilbuni.png" alt="ilbuni">
+			</figure>
+			<div class="card-desc">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore, nesciunt.
+			</div>
+		</li>
+	</ul>
+</div>
+```
+```css
+.card-list-con {
+    overflow-x: hidden;
+}
+.card-item {
+  margin-bottom: 2em;
+  display: flex;
+  flex-direction: column;
+}
+.card-image {
+  height: 0;
+  padding-bottom: 60%; /*padding %: 요소의 가로폭(width)을 기준으로 계산*/
+  background-color: lightgray;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.card-image img {
+  display: none;
+}
+
+.card-desc {
+  background-color: white;
+  padding: 1em;
+  flex-grow: 1;
+}
+
+@media (min-width: 600px) {
+  .card-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1rem;
+  }
+  .card-item {
+    width: 50%;
+    padding: 0 1rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .card-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1rem;
+  }
+  .card-item {
+    width: 33.33%;
+    padding: 0 1rem;
+  }
+}
+```
 
 ### grid
 * Edge 포함 기타 최신 브라우저에서 사용 가능
@@ -189,6 +591,14 @@ body {
 * width는 content 영역만을 의미하므로 padding을 줄 경우, 태그의 전체 width는 지정한 크기를 넘어설 수 있음
   * `box-sizing: border-box`시, padding과 border값을 포함한 width로 계산됨
     * `content-box;`: 박스 폭 - padding 안쪽
+* min-width
+```css
+.flex-container {
+  min-width: 100vw;
+  border : 10px solid red;
+  /*가로 스크롤이 생길 경우, 100vw를 넘어서는 구간은 border가 사라질 수 있으므로 width보다 min-width 사용*/
+}
+```
 
 ### float
 * float를 쓰면 요소를 띄우다보니 다음에 오는 HTML 요소들이 제자리를 찾지 못하는 문제 발생
@@ -434,3 +844,4 @@ body {
 [코딩 애플](https://codingapple.com/)  
 [코딩 에브리바디](https://codingeverybody.kr/)  
 [1분 코딩](https://studiomeal.com/)  
+[CSS Flex와 Grid 제대로 익히기](https://www.inflearn.com/course/css-flex-grid-%EC%A0%9C%EB%8C%80%EB%A1%9C-%EC%9D%B5%ED%9E%88%EA%B8%B0?srsltid=AfmBOoph2CvkviehXncsxNd9-Uu8JZSRjEGRb3s1xcZ5p1skChqZDGpo)  
