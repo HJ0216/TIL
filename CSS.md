@@ -18,7 +18,7 @@
 * 남아있는 여백을 auto에서 모두 소비
 ```css
 .flex-item {
-  left-margin: auto; /*가장 마지막 item만 왼쪽 정렬*/
+  margin-left: auto; /*가장 마지막 item만 왼쪽 정렬*/
 }
 ```
 
@@ -29,12 +29,15 @@
   * DOM에는 있지만 스크린리더와 SEO에서 무시됨
     ```css
     .sr-only {
-      overflow: hidden;
       position: absolute;
       width: 1px;
       height: 1px;
-      top: 0;
-      opacity: 0;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0); /*보이는 영역을 잘라내는(clipping) 속성*/
+      white-space: nowrap;
+      border: 0;
     }
     ```
 * `visibility: hidden` 
@@ -97,10 +100,10 @@
   * Flex 아이템의 기본 크기를 설정
     ```css
     .flex-item {
-      flex-basic: 0; /*콘텐츠 크기 무시, 0부터 시작해서 flex-grow 비율에 따라 확장*/
-      flex-basic: auto; /*content 크기, width가 있을 경우, width 값*/
+      flex-basis: 0; /*콘텐츠 크기 무시, 0부터 시작해서 flex-grow 비율에 따라 확장*/
+      flex-basis: auto; /*content 크기, width가 있을 경우, width 값*/
     }
-    /*flex: 1; 설정 시, flex-basic: 0;으로 설정됨*/
+    /*flex: 1; 설정 시, flex-basis: 0;으로 설정됨*/
     ```
   * width가 100px이 안되는 item은 100px로 늘어나고, 원래 100px이 넘는 item은 그대로 유지
     * 반면에 width를 설정하면, 원래 100px을 넘는 item도 100px로 맞춰짐
@@ -129,9 +132,9 @@
 * 반응형 컬럼
 ```css
 /* 고정 + 가변 컬럼 */
-.flex-container [
+.flex-container {
   display: flex;
-]
+}
 .flex-item:first-child {
   width: 100px;
   flex-shrink: 0;
@@ -140,16 +143,16 @@
   flex-grow: 1;
 }
 .flex-item:last-child {
-  width: 100px
+  width: 100px;
   flex-shrink: 0;
 }
 
 /* footer 고정 */
-.flex-container [
+.flex-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-]
+}
 .flex-item:nth-child(2) {
   flex-grow: 1;
 }
@@ -237,7 +240,7 @@
 }
 ```
 
-### profile
+* profile
 ```html
 <ul class="user-list message-list">
   <li class="user-item message-item">
@@ -472,14 +475,8 @@
 }
 
 @media (min-width: 900px) {
-  .card-list {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -1rem;
-  }
   .card-item {
     width: 33.33%;
-    padding: 0 1rem;
   }
 }
 ```
@@ -512,12 +509,6 @@
     */
   }
   ```
-```css
-.container {
-	grid-template-columns: repeat(5, 1fr);
-	/* grid-template-columns: 1fr 1fr 1fr 1fr 1fr */
-}
-```
 
 * grid-column, grid-row
   * grid-column-start가 시작 번호, grid-column-end가 끝 번호
@@ -559,7 +550,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr; /*repeat(4, 1fr)*/
   grid-template-rows: 100px 100px 100px;
   grid-gap: 10px;
   grid-template-areas: 
@@ -628,7 +619,8 @@ body {
   /*가로 스크롤이 생길 경우, 100vw를 넘어서는 구간은 border가 사라질 수 있으므로 width보다 min-width 사용*/
 }
 ```
-* DOM에는 있지만 스크린리더와 SEO에서 무시됨
+* `width: 0`
+  * DOM에는 있지만 스크린리더와 SEO에서 무시됨
 
 ### float
 * float를 쓰면 요소를 띄우다보니 다음에 오는 HTML 요소들이 제자리를 찾지 못하는 문제 발생
