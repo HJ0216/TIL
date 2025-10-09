@@ -35,7 +35,7 @@ public class ImageService {
 
 - ArrayList를 사용해야 하는 경우 ✅
   - 인덱스 접근: list.get(5) 같은 임의 위치 접근이 필요
-  - 끝에 추가/삭제가 많을 때
+  - 리스트의 끝에서 데이터를 추가하거나 제거하는 작업이 대부분일 때
   - 정렬/검색: Collections.sort(), indexOf() 등 사용
 
 - LinkedList를 사용해야 하는 경우 ✅
