@@ -96,8 +96,12 @@ document.getElementById('버튼').addEventListener('click', function (e) {
   var 어레이 = [1, 2, 3];
   어레이.forEach(function () {
     console.log(this);
-    // window 객체 출력
+    // 비엄격 모드: window, 엄격 모드: undefined
   });
+
+  어레이.forEach(function () {
+    console.log(this === document.body); // true
+  }, document.body); // 콜백 함수 내부에서 사용될 this 값을 지정
 });
 ```
 
@@ -134,13 +138,15 @@ undefined === null; // false (타입까지 비교)
 ### Mutable vs Immutable
 
 - Immutable (원시 타입)
-  - 원본 데이터를 직접 수정할 수 있음
+  - 값 자체를 직접 변경할 수 없음(새 값을 생성)
+  - 원본은 그대로 두고 새로운 데이터 생성
   - 원시 타입: String, Number, Boolean, null, undefined, Symbol
 
 * Mutable (참조 타입)
 
-  - 원본은 그대로 두고 새로운 데이터 생성
-  - 참조 타입: Object, Array, Function - 원본을 수정하기보다는 Immutable 방식으로 변경해서 사용
+  - 동일 참조로 원본을 직접 변경 가능
+  - 참조 타입: Object, Array, Function
+  - 원본을 수정하기보다는 불변 업데이트 패턴(스프레드, map/filter 등)을 사용
 
     ```js
     /**
@@ -163,23 +169,16 @@ undefined === null; // false (타입까지 비교)
     /**
      * 객체 Immutable 업데이트
      */
-    const user = { name: '김철수', age: 30 };
+    const user = { name: '김철수', age: 30, password: 'password' };
 
     // 속성 추가/수정
     const updated = { ...user, age: 31, email: 'a@a.com' };
 
     // 속성 삭제
-    const user = {
-      id: 1,
-      name: '김철수',
-      password: '1234',
-      email: 'kim@example.com',
-    };
-
     // password 빼고 나머지만 API로 보내기
     const { password, ...userWithoutPassword } = user;
     sendToAPI(userWithoutPassword);
-    // { id: 1, name: '김철수', email: 'kim@example.com' }
+    // { name: '김철수', age: 31, email: 'a@a.com' }
 
     // 중첩 객체 업데이트
     const state = {
@@ -362,9 +361,9 @@ var 학생1 = new MakeInstance('Good Morning!');
 
 ```js
 class 유저 {
-  constructor(id) {
+  constructor(id, email) {
     this.id = id;
-    this.email = name;
+    this.email = email;
   }
   sayHi() {
     // prototype에 저장
@@ -376,8 +375,8 @@ class 셀러유저 extends 유저 {
   hello = 'hi'; // 클래스 내부에서 인스턴스 속성 설정
   // const/let/var는 지역 변수를 만들 때 쓰는 거고, 클래스 필드와는 다름
 
-  constructor(id) {
-    super(id); // 최상단에 작성
+  constructor(id, email) {
+    super(id, email); // 최상단에 작성
     this.company = 'samsung';
     // this(현재 인스턴스) 필수
     // this 없이 쓸 경우 지역/전역 변수를 참조하게 됨
@@ -556,8 +555,8 @@ var promise = new Promise(function (resolve, reject) {
   // doing some heavy work(network, file read...)
   // promise가 생성되는 순간 function이 실행됨
   // function이 바로 실행되지 않는 상태일 때는 생성 시점에 유의
-  resolve(data);
-  reject(new Error(''));
+  if (ok) resolve(data);
+  else reject(new Error('실패'));
 });
 
 // consumer
@@ -577,7 +576,7 @@ promise
 
 - Promise 상태
   - 성공/실패 판정 전: <pending>
-  - 성공 후: <resolved>
+  - 성공 후: <fulfilled>
   - 실패 후: <rejected>
 - Promise 특징
   - 동기를 비동기로 만들어주는 코드가 아님
@@ -616,14 +615,16 @@ export { a, b }; // 여러번 사용 가능
 
 ```html
 <script type="module">
-  import a from 'library.js'; //export default, 변수명 새롭게 작명 가능
+  import a from './library.js';
+  // export default, 변수명 새롭게 작명 가능
+  // ES6 모듈 스펙에서는 로컬 파일에 상대경로를 명시하는 것이 표준
 
-  import { a, b } from 'library.js'; // export
-  import { a as newA, b as newB } from 'library.js'; // export, 변수명 변경
+  import { a, b } from './library.js'; // export
+  import { a as newA, b as newB } from './library.js'; // export, 변수명 변경
 
-  import a, { a, b } from 'library.js'; // export default 가장 왼쪽에 기재
+  import defaultA, { a, b } from './library.js'; // export default 가장 왼쪽에 기재
 
-  import a, * as all from '/libraray.js';
+  import a, * as all from './library.js';
   // * : export { } 했던 애들을 모두 import
   // as로 별명을 꼭 부여
 </script>

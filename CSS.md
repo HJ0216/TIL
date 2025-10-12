@@ -18,7 +18,9 @@
 ### margin: auto
 
 - 남아있는 여백을 auto에서 모두 소비
-  - 사용하기 위해서는 `부모 요소에 flex 및 height`가 설정 되어있어야 함
+  - 사용 예시
+    - 블록 요소 가로 중앙: `margin: 0 auto`
+    - Flex 컨테이너에서 세로 방향 공간 채우기: 자식에 `margin-top: auto` 등(컨테이너 높이 필요)
 
 ```css
 .flex-item {
@@ -31,7 +33,7 @@
 - `display: none`
   - 모달, 알림창 등 완전히 숨기고 공간도 없애야 할 때
   - 토글 기능
-  - DOM에는 있지만 스크린리더와 SEO에서 무시됨
+  - DOM에는 존재하나, 대부분의 스크린리더와 SEO에서 무시됨
     ```css
     .sr-only {
       position: absolute;
@@ -49,10 +51,10 @@
   - 레이아웃 유지하면서 일시적으로 숨겨야 할 때
   - 애니메이션에서 중간 상태
   - 자식 요소는 보여야 할 때
-  - DOM에는 있지만 스크린리더와 SEO에서 무시됨
+  - DOM에는 존재하나, 대부분의 스크린리더와 SEO에서 무시됨
 - `opacity: 0`
-  - 공간 차지
-  - 클릭 이벤트 가능
+  - 공간 차지, 포인터/포커스 가능
+  - 스크린리더에도 노출됨(의도적 비노출 시 `aria-hidden="true"` 등 추가)
   - 애니메이션에 적합
 
 ### position
@@ -70,8 +72,9 @@
     - 평소: relative처럼 동작
     - 임계값 도달: fixed처럼 고정
   - 주의점
-    - 스크롤을 할 만한 부모 박스가 있어야하고
-    - top 등 좌표속성과 함께 써야 제대로 보임
+    - 스크롤 컨테이너가 존재해야 함
+    - top 등 좌표 속성과 함께 사용
+    - 조상에 `overflow`가 설정되면 sticky가 동작하지 않을 수 있음
 
 ### flex
 
@@ -227,7 +230,7 @@
   height: 40px;
 }
 
-.search-form input[type="search"] {
+.search-form input[type='search'] {
   border: 0;
   border-radius: 0.3em;
   font-size: 1rem;
@@ -235,7 +238,7 @@
   margin-right: 10px;
 }
 
-.search-form input[type="submit"] {
+.search-form input[type='submit'] {
   width: 4em;
   border: 0;
   border-radius: 0.3em;
@@ -267,7 +270,7 @@
 }
 
 .info-list-item::before {
-  content: "✌️";
+  content: '✌️';
   margin-right: 0.5em;
 }
 ```
@@ -604,8 +607,8 @@
 - 속성
   - 컨테이너에 적용하는 속성
   - 아이템에 적용하는 속성
-- `line-grid`
-  - container가 inline-block처럼 동작
+- `inline-grid`
+  - 컨테이너가 inline-block처럼 동작
 - grid-template-rows: 격자의 행 높이와 갯수
   - grid-auto-rows: row 개수를 미리 알 수 없는 경우 사용: `grid-auto-rows: minmax(200px, auto)`
 - grid-template-columns: 격자의 열 너비와 갯수
@@ -672,11 +675,11 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr; /*repeat(4, 1fr)*/
   grid-template-rows: 100px 100px 100px;
-  grid-gap: 10px;
+  gap: 10px;
   grid-template-areas:
-    "헤더 헤더 헤더 헤더"
-    "사이드 사이드 . ."
-    "사이드 사이드 . .";
+    '헤더 헤더 헤더 헤더'
+    '사이드 사이드 . .'
+    '사이드 사이드 . .';
 }
 ```
 
@@ -696,7 +699,7 @@
 
 ```css
 body {
-  font-family: "gulim", "gothic";
+  font-family: 'gulim', 'gothic';
 }
 ```
 
@@ -704,7 +707,7 @@ body {
 
 ```css
 @font-face {
-  font-family: "이쁜폰트";
+  font-family: '이쁜폰트';
   src: url(nanumsquare.ttf);
 }
 ```
@@ -750,7 +753,7 @@ body {
 ```
 
 - `width: 0`
-  - DOM에는 있지만 스크린리더와 SEO에서 무시됨
+  - 시각적 폭만 0일 뿐, 접근성/포커스/SEO 비노출을 보장하지 않음
 
 ### float
 
@@ -873,7 +876,7 @@ body {
   - clear: both; 박스 생성
     ```css
     .box::after {
-      content: "";
+      content: '';
       display: block;
       clear: both;
       float: none;
@@ -905,7 +908,7 @@ body {
     }
 
     /*기존 css*/
-    root: {
+    :root {
       --main-color: red;
     }
     .box {
@@ -1039,14 +1042,14 @@ body {
 </head>
 ```
 
-- `<meta charset="UTF-8">`
+- `<meta charset="UTF-8" />`
   - HTML 문서의 문자 인코딩(encoding)을 지정
   - HTML 문서의 최상단에 넣어야 브라우저가 올바르게 문자 해석 가능
-- `<meta name="description" content="...">`
+- `<meta name="description" content="..." />`
   - 페이지 설명(description)을 검색 엔진에 전달
-- `<meta name="keywords" content="...">`
+- `<meta name="keywords" content="..." />`
   - 페이지와 관련된 키워드를 검색 엔진에 제공
-- `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
+- `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`
   - 화면 너비에 맞춰 페이지 크기 설정, 페이지 초기 확대 비율 설정
 
 ```html
@@ -1059,11 +1062,11 @@ body {
 
 - OG 태그(Open Graph tags)
   - 페이스북, 카카오톡, 트위터 같은 SNS에서 공유될 때 웹페이지의 미리보기(썸네일, 제목, 설명 등)를 제어하는 메타 태그
-  - `<meta property="og:image" content="/이미지경로.jpg">`
+  - `<meta property="og:image" content="/이미지경로.jpg" />`
     - 공유 시 표시할 썸네일 이미지 지정
-  - `<meta property="og:description" content="페이지 설명">
+  - `<meta property="og:description" content="페이지 설명" />`
     - 공유될 때 보이는 페이지 설명
-  - `<meta property="og:title" content="사이트제목">`
+  - `<meta property="og:title" content="사이트제목" />`
     - 공유될 때 보이는 페이지 제목
 
 ### 📚 참고
