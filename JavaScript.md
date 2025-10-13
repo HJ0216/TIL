@@ -155,16 +155,16 @@ undefined === null; // false (타입까지 비교)
     const arr = [1, 2, 3];
 
     // 추가
-    const added = [...arr, 4]; // [1, 2, 3, 4]
+    const addedArr = [...arr, 4]; // [1, 2, 3, 4]
 
     // 삭제
-    const removed = arr.filter((x) => x !== 2); // [1, 3]
+    const removedArr = arr.filter((x) => x !== 2); // [1, 3]
 
     // 수정
-    const updated = arr.map((x) => (x === 2 ? 20 : x)); // [1, 20, 3]
+    const updatedArr = arr.map((x) => (x === 2 ? 20 : x)); // [1, 20, 3]
 
     // 정렬 (원본 수정하는 sort 주의!)
-    const sorted = [...arr].sort(); // 복사 후 정렬
+    const sortedArr = [...arr].sort(); // 복사 후 정렬
 
     /**
      * 객체 Immutable 업데이트
@@ -172,7 +172,7 @@ undefined === null; // false (타입까지 비교)
     const user = { name: '김철수', age: 30, password: 'password' };
 
     // 속성 추가/수정
-    const updated = { ...user, age: 31, email: 'a@a.com' };
+    const updatedUser = { ...user, age: 31, email: 'a@a.com' };
 
     // 속성 삭제
     // password 빼고 나머지만 API로 보내기

@@ -841,7 +841,8 @@ body {
   - `$=`: 끝값
   - `*=`: 포함값
 - `:nth-child(n)`
-  - 사용된 속성에서 1번째, 2번째, ... n번째 요소 탐색
+  - `ul:nth-child(1)`: 첫번째 ul 요소
+  - `ul :nth-child(1)`: ul 자식인 li 첫번째 요소
 - `.icon-parents-overlay:hover .icon-overlay`
   - .icon-parents-overlay에 마우스를 올렸을 때 그 안에 있는 .icon-overlay에 스타일을 적용
 - `+` (인접 형제)
