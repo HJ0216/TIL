@@ -668,8 +668,14 @@ window.localStorage.setItem('key', 'value');
  * document
  */
 // 요소 찾기
-document.querySelector('.button');
-document.getElementById('header');
+const button = document.querySelector('.content-copy-btn'); // 자신을 제외한 가장 가까운 자식 요소 중 선택자와 일치하는 요소 반환
+button.parentElement; // 부모 요소 노드만 반환 (Element만)
+button.closest('.content-item'); // 자신을 포함한 가장 가까운 조상 요소 중 선택자와 일치하는 요소 반환
+
+const button = document.querySelector('.content-copy-btn');
+const contentItem = button.previousElementSibling;
+// 바로 이전 형제
+// DOM에 의존적이므로 previousElementSibling 대신 공통 부모를 찾아 접근하는 게 좋음
 
 // 요소 만들기
 document.createElement('div');
@@ -787,6 +793,30 @@ $('.tab-button').on('click', function (e) {
 - Indexed DB (크고 많은 구조화된 데이터를 DB처럼 저장가능, 문법더러움)
 - Cookies (유저 로그인정보 저장공간)
 - Cache Storage (html css js img 파일 저장해두는 공간)
+
+### 일반 캐시 vs BFCache
+
+- 일반 캐시 (HTTP Cache)
+  - HTML, CSS, JS, 이미지 등의 파일을 저장
+  - 다시 방문하면 서버에서 다운로드 안하고 캐시에서 로드
+  - 하지만 JavaScript는 다시 실행됨
+- BFCache (Back-Forward Cache)
+  - 페이지의 전체를 메모리에 저장
+  - JavaScript 실행 상태, DOM 상태, 스크롤 위치 모두 그대로 보존
+  - 뒤로가기하면 페이지를 다시 로드하지 않고 즉시 복원
+  - JavaScript가 다시 실행되지 않으므로 pageshow 이벤트 사용
+
+### DOMContentLoaded vs pageshow
+
+- `DOMContentLoaded`
+  - HTML 문서가 완전히 로드 및 파싱되어 DOM 트리가 완성된 직후에 발생
+  - 이미지, CSS, 서브프레임 등 외부 리소스의 로드를 기다리지 않음
+  - DOM 요소를 조작하거나, DOM이 준비된 후에 실행되어야 하는 초기화 코드 (예: 이벤트 리스너 부착, 초기 컴포넌트 렌더링 등)를 실행할 때 사용
+- `pageshow`
+  - 페이지가 로드될 때마다 발생
+  - 브라우저의 뒤로 가기/앞으로 가기 버튼을 통해 BFCache (Back-Forward Cache)에서 페이지가 복원될 때도 발생(DOMContentLoaded는 발생하지 않음)
+    - 캐시에서 복원됨을 의미하는 persisted: true 플래그와 함께 발생
+  - 페이지가 캐시에서 복원되었을 때 (BFCache) 데이터를 새로 고치거나, 특정 상태를 재설정하는 등 페이지 표시 시점에 필요한 작업을 처리할 때 사용
 
 ### 좋은 관습
 
