@@ -668,11 +668,11 @@ window.localStorage.setItem('key', 'value');
  * document
  */
 // 요소 찾기
-const button = document.querySelector('.content-copy-btn'); // 자신을 제외한 가장 가까운 자식 요소 중 선택자와 일치하는 요소 반환
+const button = document.querySelector('.content-copy-btn');
+// 문서(또는 호출한 요소의 하위 트리)에서 가장 먼저 일치하는 요소를 반환
 button.parentElement; // 부모 요소 노드만 반환 (Element만)
 button.closest('.content-item'); // 자신을 포함한 가장 가까운 조상 요소 중 선택자와 일치하는 요소 반환
 
-const button = document.querySelector('.content-copy-btn');
 const contentItem = button.previousElementSibling;
 // 바로 이전 형제
 // DOM에 의존적이므로 previousElementSibling 대신 공통 부모를 찾아 접근하는 게 좋음
