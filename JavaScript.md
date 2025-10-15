@@ -806,12 +806,15 @@ $('.tab-button').on('click', function (e) {
   - 뒤로가기하면 페이지를 다시 로드하지 않고 즉시 복원
   - JavaScript가 다시 실행되지 않으므로 pageshow 이벤트 사용
 
-### DOMContentLoaded vs pageshow
+### DOMContentLoaded vs pageshow vs load
 
 - `DOMContentLoaded`
   - HTML 문서가 완전히 로드 및 파싱되어 DOM 트리가 완성된 직후에 발생
   - 이미지, CSS, 서브프레임 등 외부 리소스의 로드를 기다리지 않음
   - DOM 요소를 조작하거나, DOM이 준비된 후에 실행되어야 하는 초기화 코드 (예: 이벤트 리스너 부착, 초기 컴포넌트 렌더링 등)를 실행할 때 사용
+- `load`
+  - HTML, CSS, 이미지, 폰트 등 모든 외부 리소스가 완전히 로드된 후에 발생
+  - 이미지 크기 측정 등 외부 리소스 활용 시 사용
 - `pageshow`
   - 페이지가 로드될 때마다 발생
   - 브라우저의 뒤로 가기/앞으로 가기 버튼을 통해 BFCache (Back-Forward Cache)에서 페이지가 복원될 때도 발생(DOMContentLoaded는 발생하지 않음)
