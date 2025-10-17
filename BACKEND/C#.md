@@ -163,30 +163,32 @@ WPF: UI 요소 접근은 반드시 UI 스레드에서만 해야 함
    - 무거운 작업을 UI 스레드에서 할 경우, 화면이 멈춘 것처럼 보이므로 이런 경우에 `Task.Run`을 사용
 2. 이 상황에서 UI 요소에 접근 할 경우, `InvalidOperationException: The calling thread cannot access this object because a different thread owns it` 예외가 발생
 3. 다시 UI 스레드로 돌아가기 위해 `Dispatcher` 사용
-    - UI 메서드에서 Dispatcher.Invoke 사용 시, `DeadLock` 문제 발생 유의
-    ```cs
-    private async void Button_Click(object sender, RoutedEventArgs e)
-    {
-        await DoWorkAsync(); // 🔹 (1) UI 스레드는 여기서 "await" 상태로 대기
-        MessageBox.Show("완료");
-    }
 
-    private Task DoWorkAsync()
-    {
-        // 🔹 (2) Task.Run으로 백그라운드 스레드 실행
-        return Task.Run(() =>
-        {
-            // 🔹 (3) 백그라운드 스레드에서 UI 접근 시도
-            // UI 스레드의 Dispatcher에게 작업을 "Invoke"로 요청 (동기 대기)
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // 이 코드는 UI 스레드에서 실행되어야 함
-                // 그러나 UI 스레드는 (1) await 상태에서 대기 중이라 실행 불가
-                MessageBox.Show("UI 접근");
-            });
-        });
-    }
-    ```
+   - UI 메서드에서 Dispatcher.Invoke 사용 시, `DeadLock` 문제 발생 유의
+
+   ```cs
+   private async void Button_Click(object sender, RoutedEventArgs e)
+   {
+       await DoWorkAsync(); // 🔹 (1) UI 스레드는 여기서 "await" 상태로 대기
+       MessageBox.Show("완료");
+   }
+
+   private Task DoWorkAsync()
+   {
+       // 🔹 (2) Task.Run으로 백그라운드 스레드 실행
+       return Task.Run(() =>
+       {
+           // 🔹 (3) 백그라운드 스레드에서 UI 접근 시도
+           // UI 스레드의 Dispatcher에게 작업을 "Invoke"로 요청 (동기 대기)
+           Application.Current.Dispatcher.Invoke(() =>
+           {
+               // 이 코드는 UI 스레드에서 실행되어야 함
+               // 그러나 UI 스레드는 (1) await 상태에서 대기 중이라 실행 불가
+               MessageBox.Show("UI 접근");
+           });
+       });
+   }
+   ```
 
 ### `Dispatcher.InvokeAsync` / `Application.Current.Dispatcher.InvokeAsync`
 
@@ -900,6 +902,7 @@ bool isSuccess = await HandleStatusChangeAsync();
 ```
 
 ### Instance간 데이터 공유
+
 ```cs
 // parent -> child
 // wndInstanceA
@@ -1760,6 +1763,7 @@ uint h = result.height;  // 😍 의미가 명확
   - 디버깅 정보가 중요할 때
   - 예외가 예상되는 상황일 때
   - 특정 예외만 의미있게 처리하고 나머지는 일반 처리하는 것이 좋음
+  - 예외 생성/던지기는 비용이 크므로 예외적인 상황에만 사용
 - return null
   - 실패를 정상적인 흐름으로 처리할 때
   - 간단한 성공/실패만 구분하면 될 때
@@ -1815,6 +1819,7 @@ uint h = result.height;  // 😍 의미가 명확
 
 - const
   - 컴파일 타임 상수
+  - 변경 불가
   - 반드시 컴파일러가 알 수 있는 리터럴 값이어야 함
     - 리터럴 값: 코드에 직접 적는 값 (숫자, 문자열, true/false 등)
   - 버전 관리 / 다중 어셈블리 환경에서는 const값 불일치 문제
@@ -1823,6 +1828,7 @@ uint h = result.height;  // 😍 의미가 명확
     - 나중에 A의 const 값을 수정해도, B는 재빌드하지 않으면 옛날 값을 계속 사용하게 됨
 - readonly
   - 값이 런타임 시점에 결정
+  - 선언 시 또는 생성자에서만 초기값 설정 가능
   - 리터럴뿐 아니라, new, DateTime.Now, Guid.NewGuid() 같은 복잡한 표현식도 할당 가능
   - readonly는 "필드 참조"로 남아있음
   - 따라서 라이브러리 A의 값을 바꿔도, B는 재컴파일 없이도 새로운 값을 가져옴
@@ -1882,3 +1888,147 @@ Console.WriteLine(Constants.ApiVersionReadonly);
   - 보통 catch 하지 않음, 또는 로깅만
 - 상위 계층 (UI/Presentation)
   - 사용자에게 오류 메시지 표시
+
+### Using statement vs Using declaration
+
+- Using statement
+  - `using (var stream = ...){ }`
+  - 블록({})이 끝날 때 자동 Dispose
+- Using declaration
+  - `using var stream = ...;`
+  - 중괄호 블록이 없어도 스코프 끝에서 자동 Dispose
+
+#### Dispose
+
+- C#에는 메모리 관리는 자동(GC가 처리)되지만, 파일, 네트워크, 이미지, DB 연결처럼 `외부 자원`은 직접 해제해야 함
+  - Dispose를 안할 경우
+    - 파일이 계속 점유되어 다른 곳에서 열지 못함
+    - DB 연결이 닫히지 않음
+    - 이미지나 스트림이 메모리를 계속 잡고 있음
+
+```cs
+// 직접 Dispose
+var stream = File.OpenRead("data.txt");
+try
+{
+    // 파일 읽기
+}
+finally
+{
+    stream.Dispose(); // 자원 해제
+}
+
+// 자동 Dispose
+using (var stream = File.OpenRead("data.txt"))
+{
+    // 파일 읽기
+}
+// 여기를 벗어나면 자동으로 stream.Dispose() 호출됨
+
+public void TestDispose()
+{
+  using var stream = File.OpenRead("data.txt");
+}
+// 여기를 벗어나면 자동으로 stream.Dispose() 호출됨
+
+```
+
+### Base64
+
+- 바이너리 데이터를 텍스트 형태로 인코딩하는 방식
+- 이메일이나 웹 같은 시스템은 원래 텍스트만 다룰 수 있음 → 이미지, 동영상, 실행 파일 같은 바이너리 데이터를 전송해야 할 때, Base64는 바이너리 데이터를 텍스트로 변환해서 안전하게 전송할 수 있게 해줌
+  - 바이너리 데이터란 컴퓨터가 0과 1로만 표현하는 모든 데이터
+- 단점: 원본보다 약 33% 정도 크기가 커짐
+- 이메일 첨부파일, 웹에서 이미지 임베딩 (Data URL), API에서 바이너리 데이터 전송, 인증 토큰 등에서 사용
+
+#### 이미지 임베딩
+
+- 장점
+
+  - 서버 요청 횟수가 줄어듦
+  - 작은 아이콘이나 로고에 유용
+
+- 단점
+
+  - HTML 파일 크기가 커짐
+  - 큰 이미지에는 비효율적
+    - 원본보다 약 33% 크기가 커지므로 큰 이미지일 때는 HTML 파일 크기가 커져 페이지 로딩이 느려짐
+  - 캐싱이 안 됨
+    - 브라우저는 URL을 기준으로 파일을 캐싱하는데, 일반 이미지 파일은 URL이 고유한 식별자 역할을 하여 같은 URL을 만나면 저장된 파일 사용
+    - Data URL은 파일 경로가 아니라 데이터 자체가 들어있어 HTML 파일의 일부로 취급됨
+
+- 보통 작은 아이콘이나 로고처럼 자주 바뀌지 않는 작은 이미지에만 사용
+
+```html
+<img src="photo.jpg" />
+<!--이미지 파일이 서버에 별도로 저장되어 있어야 함
+브라우저가 HTML을 읽고, 다시 서버에 이미지 파일을 요청해서 가져옴
+총 2번의 요청이 필요 (HTML 1번 + 이미지 1번)-->
+
+<img src="data:image/png;base64,iVBORw0KGgoAAAANS..." />
+<!--이미지 데이터가 HTML 코드 안에 포함됨
+별도의 이미지 파일 요청이 필요 없음
+1번의 요청으로 끝-->
+```
+
+### asp-for
+
+```html
+<input type="hidden" id="product-id" value="@Model.ProductId" />
+<!--단방향: 서버 → 클라이언트만 전달
+    POST 시 서버로 자동 바인딩 안 됨-->
+<input type="hidden" asp-for="product-color" id="product-color" />
+<!-- 양방향: 서버 ↔ 클라이언트
+name 속성 자동 생성 (모델 바인딩용)
+value 자동 설정
+유효성 검사 속성 자동 추가
+  [BindProperty]와 함께 사용 시 POST 자동 바인딩-->
+```
+
+### void vs return value
+
+- void
+
+```cs
+private void GetCurrentUser()
+{
+    _currentUser = new UserModel();
+    // 설정만 하고 끝
+}
+
+// 사용
+GetCurrentUser();
+// 결과가 성공인지 실패인지 알 수 없음
+```
+
+- return value
+  - 명확한 null 확인 가능
+  - 재사용 가능
+  - 테스트 용이(\_currentUser는 private 필드라 접근 불가)
+
+```cs
+private UserModel? GetCurrentUser()
+{
+    return new UserModel(); // 결과를 반환
+}
+
+// 사용
+_currentUser = GetCurrentUser();
+// 반환값으로 성공/실패 확인 가능
+```
+
+### PageModel
+
+- PageModel은 요청마다 새로 생성됨 → 전역 변수 공유가 제대로 안 됨
+  - Get 요청에서 설정해둔 전역 변수를 Post 요청에서 사용 X
+
+### required 속성
+
+- public async Task<IActionResult> OnPostAsync(
+  [FromForm] mArchiFilmGenerateRequest request) // 자동 바인딩
+  {
+  if (!ModelState.IsValid) // 여기서 [Required] 체크됨
+  {
+  return BadRequest(ModelState);
+  }
+  }
