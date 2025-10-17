@@ -2003,7 +2003,7 @@ GetCurrentUser();
 
 - return value
   - 명확한 null 확인 가능
-  - 재사용 가능(\_currentUser가 아닌값에도 할당 가능)
+  - 재사용 가능
   - 테스트 용이(\_currentUser는 private 필드라 접근 불가)
 
 ```cs
