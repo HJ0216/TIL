@@ -1828,7 +1828,7 @@ uint h = result.height;  // 😍 의미가 명확
     - 나중에 A의 const 값을 수정해도, B는 재빌드하지 않으면 옛날 값을 계속 사용하게 됨
 - readonly
   - 값이 런타임 시점에 결정
-  - 생성자에서만 초기값 설정 가능
+  - 선언 시 또는 생성자에서만 초기값 설정 가능
   - 리터럴뿐 아니라, new, DateTime.Now, Guid.NewGuid() 같은 복잡한 표현식도 할당 가능
   - readonly는 "필드 참조"로 남아있음
   - 따라서 라이브러리 A의 값을 바꿔도, B는 재컴파일 없이도 새로운 값을 가져옴
@@ -1892,15 +1892,17 @@ Console.WriteLine(Constants.ApiVersionReadonly);
 ### Using statement vs Using declaration
 
 - Using statement
-  - 중괄호 블록이 없어도 스코프 끝에서 자동 Dispose
-- Using declaration
+  - `using (var stream = ...){ }`
   - 블록({})이 끝날 때 자동 Dispose
+- Using declaration
+  - `using var stream = ...;`
+  - 중괄호 블록이 없어도 스코프 끝에서 자동 Dispose
 
 #### Dispose
 
 - C#에는 메모리 관리는 자동(GC가 처리)되지만, 파일, 네트워크, 이미지, DB 연결처럼 `외부 자원`은 직접 해제해야 함
   - Dispose를 안할 경우
-    - 파일이 계속 점유되어 “다른 곳에서 못 염”
+    - 파일이 계속 점유되어 다른 곳에서 열지 못함
     - DB 연결이 닫히지 않음
     - 이미지나 스트림이 메모리를 계속 잡고 있음
 
@@ -1925,7 +1927,7 @@ using (var stream = File.OpenRead("data.txt"))
 
 public void TestDispose()
 {
-  using var stream = File.OpenRead("data.text");
+  using var stream = File.OpenRead("data.txt");
 }
 // 여기를 벗어나면 자동으로 stream.Dispose() 호출됨
 
