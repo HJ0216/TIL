@@ -163,30 +163,32 @@ WPF: UI 요소 접근은 반드시 UI 스레드에서만 해야 함
    - 무거운 작업을 UI 스레드에서 할 경우, 화면이 멈춘 것처럼 보이므로 이런 경우에 `Task.Run`을 사용
 2. 이 상황에서 UI 요소에 접근 할 경우, `InvalidOperationException: The calling thread cannot access this object because a different thread owns it` 예외가 발생
 3. 다시 UI 스레드로 돌아가기 위해 `Dispatcher` 사용
-    - UI 메서드에서 Dispatcher.Invoke 사용 시, `DeadLock` 문제 발생 유의
-    ```cs
-    private async void Button_Click(object sender, RoutedEventArgs e)
-    {
-        await DoWorkAsync(); // 🔹 (1) UI 스레드는 여기서 "await" 상태로 대기
-        MessageBox.Show("완료");
-    }
 
-    private Task DoWorkAsync()
-    {
-        // 🔹 (2) Task.Run으로 백그라운드 스레드 실행
-        return Task.Run(() =>
-        {
-            // 🔹 (3) 백그라운드 스레드에서 UI 접근 시도
-            // UI 스레드의 Dispatcher에게 작업을 "Invoke"로 요청 (동기 대기)
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // 이 코드는 UI 스레드에서 실행되어야 함
-                // 그러나 UI 스레드는 (1) await 상태에서 대기 중이라 실행 불가
-                MessageBox.Show("UI 접근");
-            });
-        });
-    }
-    ```
+   - UI 메서드에서 Dispatcher.Invoke 사용 시, `DeadLock` 문제 발생 유의
+
+   ```cs
+   private async void Button_Click(object sender, RoutedEventArgs e)
+   {
+       await DoWorkAsync(); // 🔹 (1) UI 스레드는 여기서 "await" 상태로 대기
+       MessageBox.Show("완료");
+   }
+
+   private Task DoWorkAsync()
+   {
+       // 🔹 (2) Task.Run으로 백그라운드 스레드 실행
+       return Task.Run(() =>
+       {
+           // 🔹 (3) 백그라운드 스레드에서 UI 접근 시도
+           // UI 스레드의 Dispatcher에게 작업을 "Invoke"로 요청 (동기 대기)
+           Application.Current.Dispatcher.Invoke(() =>
+           {
+               // 이 코드는 UI 스레드에서 실행되어야 함
+               // 그러나 UI 스레드는 (1) await 상태에서 대기 중이라 실행 불가
+               MessageBox.Show("UI 접근");
+           });
+       });
+   }
+   ```
 
 ### `Dispatcher.InvokeAsync` / `Application.Current.Dispatcher.InvokeAsync`
 
@@ -420,6 +422,7 @@ using (var client = new WebClient())
 - HttpClient
   - .NET 4.5 이후 등장한 더 현대적인 HTTP 요청 방식
   - 생성 후 재사용하는 방식이 성능과 리소스 측면에서 좋음
+    - 매번 생성할 경우, DNS 조회, TCP 연결, SSL 핸드셰이크를 매번 수행
   - async/await와 완벽하게 호환되어 비동기 작업을 깔끔하게 처리
   - url 기반: `httpClient.GetByteArrayAsync(source)`  
     file 기반: `File.ReadAllBytesAsync(source)`
@@ -900,6 +903,7 @@ bool isSuccess = await HandleStatusChangeAsync();
 ```
 
 ### Instance간 데이터 공유
+
 ```cs
 // parent -> child
 // wndInstanceA
@@ -1882,3 +1886,7 @@ Console.WriteLine(Constants.ApiVersionReadonly);
   - 보통 catch 하지 않음, 또는 로깅만
 - 상위 계층 (UI/Presentation)
   - 사용자에게 오류 메시지 표시
+
+### Razor Pages
+
+- GET과 POST가 별도의 핸들러(OnGetAsync, OnPostAsync)를 사용하므로, 각 핸들러마다 필요한 데이터를 로드해야 함

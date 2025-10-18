@@ -800,7 +800,48 @@ body {
 
 - 어떤 요소를 독립적으로 움직이게 만들고 싶을 때 사용
 - 뭔가 이동시키고 싶으면 margin 쓰는 것 보다 transform 쓰는게 빠르게 동작
-  - layout이 바뀌면 layout 부터 transform 까지 쭉 다시 렌더링해야하는데 transform이 바뀌면 transform 부분만 다시 렌더링하면 됨
+  - margin: Layout → Paint → Composiition
+  - tanslate: Composiition
+- transform을 사용하면 요소가 시각적으로만 이동하지만, 원래 자리는 여전히 차지하고 있음 → 브라우저는 원래 위치부터 변환된 위치까지의 전체 공간을 문서 크기로 계산
+  - `position: fixed`를 추가하면 요소가 문서 흐름에서 제거되고, 문서 크기 계산에 포함되지 않음
+- `translate(-50%, -50%);`: 요소를 정중앙에 위치
+
+#### Layout → Paint → Composiition
+
+- Layout
+  - **요소의 크기와 위치 계산**
+  - 요소의 위치, 크기를 계산하는 단계
+  - DOM 트리를 기반으로 레이아웃 트리 생성
+  - 가장 비용이 큰 작업
+  - **Layout을 발생시키는 속성**
+    ```css
+    width, height, margin, padding, border
+    top, left, right, bottom (position)
+    display, float, position
+    ```
+- Paint
+
+  - **실제로 픽셀을 그리는 작업**
+  - 계산된 레이아웃을 바탕으로 화면에 그림
+  - 색상, 그림자, 테두리 등을 픽셀로 변환
+  - Layout보다는 빠르지만 여전히 비용 있음
+  - **Paint를 발생시키는 속성**
+    ```css
+    color, background, border-radius
+    box-shadow, visibility, outline
+    ```
+
+- Composite
+  - **레이어를 합성해서 최종 화면 구성**
+  - 여러 레이어를 GPU에서 합성
+  - 가장 빠른 작업 (GPU 가속)
+  - **Composite만 발생시키는 속성**
+    ```css
+    transform
+    opacity
+    filter
+    will-change
+    ```
 
 ### @keyframes
 
@@ -885,6 +926,36 @@ body {
     ```
 - ::before: 내부의 맨 앞 부분에 특정 글자 추가
   - container에 overlay처럼 추가할 경우, 그 안의 요소들을 가릴 수 있음에 유의
+
+### innerHTML vs innerText vs textContent
+
+- innerHTML
+  - HTML 태그 포함 전체를 가져오거나 설정
+- innerText
+  - 텍스트만 가져오거나 설정, HTML 태그는 무시/제거
+  - 보이는 텍스트만 필요하거나 사용자가 보는 그대로 복사할 때 사용
+- textContent
+  - 렌더링 무시하고 raw 텍스트 그대로 반환하므로 DOM만 읽으면 되어 빠름
+
+```html
+<div id="test">
+  Hello <strong>World</strong>
+  <span style="display:none">Hidden</span>
+</div>
+
+<script>
+  const div = document.getElementById('test');
+
+  console.log(div.innerHTML);
+  // 'Hello <strong>World</strong> <span style="display:none">Hidden</span>'
+
+  console.log(div.innerText);
+  // 'Hello World' (보이는 텍스트만, Hidden은 제외)
+
+  console.log(div.textContent);
+  // 'Hello World \nHidden' (Hidden 포함)
+</script>
+```
 
 ### media query
 
@@ -1076,4 +1147,6 @@ body {
 [코딩 에브리바디](https://codingeverybody.kr/)  
 [1분 코딩](https://studiomeal.com/)  
 [CSS Flex와 Grid 제대로 익히기](https://www.inflearn.com/course/css-flex-grid-%EC%A0%9C%EB%8C%80%EB%A1%9C-%EC%9D%B5%ED%9E%88%EA%B8%B0?srsltid=AfmBOoph2CvkviehXncsxNd9-Uu8JZSRjEGRb3s1xcZ5p1skChqZDGpo)  
-[flukeout](https://flukeout.github.io/)
+[flukeout](https://flukeout.github.io/)  
+[CSS Triggers](https://css-triggers.com/)  
+[Adobe Color](https://color.adobe.com/ko/create/color-wheel)
