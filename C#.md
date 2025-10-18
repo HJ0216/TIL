@@ -422,6 +422,7 @@ using (var client = new WebClient())
 - HttpClient
   - .NET 4.5 이후 등장한 더 현대적인 HTTP 요청 방식
   - 생성 후 재사용하는 방식이 성능과 리소스 측면에서 좋음
+    - 매번 생성할 경우, DNS 조회, TCP 연결, SSL 핸드셰이크를 매번 수행
   - async/await와 완벽하게 호환되어 비동기 작업을 깔끔하게 처리
   - url 기반: `httpClient.GetByteArrayAsync(source)`  
     file 기반: `File.ReadAllBytesAsync(source)`
@@ -1933,32 +1934,6 @@ public void TestDispose()
 
 ```
 
-### Base64
-
-- 바이너리 데이터를 텍스트 형태로 인코딩하는 방식
-- 이메일이나 웹 같은 시스템은 원래 텍스트만 다룰 수 있음 → 이미지, 동영상, 실행 파일 같은 바이너리 데이터를 전송해야 할 때, Base64는 바이너리 데이터를 텍스트로 변환해서 안전하게 전송할 수 있게 해줌
-  - 바이너리 데이터란 컴퓨터가 0과 1로만 표현하는 모든 데이터
-- 단점: 원본보다 약 33% 정도 크기가 커짐
-- 이메일 첨부파일, 웹에서 이미지 임베딩 (Data URL), API에서 바이너리 데이터 전송, 인증 토큰 등에서 사용
-
-#### 이미지 임베딩
-
-- 장점
-
-  - 서버 요청 횟수가 줄어듦
-  - 작은 아이콘이나 로고에 유용
-
-- 단점
-
-  - HTML 파일 크기가 커짐
-  - 큰 이미지에는 비효율적
-    - 원본보다 약 33% 크기가 커지므로 큰 이미지일 때는 HTML 파일 크기가 커져 페이지 로딩이 느려짐
-  - 캐싱이 안 됨
-    - 브라우저는 URL을 기준으로 파일을 캐싱하는데, 일반 이미지 파일은 URL이 고유한 식별자 역할을 하여 같은 URL을 만나면 저장된 파일 사용
-    - Data URL은 파일 경로가 아니라 데이터 자체가 들어있어 HTML 파일의 일부로 취급됨
-
-- 보통 작은 아이콘이나 로고처럼 자주 바뀌지 않는 작은 이미지에만 사용
-
 ```html
 <img src="photo.jpg" />
 <!--이미지 파일이 서버에 별도로 저장되어 있어야 함
@@ -1971,7 +1946,42 @@ public void TestDispose()
 1번의 요청으로 끝-->
 ```
 
-### asp-for
+### void vs return value
+
+- void
+
+  ```cs
+  private void GetCurrentUser()
+  {
+      _currentUser = new UserModel();
+      // 설정만 하고 끝
+  }
+
+  // 사용
+  GetCurrentUser();
+  // 결과가 성공인지 실패인지 알 수 없음
+  ```
+
+- return value
+
+  - 명확한 null 확인 가능
+  - 재사용 가능
+  - 테스트 용이(\_currentUser는 private 필드라 접근 불가)
+
+    ```cs
+    private UserModel? GetCurrentUser()
+    {
+        return new UserModel(); // 결과를 반환
+    }
+
+    // 사용
+    _currentUser = GetCurrentUser();
+    // 반환값으로 성공/실패 확인 가능
+    ```
+
+### Razor Pages
+
+#### asp-for
 
 ```html
 <input type="hidden" id="product-id" value="@Model.ProductId" />
@@ -1985,50 +1995,7 @@ value 자동 설정
   [BindProperty]와 함께 사용 시 POST 자동 바인딩-->
 ```
 
-### void vs return value
-
-- void
-
-```cs
-private void GetCurrentUser()
-{
-    _currentUser = new UserModel();
-    // 설정만 하고 끝
-}
-
-// 사용
-GetCurrentUser();
-// 결과가 성공인지 실패인지 알 수 없음
-```
-
-- return value
-  - 명확한 null 확인 가능
-  - 재사용 가능
-  - 테스트 용이(\_currentUser는 private 필드라 접근 불가)
-
-```cs
-private UserModel? GetCurrentUser()
-{
-    return new UserModel(); // 결과를 반환
-}
-
-// 사용
-_currentUser = GetCurrentUser();
-// 반환값으로 성공/실패 확인 가능
-```
-
-### PageModel
+#### PageModel
 
 - PageModel은 요청마다 새로 생성됨 → 전역 변수 공유가 제대로 안 됨
   - Get 요청에서 설정해둔 전역 변수를 Post 요청에서 사용 X
-
-### required 속성
-
-- public async Task<IActionResult> OnPostAsync(
-  [FromForm] mArchiFilmGenerateRequest request) // 자동 바인딩
-  {
-  if (!ModelState.IsValid) // 여기서 [Required] 체크됨
-  {
-  return BadRequest(ModelState);
-  }
-  }
