@@ -800,8 +800,8 @@ body {
 
 - 어떤 요소를 독립적으로 움직이게 만들고 싶을 때 사용
 - 뭔가 이동시키고 싶으면 margin 쓰는 것 보다 transform 쓰는게 빠르게 동작
-  - margin: Layout → Paint → Composiition
-  - tanslate: Composiition
+  - margin: Layout → Paint → Composite
+  - tanslate: Composite
 - transform을 사용하면 요소가 시각적으로만 이동하지만, 원래 자리는 여전히 차지하고 있음 → 브라우저는 원래 위치부터 변환된 위치까지의 전체 공간을 문서 크기로 계산
   - `position: fixed`를 추가하면 요소가 문서 흐름에서 제거되고, 문서 크기 계산에 포함되지 않음
 - `translate(-50%, -50%);`: 요소를 정중앙에 위치
