@@ -1981,6 +1981,41 @@ public void TestDispose()
 
 ### Razor Pages
 
+#### cshtml vs cshtml.cs
+
+| 구분            | 역할                                    | 실행 위치             | 예시                               |
+| --------------- | --------------------------------------- | --------------------- | ---------------------------------- |
+| **`cshtml`**    | 화면(UI), JS로 `fetch` 호출             | 브라우저 (클라이언트) | `fetch('/MyPage?handler=GetData')` |
+| **`cshtml.cs`** | 서버 로직, 데이터 가공, DB/Session 접근 | 서버 (백엔드)         | `OnGetData()` 핸들러 등            |
+
+#### BindProperty
+
+- 폼 데이터를 자동으로 C# 객체에 매핑해주는 속성
+
+```cs
+public class CreateModel : PageModel
+{
+    [BindProperty]
+    public string Name { get; set; }
+
+    [BindProperty]
+    public int Age { get; set; }
+
+    public void OnGet()
+    {
+        // GET 요청 처리
+    }
+
+    public IActionResult OnPost()
+    {
+        // Name과 Age가 자동으로 바인딩됨
+        // 폼에서 전송된 값이 여기에 들어있음
+
+        return RedirectToPage("Success");
+    }
+}
+```
+
 #### asp-for
 
 ```html
@@ -1999,3 +2034,42 @@ value 자동 설정
 
 - PageModel은 요청마다 새로 생성됨 → 전역 변수 공유가 제대로 안 됨
   - Get 요청에서 설정해둔 전역 변수를 Post 요청에서 사용 X
+
+#### HttpClient
+
+- httpClient를 DI로 주입받았다면 using 불필요
+  - HttpClient는 DI 컨테이너가 생성하고 해제
+  - 페이지/서비스가 종료될 때 자동으로 정리
+
+#### Post 요청
+
+- REST 원칙
+  - GET: 데이터 조회만, 서버 상태 변경 없음
+  - POST: 데이터 생성/변경, 서버 상태 변경
+
+#### `return Page()` vs `return RedirectToPage()`
+
+- `return Page()`
+
+  - 현재 요청된 Razor Page를 그대로 다시 렌더링해서 클라이언트에 반환
+    - Model 바인딩된 데이터(Model, ViewData, ModelState)가 그대로 유지
+  - 유효성 검사 실패 등으로 같은 페이지를 다시 보여줄 때
+
+- `return RedirectToPage()`
+
+  - 브라우저가 새 페이지를 다시 요청하게 만드는 것
+  - 폼 제출 후, 다른 페이지로 이동시킬 때 (Post-Redirect-Get 패턴)
+
+```cs
+public IActionResult OnPost()
+{
+  if (!ModelState.IsValid)
+  {
+      // 유효성 검사 실패 → 같은 페이지 다시 렌더링
+      return Page();
+  }
+
+  // 유효성 검사 통과 → 다음 단계로 이동
+  return RedirectToPage("Success");
+}
+```
