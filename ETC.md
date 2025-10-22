@@ -320,6 +320,29 @@ HTML 파일 크기가 커짐
   - 클라이언트는 요청 시 이 토큰을 함께 전송하고, **서버는 세션(또는 쿠키 등)에 저장된 토큰과 비교하여 일치 여부를 검증**.
 - 토큰이 일치하지 않으면 요청을 거부하여 위조 공격을 방지
 
+```html
+@Html.AntiForgeryToken() <button id="saveBtn">저장</button>
+```
+
+```cs
+document.getElementById("saveBtn").addEventListener("click", () => {
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+    fetch("/Photo/Create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "RequestVerificationToken": token
+        },
+        body: JSON.stringify({ title: "사진 제목" })
+    })
+    .then(res => {
+        if (res.ok) alert("성공!");
+        else alert("실패!");
+    });
+});
+```
+
 ### 📚 참고
 
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)

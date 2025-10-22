@@ -2082,6 +2082,8 @@ public IActionResult OnPost()
   - 여러 페이지에 걸쳐 계속 필요한 데이터
     - 로그인 정보, 장바구니, 사용자 설정/선호도
   - 세션은 명시적으로 삭제하지 않으면 계속 유지됨(개발자가 세션 초기화를 잊어버리기 쉬움)
+  - Session에 큰 데이터를 장시간 저장: 서버 메모리 지속 점유. 사용자 수 × 데이터 크기 만큼 누적(브라우저는 세션 ID만 쿠키로 갖고 있고, 실제 데이터는 내 서버의 RAM 안에 저장되어 있음)
+  - 서버 여러 대 (로드밸런서 운영) → 반드시 Redis나 DB 기반으로 세션 분리(특정 사용자의 세션이 한 서버에만 있으므로, 서버 간 공유 안 됨)
 
 - TempData
   - 한 번 읽으면 자동으로 삭제됨 (기본 동작)
@@ -2133,3 +2135,35 @@ Console.WriteLine(type2.GetDescription()); // generative
     - 객체 → 문자열 → 객체 (양방향 변환 쉬움)
     - 요청도 JSON, 응답도 JSON
   - FormData는 바이너리를 그대로 전송할 수 있음(JSON은 이미지, 동영상, PDF 등의 바이너리 파일은 불가능)
+
+```js
+document.getElementById('sendFormData').addEventListener('click', () => {
+  const token = document.querySelector(
+    'input[name="__RequestVerificationToken"]'
+  ).value;
+
+  const formData = new FormData();
+  formData.append('__RequestVerificationToken', token);
+  formData.append('Title', '폼데이터 테스트');
+
+  fetch('/Photo/Create', {
+    method: 'POST',
+    body: formData,
+  }).then((res) => (res.ok ? alert('FormData 성공') : alert('FormData 실패')));
+});
+
+document.getElementById('sendJson').addEventListener('click', () => {
+  const token = document.querySelector(
+    'input[name="__RequestVerificationToken"]'
+  ).value;
+
+  fetch('/Photo/Create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      RequestVerificationToken: token, // ← 헤더로 전달
+    },
+    body: JSON.stringify({ title: 'JSON 테스트' }),
+  }).then((res) => (res.ok ? alert('JSON 성공') : alert('JSON 실패')));
+});
+```
