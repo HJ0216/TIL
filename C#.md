@@ -2059,6 +2059,7 @@ value 자동 설정
 
   - 브라우저가 새 페이지를 다시 요청하게 만드는 것
   - 폼 제출 후, 다른 페이지로 이동시킬 때 (Post-Redirect-Get 패턴)
+    - RedirectToPage() 하면서 메시지나 일부 데이터만 전달하고 싶다면 TempData를 사용
 
 ```cs
 public IActionResult OnPost()
@@ -2073,3 +2074,62 @@ public IActionResult OnPost()
   return RedirectToPage("Success");
 }
 ```
+
+#### Session vs TempData
+
+- Session
+
+  - 여러 페이지에 걸쳐 계속 필요한 데이터
+    - 로그인 정보, 장바구니, 사용자 설정/선호도
+  - 세션은 명시적으로 삭제하지 않으면 계속 유지됨(개발자가 세션 초기화를 잊어버리기 쉬움)
+
+- TempData
+  - 한 번 읽으면 자동으로 삭제됨 (기본 동작)
+    - 페이지 리다이렉트 후 해당 데이터를 한 번만 사용할 경우
+    - 단, 페이지 리다이렉트 후, 여러 핸들러에서 해당 데이터를 사용할 경우, session 사용
+  - 다음 요청에서만 유효하므로 데이터 오염 위험 감소
+
+#### enum
+
+```cs
+public enum eResultType
+{
+    [Description("generative")] // View/API에서 사용할 문자열
+    Generate = 0,              // DB에 0 저장, 코드에서 Generate 사용
+
+    [Description("refine")]
+    Edit = 1,
+}
+
+var type = eResultType.Generate;           // 이름 사용
+int dbValue = (int)type;                   // 0 (DB 저장용)
+string apiValue = type.GetDescription();   // "generative" (API/View용)
+
+// DB 조회 결과
+int fromDb = 0;
+var type2 = (eResultType)fromDb;           // Generate
+Console.WriteLine(type2);                  // Generate
+Console.WriteLine(type2.GetDescription()); // generative
+```
+
+#### 주석
+
+```cs
+@* Razor 주석
+서버에서 제거
+페이지 소스 보기에서 보이지 않음 *@
+
+<!-- HTML 주석
+브라우저로 전송됨
+페이지 소스 보기에서 보임 -->
+
+// JavaScript 주석 (script 내부에서만)
+```
+
+#### FormData vs JSON
+
+- 현대 웹 개발 = JSON 중심 + 파일 업로드만 FormData
+  - JSON을 쓰는 이유
+    - 객체 → 문자열 → 객체 (양방향 변환 쉬움)
+    - 요청도 JSON, 응답도 JSON
+  - FormData는 바이너리를 그대로 전송할 수 있음(JSON은 이미지, 동영상, PDF 등의 바이너리 파일은 불가능)
