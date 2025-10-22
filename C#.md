@@ -2059,6 +2059,7 @@ value 자동 설정
 
   - 브라우저가 새 페이지를 다시 요청하게 만드는 것
   - 폼 제출 후, 다른 페이지로 이동시킬 때 (Post-Redirect-Get 패턴)
+    - RedirectToPage() 하면서 메시지나 일부 데이터만 전달하고 싶다면 TempData를 사용
 
 ```cs
 public IActionResult OnPost()
@@ -2072,4 +2073,97 @@ public IActionResult OnPost()
   // 유효성 검사 통과 → 다음 단계로 이동
   return RedirectToPage("Success");
 }
+```
+
+#### Session vs TempData
+
+- Session
+
+  - 여러 페이지에 걸쳐 계속 필요한 데이터
+    - 로그인 정보, 장바구니, 사용자 설정/선호도
+  - 세션은 명시적으로 삭제하지 않으면 계속 유지됨(개발자가 세션 초기화를 잊어버리기 쉬움)
+  - Session에 큰 데이터를 장시간 저장: 서버 메모리 지속 점유. 사용자 수 × 데이터 크기 만큼 누적(브라우저는 세션 ID만 쿠키로 갖고 있고, 실제 데이터는 내 서버의 RAM 안에 저장되어 있음)
+  - 서버 여러 대 (로드밸런서 운영) → 반드시 Redis나 DB 기반으로 세션 분리(특정 사용자의 세션이 한 서버에만 있으므로, 서버 간 공유 안 됨)
+
+- TempData
+  - 한 번 읽으면 자동으로 삭제됨 (기본 동작)
+    - 페이지 리다이렉트 후 해당 데이터를 한 번만 사용할 경우
+    - 단, 페이지 리다이렉트 후, 여러 핸들러에서 해당 데이터를 사용할 경우, session 사용
+  - 다음 요청에서만 유효하므로 데이터 오염 위험 감소
+
+#### enum
+
+```cs
+public enum eResultType
+{
+    [Description("generative")] // View/API에서 사용할 문자열
+    Generate = 0,              // DB에 0 저장, 코드에서 Generate 사용
+
+    [Description("refine")]
+    Edit = 1,
+}
+
+var type = eResultType.Generate;           // 이름 사용
+int dbValue = (int)type;                   // 0 (DB 저장용)
+string apiValue = type.GetDescription();   // "generative" (API/View용)
+
+// DB 조회 결과
+int fromDb = 0;
+var type2 = (eResultType)fromDb;           // Generate
+Console.WriteLine(type2);                  // Generate
+Console.WriteLine(type2.GetDescription()); // generative
+```
+
+#### 주석
+
+```cs
+@* Razor 주석
+서버에서 제거
+페이지 소스 보기에서 보이지 않음 *@
+
+<!-- HTML 주석
+브라우저로 전송됨
+페이지 소스 보기에서 보임 -->
+
+// JavaScript 주석 (script 내부에서만)
+```
+
+#### FormData vs JSON
+
+- 현대 웹 개발 = JSON 중심 + 파일 업로드만 FormData
+  - JSON을 쓰는 이유
+    - 객체 → 문자열 → 객체 (양방향 변환 쉬움)
+    - 요청도 JSON, 응답도 JSON
+  - FormData는 바이너리를 그대로 전송할 수 있음(JSON은 이미지, 동영상, PDF 등의 바이너리 파일은 불가능)
+
+```js
+document.getElementById('sendFormData').addEventListener('click', () => {
+  const token = document.querySelector(
+    'input[name="__RequestVerificationToken"]'
+  ).value;
+
+  const formData = new FormData();
+  formData.append('__RequestVerificationToken', token);
+  formData.append('Title', '폼데이터 테스트');
+
+  fetch('/Photo/Create', {
+    method: 'POST',
+    body: formData,
+  }).then((res) => (res.ok ? alert('FormData 성공') : alert('FormData 실패')));
+});
+
+document.getElementById('sendJson').addEventListener('click', () => {
+  const token = document.querySelector(
+    'input[name="__RequestVerificationToken"]'
+  ).value;
+
+  fetch('/Photo/Create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      RequestVerificationToken: token, // ← 헤더로 전달
+    },
+    body: JSON.stringify({ title: 'JSON 테스트' }),
+  }).then((res) => (res.ok ? alert('JSON 성공') : alert('JSON 실패')));
+});
 ```
