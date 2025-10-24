@@ -850,8 +850,9 @@ tabButtons.on('click', function () {
 - 브라우저 주소창을 자바스크립트로 조작할 수 있게 해주는 기능
 
 ```js
-// URL을 /albums/123으로 바꿈 (새로고침 없이!)
+// URL을 새로고침 없이 /albums/123으로 바꿈
 history.pushState(
+  // state 객체({ albumId: 123 })가 히스토리 스택에 저장
   { albumId: 123 }, // state: 저장할 데이터
   '', // title: (안 씀, 빈 문자열)
   '/albums/123' // url: 바꿀 주소
@@ -861,6 +862,15 @@ history.pushState(
 
 // 현재 URL을 교체 (뒤로가기 히스토리에 안 남음)
 history.replaceState({ albumId: 456 }, '', '/albums/456');
+
+// 사용자가 뒤로/앞으로 가기 버튼을 눌렀을 때 발생하는 이벤트
+window.addEventListener('popstate', (event) => {
+  // event.state는 pushState/replaceState로 저장했던 state 객체
+  if (event.state) {
+    console.log('state 객체:', event.state);
+    // 예: event.state.albumId를 사용해 페이지 콘텐츠 업데이트
+  }
+});
 ```
 
 ### 기타 JS 라이브러리
