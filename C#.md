@@ -155,6 +155,21 @@ public async void Method(string source)
 }
 ```
 
+### await using vs using
+
+```cs
+await using var input = file.OpenReadStream();
+// DisposeAsync() 호출,  리소스 정리 작업 자체가 비동기 I/O를 포함할 때 유용
+// 읽기 전용 스트림과 같이 동기적으로 정리할 수 있는 리소스의 경우, 불필요한 비동기 상태로 인한 오버헤드가 발생할 수 있음
+// DisposeAsync()가 Dispose()를 내부적으로 호출(비동기 + 동기 리소스 모두 안전하게 해제하기 위함)
+// 중요한 비동기 리소스라는 인식을 줌
+
+using var input = file.OpenReadStream();
+// Dispose() 직접 호출
+// 충분히 빠름
+// 코드 의도 명확
+```
+
 ### Dispatcher
 
 WPF: UI 요소 접근은 반드시 UI 스레드에서만 해야 함
@@ -283,6 +298,69 @@ public static async Task<BitmapImage> GetBitmapImageFromWebAsync(string imagePat
 >     데이터 로드 안함, 파일 경로만 저장  
 >     WPF가 렌더링 시 필요할 때마다 파일에서 읽음  
 >     ✅ 정상 표시 (파일이 살아있으니까)
+
+### stream과 dispose
+
+```cs
+if (image?.Length > 0)
+{
+  await using var fileStream = image.OpenReadStream();
+  var streamContent = new StreamContent(fileStream); // 스트림을 content에 담기
+  content.Add(streamContent, "imageFile", ...); // MultipartContent에 추가
+}  // 여기서 await using 블록이 끝나면서 fileStream이 자동으로 닫힘
+
+var response = await _httpClient.PostAsync(..., content);  // 이 시점에 실제 HTTP 요청 전송
+
+// 1. await using 범위 확장
+if (image?.Length > 0)
+{
+  await using var fileStream = image.OpenReadStream();
+  var streamContent = new StreamContent(fileStream); // 스트림을 content에 담기
+  content.Add(streamContent, "imageFile", ...); // MultipartContent에 추가
+
+  var response = await _httpClient.PostAsync(..., content);  // 이 시점에 실제 HTTP 요청 전송
+}  // 여기서 await using 블록이 끝나면서 fileStream이 자동으로 닫힘
+
+// 2. 스트림이 닫히기 전에 데이터를 메모리에 미리 복사
+if (image?.Length > 0)
+{
+  using var memoryStream = new MemoryStream();
+  await image.CopyToAsync(memoryStream);
+  var byteArray = memoryStream.ToArray();  // byte[] 형태로 복사
+
+  var streamContent = new ByteArrayContent(byteArray);  // 복사된 데이터 사용
+  content.Add(streamContent, "imageFile", ...);
+}// ← memoryStream은 Dispose되지만, byteArray에 데이터가 복사되어 있어서 문제 없음
+
+// 3. using 제거 + HttpClient가 수명 관리
+if (image?.Length > 0)
+{
+  var fileStream = image.OpenReadStream(); // Dispose하지 않음
+  var streamContent = new StreamContent(fileStream);
+  content.Add(streamContent, "imageFile", ...);
+
+  var response = await _httpClient.PostAsync(url, content);
+  // HttpClient가 내부적으로 StreamContent를 Dispose할 때 그 안의 stream도 함께 Dispose
+}
+
+```
+
+- 방법 1
+
+  - 불필요한 메모리 복사 없음 → 메모리 효율 최고
+  - 비동기 해제 (await using)로 I/O 안전
+  - 코드 구조상 명확 (범위 내에서만 유효)
+  - 파일 열고 바로 HttpClient로 업로드하는 일반적인 컨트롤러/서비스 코드에서 사용
+
+- 방법 2
+
+  - 원본 스트림 수명과 무관 → 안정성 최고(HttpClient 요청 시점과 상관없이 byteArray는 살아 있음)
+  - 파일 전체를 메모리에 복사 → **대용량 이미지(수 MB 이상)**일 경우 RAM 낭비
+
+- 방법 3
+  - 메모리 복사가 없어 효율적이고, HttpClient가 알아서 스트림 폐기하므로 관리가 편리
+  - 명시적 범위 관리가 없어 예외 발생 시 누수 위험
+  - 요청 실패 시 StreamContent Dispose가 스킵될 수도 있으므로 try/finally로 보완
 
 ### 디스카드(discard) 패턴
 
