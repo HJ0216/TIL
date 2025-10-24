@@ -848,6 +848,7 @@ tabButtons.on('click', function () {
 ### History API
 
 - 브라우저 주소창을 자바스크립트로 조작할 수 있게 해주는 기능
+- 보안상 같은 출처에만 작동
 
 ```js
 // URL을 새로고침 없이 /albums/123으로 바꿈
