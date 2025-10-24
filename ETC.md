@@ -345,12 +345,12 @@ document.getElementById("saveBtn").addEventListener("click", () => {
 
 ### CORS(Cross-Origin Resource Sharing)
 
-- 내 웹사이트: https://myapp.com
-- 외부 API 서버: https://api.example.com
+- 내 웹사이트: <https://myapp.com>
+- 외부 API 서버: <https://api.example.com>
 
 1. 브라우저에서 요청: `fetch("https://api.example.com/data")`
 2. 브라우저는 다른 출처(origin) 의 응답 데이터를 함부로 읽을 수 없음
-3. `Access-Control-Allow-Origin: https://myapp.com`을 추가해 브라우저가 응답을 막지 않고 자바스크립트 코드(fetch 등)가 데이터를 읽을 수 있게함
+3. **외부 API 서버**가 응답 헤더에 `Access-Control-Allow-Origin: https://myapp.com`을 추가하면, 브라우저는 응답을 막지 않고 자바스크립트 코드(fetch 등)가 데이터를 읽을 수 있게 허용
 
 ### 📚 참고
 

@@ -2183,13 +2183,16 @@ document.getElementById('sendJson').addEventListener('click', () => {
 
 ### 브라우저 Session Storage vs ASP.NET Session (HttpContext.Session)
 
-| 구분                                        | 저장 위치                                        | 접근 방법                            | ASP.NET과의 관계                                                                                     |
-| ------------------------------------------- | ------------------------------------------------ | ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| **브라우저 Session Storage**                | 클라이언트(브라우저) 메모리                      | JS `sessionStorage.getItem()`        | ❌ ASP.NET과 무관                                                                                    |
-| **ASP.NET Session** (`HttpContext.Session`) | **서버 메모리 or Redis or DB 등 서버 측 저장소** | C# `HttpContext.Session.GetString()` | ✅ ASP.NET Core 내부 기능(디버깅 시에는 Visual Studio → “Watch → HttpContext.Session”으로 확인 가능) |
+| 구분                                        | 저장 위치                                        | 접근 방법                            | ASP.NET과의 관계          |
+| ------------------------------------------- | ------------------------------------------------ | ------------------------------------ | ------------------------- |
+| **브라우저 Session Storage**                | 클라이언트(브라우저) 메모리                      | JS `sessionStorage.getItem()`        | ❌ ASP.NET과 무관         |
+| **ASP.NET Session** (`HttpContext.Session`) | **서버 메모리 or Redis or DB 등 서버 측 저장소** | C# `HttpContext.Session.GetString()` | ✅ ASP.NET Core 내부 기능 |
 
 | 구분                               | 기준                        | 공유 범위                                 | 비고                      |
 | ---------------------------------- | --------------------------- | ----------------------------------------- | ------------------------- |
 | **Session (서버 세션)**            | 쿠키(`.AspNetCore.Session`) | 같은 브라우저의 같은 도메인 내 모든 탭/창 | ✅ ASP.NET Core 기본 동작 |
 | **Session Storage (브라우저 API)** | 브라우저 탭 단위            | 탭마다 독립                               | ❌ ASP.NET 세션과 무관    |
 | **Local Storage (브라우저 API)**   | 도메인 단위                 | 탭 간 공유                                | 클라이언트 전용 저장소    |
+
+- Session Storage는 브라우저 → "application → session storage"에서 확인 가능
+- ASP.NET Session은 디버깅 시 Visual Studio → “Watch → HttpContext.Session”으로 확인 가능
