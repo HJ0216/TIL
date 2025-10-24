@@ -2191,7 +2191,7 @@ document.getElementById('sendJson').addEventListener('click', () => {
 
 **차이점**:
 
-- Session (서버): 같은 브라우저의 모든 탭/창에서 공유 (쿠키 기반 연동)
+- Session (서버): 같은 브라우저의 모든 탭/창에서 공유 (쿠키 기반 연동, 쿠키로 세션 ID를 전달해 서버가 관리)
 - Session Storage (클라이언트): 각 탭마다 독립적 (브라우저 API)
 - Local Storage (클라이언트): 모든 탭에서 공유 (도메인 단위)
 
