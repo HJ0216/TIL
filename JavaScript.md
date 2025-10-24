@@ -845,6 +845,24 @@ tabButtons.on('click', function () {
 });
 ```
 
+### History API
+
+- 브라우저 주소창을 자바스크립트로 조작할 수 있게 해주는 기능
+
+```js
+// URL을 /albums/123으로 바꿈 (새로고침 없이!)
+history.pushState(
+  { albumId: 123 }, // state: 저장할 데이터
+  '', // title: (안 씀, 빈 문자열)
+  '/albums/123' // url: 바꿀 주소
+);
+
+// 주소창: yoursite.com/albums/123 으로 바뀜
+
+// 현재 URL을 교체 (뒤로가기 히스토리에 안 남음)
+history.replaceState({ albumId: 456 }, '', '/albums/456');
+```
+
 ### 기타 JS 라이브러리
 
 - [swiper](https://swiperjs.com/get-started#use-swiper-from-cdn)
