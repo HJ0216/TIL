@@ -2181,18 +2181,21 @@ document.getElementById('sendJson').addEventListener('click', () => {
   - 세션이나 서버 상태를 서버에서 받아서 연동해야 함
   - 외부 API 서버가 CORS 허용을 안 하면 요청이 차단됨
 
-### 브라우저 Session Storage vs ASP.NET Session (HttpContext.Session)
+### 브라우저 Session Storage vs ASP.NET Session
 
-| 구분                                        | 저장 위치                                        | 접근 방법                            | ASP.NET과의 관계          |
-| ------------------------------------------- | ------------------------------------------------ | ------------------------------------ | ------------------------- |
-| **브라우저 Session Storage**                | 클라이언트(브라우저) 메모리                      | JS `sessionStorage.getItem()`        | ❌ ASP.NET과 무관         |
-| **ASP.NET Session** (`HttpContext.Session`) | **서버 메모리 or Redis or DB 등 서버 측 저장소** | C# `HttpContext.Session.GetString()` | ✅ ASP.NET Core 내부 기능 |
+| 구분                                        | 저장 위치                   | 접근 방법                            | 용도                   |
+| ------------------------------------------- | --------------------------- | ------------------------------------ | ---------------------- |
+| **브라우저 Session Storage**                | 클라이언트(브라우저) 메모리 | JS `sessionStorage.getItem()`        | 클라이언트 임시 데이터 |
+| **ASP.NET Session** (`HttpContext.Session`) | 서버 측 저장소              | C# `HttpContext.Session.GetString()` | 서버 상태 유지         |
+| **Local Storage**                           | 클라이언트(도메인 단위)     | JS `localStorage.getItem()`          | 클라이언트 영구 데이터 |
 
-| 구분                               | 기준                        | 공유 범위                                 | 비고                      |
-| ---------------------------------- | --------------------------- | ----------------------------------------- | ------------------------- |
-| **Session (서버 세션)**            | 쿠키(`.AspNetCore.Session`) | 같은 브라우저의 같은 도메인 내 모든 탭/창 | ✅ ASP.NET Core 기본 동작 |
-| **Session Storage (브라우저 API)** | 브라우저 탭 단위            | 탭마다 독립                               | ❌ ASP.NET 세션과 무관    |
-| **Local Storage (브라우저 API)**   | 도메인 단위                 | 탭 간 공유                                | 클라이언트 전용 저장소    |
+**차이점**:
 
-- Session Storage는 브라우저 → "application → session storage"에서 확인 가능
-- ASP.NET Session은 디버깅 시 Visual Studio → “Watch → HttpContext.Session”으로 확인 가능
+- Session (서버): 같은 브라우저의 모든 탭/창에서 공유 (쿠키 기반 연동)
+- Session Storage (클라이언트): 각 탭마다 독립적 (브라우저 API)
+- Local Storage (클라이언트): 모든 탭에서 공유 (도메인 단위)
+
+**디버깅**:
+
+- 서버 세션 확인: Visual Studio Watch 창에서 `HttpContext.Session` 검사
+- 브라우저 저장소 확인: 개발자 도구 → Application → Storage 탭에서 확인
