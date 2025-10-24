@@ -343,6 +343,15 @@ document.getElementById("saveBtn").addEventListener("click", () => {
 });
 ```
 
+### CORS(Cross-Origin Resource Sharing)
+
+- 내 웹사이트: https://myapp.com
+- 외부 API 서버: https://api.example.com
+
+1. 브라우저에서 요청: `fetch("https://api.example.com/data")`
+2. 브라우저는 다른 출처(origin) 의 응답 데이터를 함부로 읽을 수 없음
+3. `Access-Control-Allow-Origin: https://myapp.com`을 추가해 브라우저가 응답을 막지 않고 자바스크립트 코드(fetch 등)가 데이터를 읽을 수 있게함
+
 ### 📚 참고
 
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)
