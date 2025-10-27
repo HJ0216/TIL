@@ -2277,3 +2277,39 @@ document.getElementById('sendJson').addEventListener('click', () => {
 
 - 서버 세션 확인: Visual Studio Watch 창에서 `HttpContext.Session` 검사
 - 브라우저 저장소 확인: 개발자 도구 → Application → Storage 탭에서 확인
+
+### 로그인하지 않은 유저 Redirect
+
+1. View 내부에서 Razor 블록으로 Response.Redirect() 호출
+
+- View는 HTML을 렌더링하는 표현 계층(View Layer)
+
+```html
+@{ if (Model.CurrentUser == null) {
+Response.Redirect("/account/login?returnurl=/main"); } }
+```
+
+2. PageModel (혹은 Controller)의 OnGet() 또는 Action 메서드에서 처리
+
+- Controller/PageModel의 OnGet은 “흐름 제어” 계층
+- 요청을 받아서 → 인증 확인 → ViewModel 준비 → View 렌더 순서로 동작
+
+```cs
+public IActionResult OnGet()
+{
+    if (CurrentUser == null)
+    {
+        return Redirect("/account/login?returnurl=/main");
+        // View로 넘어가기 전에 리다이렉트가 결정되므로 View가 로드되지 않아 “깜빡임”도 없고, 역할 분리도 명확
+    }
+
+    return Page();
+}
+```
+
+| 구분          | View(`Response.Redirect` in Razor)    | Controller/PageModel(`OnGet` 리다이렉트) |
+| ------------- | ------------------------------------- | ---------------------------------------- |
+| 실행 시점     | View 렌더링 도중 (HTML 생성 중)       | Controller 단계 (View 렌더 전)           |
+| UI 깜빡임     | 없음                                  | 없음                                     |
+| 유지보수성    | ❌ 나쁨 — View가 로직을 가지게 됨     | ✅ 좋음 — 역할이 명확                    |
+| MVC 구조 준수 | ❌ 위반 (View는 “표현”만 담당해야 함) | ✅ 준수 (Controller가 흐름 제어 담당)    |
