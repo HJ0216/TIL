@@ -2307,9 +2307,9 @@ public IActionResult OnGet()
 }
 ```
 
-| 구분          | View(`Response.Redirect` in Razor)    | Controller/PageModel(`OnGet` 리다이렉트) |
-| ------------- | ------------------------------------- | ---------------------------------------- |
-| 실행 시점     | View 렌더링 도중 (HTML 생성 중)       | Controller 단계 (View 렌더 전)           |
-| UI 깜빡임     | 없음                                  | 없음                                     |
-| 유지보수성    | ❌ 나쁨 — View가 로직을 가지게 됨     | ✅ 좋음 — 역할이 명확                    |
-| MVC 구조 준수 | ❌ 위반 (View는 “표현”만 담당해야 함) | ✅ 준수 (Controller가 흐름 제어 담당)    |
+| 구분          | View(`Response.Redirect` in Razor)                | Controller/PageModel(`OnGet` 리다이렉트) |
+| ------------- | ------------------------------------------------- | ---------------------------------------- |
+| 실행 시점     | View 렌더링 도중 (HTML 생성 중)                   | Controller 단계 (View 렌더 전)           |
+| UI 깜빡임     | HTML 생성 도중 리다이렉트로 인한 깜빡임 발생 가능 | HTML 시작 전 리다이렉트로 깜빡임 없음    |
+| 유지보수성    | ❌ 나쁨 — View가 로직을 가지게 됨                 | ✅ 좋음 — 역할이 명확                    |
+| MVC 구조 준수 | ❌ 위반 (View는 “표현”만 담당해야 함)             | ✅ 준수 (Controller가 흐름 제어 담당)    |
