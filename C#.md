@@ -2170,6 +2170,47 @@ public IActionResult OnPost()
   - 다음 요청에서만 유효하므로 데이터 오염 위험 감소
   - “등록 완료” 같은 1회성 메시지 표시용
 
+### session 값 가져오기
+
+1. 핸들러마다 session 값 호출
+
+```cs
+public void OnGet()
+{
+    int? userId = HttpContext.Session.GetInt32("UserId");
+    // ...
+}
+
+public void OnPost()
+{
+    int? userId = HttpContext.Session.GetInt32("UserId");
+    // ...
+}
+```
+
+2. property 활용
+
+```cs
+private int? _userId;
+public int? UserId
+{
+    get
+    {
+        if (_userId == null)
+        {
+            _userId = HttpContext.Session.GetInt32("UserId");
+        }
+        return _userId;
+    }
+}
+
+public void OnGet()
+{
+    var id = UserId;
+    // ...
+}
+```
+
 #### enum
 
 ```cs
