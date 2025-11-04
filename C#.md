@@ -2174,6 +2174,10 @@ public IActionResult OnPost()
 
 1. 핸들러마다 session 값 호출
 
+- 코드 간결
+- 항상 최신 세션 값 보장
+- 코드 중복
+
 ```cs
 public void OnGet()
 {
@@ -2190,13 +2194,17 @@ public void OnPost()
 
 2. property 활용
 
+- 성능 향상(세션 접근(느림) → 필드 접근(매우 빠름))
+- 약간의 메모리 오버헤드(필드가 PageModel 객체가 살아있는 동안 메모리 차지)
+- 같은 요청 내에서 세션 값이 변경되면 오래된 값을 계속 사용
+
 ```cs
 private int? _userId;
 public int? UserId
 {
     get
     {
-        if (_userId == null)
+        if (_userId is null)
         {
             _userId = HttpContext.Session.GetInt32("UserId");
         }
@@ -2354,3 +2362,35 @@ public IActionResult OnGet()
 | UI 깜빡임     | HTML 생성 도중 리다이렉트로 인한 깜빡임 발생 가능 | HTML 시작 전 리다이렉트로 깜빡임 없음    |
 | 유지보수성    | ❌ 나쁨 — View가 로직을 가지게 됨                 | ✅ 좋음 — 역할이 명확                    |
 | MVC 구조 준수 | ❌ 위반 (View는 “표현”만 담당해야 함)             | ✅ 준수 (Controller가 흐름 제어 담당)    |
+
+### == null vs is null
+
+- == null
+
+```cs
+public class MyClass
+{
+    // == 연산자를 오버로딩(재정의)할 수 있음
+    public static bool operator ==(MyClass obj, object other)
+    {
+        // 개발자가 임의로 동작을 바꿀 수 있음
+        return true; // 항상 true를 반환하도록 조작 가능!
+    }
+}
+
+MyClass obj = null;
+if (obj == null) // 오버로딩된 연산자가 호출될 수 있음
+{
+    // 예상과 다르게 동작할 수 있음
+}
+```
+
+- is null
+
+```cs
+MyClass obj = null;
+if (obj is null) // 항상 진짜 null인지만 체크 (오버로딩 무시)
+{
+    // 항상 예측 가능하게 동작
+}
+```
