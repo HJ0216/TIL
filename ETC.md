@@ -352,6 +352,132 @@ document.getElementById("saveBtn").addEventListener("click", () => {
 2. 브라우저는 다른 출처(origin) 의 응답 데이터를 함부로 읽을 수 없음
 3. **외부 API 서버**가 응답 헤더에 `Access-Control-Allow-Origin: https://myapp.com`을 추가하면, 브라우저는 응답을 막지 않고 자바스크립트 코드(fetch 등)가 데이터를 읽을 수 있게 허용
 
+### 생성자 예외
+
+> 생성자는 “객체를 만들기만” 해야 하고, 실패 가능성이 있는 일은 “만든 다음에” 하는 게 안전
+
+| 구분               | 생성자에서 예외 던짐                          | 따로 처리 (예: `create()` / `init()` 메서드)    |
+| ------------------ | --------------------------------------------- | ----------------------------------------------- |
+| **객체 생성 시점** | 실패하면 **객체 자체가 안 생김**              | 객체가 먼저 생성되어 참조 유지 → 상태 추적 가능 |
+| **디버깅/로그**    | 실패 시 객체 참조 없음 → **원인 추적 어려움** | 객체 유지 가능 → **상태 확인·로그 용이**        |
+| **리소스 관리**    | 생성 도중 실패 시 **리소스 누수 위험**        | 명확히 try-catch로 관리 가능                    |
+| **상속 구조**      | 부모 생성자에서 예외 터지면 자식 생성 안 됨   | 초기화 로직을 분리해 **안정적**                 |
+
+- 초기화 실패 후 부분적으로 초기화된 객체를 사용할 때의 위험성(invariant violation)
+
+1. 부분 초기화
+
+```cs
+public class DatabaseConnection
+{
+    private SqlConnection _connection;
+    private SqlTransaction _transaction;
+
+    // Invariant: _connection과 _transaction은 둘 다 있거나 둘 다 없어야 함
+
+    public DatabaseConnection(string connectionString)
+    {
+        _connection = new SqlConnection(connectionString);
+        _connection.Open();  // ✅ 성공
+
+        _transaction = _connection.BeginTransaction();  // ❌ 여기서 예외 발생!
+
+        // 결과: _connection만 열려있고 _transaction은 null
+    }
+
+    public void ExecuteQuery()
+    {
+        // Invariant 위반! _transaction이 null인데 사용하려 함
+        var cmd = _connection.CreateCommand();
+        cmd.Transaction = _transaction;  // NullReferenceException!
+    }
+}
+```
+
+2. 일관성 없는 상태
+
+```cs
+public class UserProfile
+{
+    // Invariant: Email이 있으면 반드시 EmailVerified 상태도 있어야 함
+    public string Email { get; private set; }
+    public bool EmailVerified { get; private set; }
+    public DateTime? VerificationDate { get; private set; }
+
+    public UserProfile(string email)
+    {
+        Email = email;  // ✅ 설정됨
+
+        // 이메일 검증 API 호출
+        EmailVerified = VerifyEmail(email);  // ❌ 예외 발생!
+
+        // VerificationDate는 설정 안 됨
+    }
+
+    // 결과: Email은 있는데 EmailVerified는 false, VerificationDate는 null
+    // 이후 코드에서 "이메일이 있으면 검증됐을 것"이라 가정하면 버그 발생
+}
+```
+
+3. 리소스 누수
+
+```cs
+public class FileProcessor
+{
+    private FileStream _inputFile;
+    private FileStream _outputFile;
+
+    // Invariant: 두 파일 모두 열려있거나 모두 닫혀있어야 함
+
+    public FileProcessor(string input, string output)
+    {
+        _inputFile = File.OpenRead(input);    // ✅ 성공
+        _outputFile = File.OpenWrite(output); // ❌ 예외! (디스크 공간 부족)
+
+        // 결과: _inputFile만 열려있음 → 리소스 누수 (파일 핸들이 닫히지 않음)
+    }
+}
+```
+
+- 대안
+
+```cs
+public class DatabaseConnection
+{
+    private DatabaseConnection() { }  // private 생성자
+
+    public static DatabaseConnection Create(string connectionString)
+    {
+        SqlConnection conn = null;
+        SqlTransaction trans = null;
+
+        try
+        {
+            conn = new SqlConnection(connectionString);
+            conn.Open();
+            trans = conn.BeginTransaction();
+
+            // 모든 초기화 성공 후에만 객체 생성
+            return new DatabaseConnection
+            {
+                _connection = conn,
+                _transaction = trans
+            };
+        }
+        catch
+        {
+            trans?.Dispose();
+            conn?.Dispose();
+            throw;
+        }
+    }
+}
+
+// 사용
+var db = DatabaseConnection.Create(connectionString);  // 완전히 초기화된 객체
+db.ExecuteQuery();  // 안전하게 사용
+```
+
 ### 📚 참고
 
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)
