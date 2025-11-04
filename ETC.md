@@ -439,6 +439,45 @@ public class FileProcessor
 }
 ```
 
+- 대안
+
+```cs
+public class DatabaseConnection
+{
+    private DatabaseConnection() { }  // private 생성자
+
+    public static DatabaseConnection Create(string connectionString)
+    {
+        SqlConnection conn = null;
+        SqlTransaction trans = null;
+
+        try
+        {
+            conn = new SqlConnection(connectionString);
+            conn.Open();
+            trans = conn.BeginTransaction();
+
+            // 모든 초기화 성공 후에만 객체 생성
+            return new DatabaseConnection
+            {
+                _connection = conn,
+                _transaction = trans
+            };
+        }
+        catch
+        {
+            trans?.Dispose();
+            conn?.Dispose();
+            throw;
+        }
+    }
+}
+
+// 사용
+var db = DatabaseConnection.Create(connectionString);  // 완전히 초기화된 객체
+db.ExecuteQuery();  // 안전하게 사용
+```
+
 ### 📚 참고
 
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)

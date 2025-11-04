@@ -2204,11 +2204,12 @@ public int? UserId
 {
     get
     {
-        if (_userId is null)
-        {
-            _userId = HttpContext.Session.GetInt32("UserId");
-        }
-        return _userId;
+//        if (_userId is null)
+//        {
+//            _userId = HttpContext.Session.GetInt32("UserId");
+//        }
+//        return _userId;
+          return _userId ??= HttpContext.Session.GetInt32("UserId");
     }
 }
 
