@@ -2395,3 +2395,72 @@ if (obj is null) // 항상 진짜 null인지만 체크 (오버로딩 무시)
     // 항상 예측 가능하게 동작
 }
 ```
+
+### Login 확인
+
+1. JS
+
+- 페이지가 먼저 렌더링되고 → JS 실행 → 리다이렉트
+- 페이지가 잠깐 보이는 "깜빡임" 현상 발생
+- 클라이언트 우회 가능
+  - 브라우저 개발자 도구에서 JavaScript 비활성화
+  - 콘솔에서 isLoggedIn = true 강제 설정
+
+```js
+if (!isLoggedIn) {
+  window.location.href = '/Login';
+}
+```
+
+2. OnGet
+
+- 불필요한 렌더링 방지
+- 페이지 렌더링 전에 체크 - 깜빡임 없음
+
+```cs
+public class IndexModel : PageModel
+{
+    public IActionResult OnGet()
+    {
+        // 서버에서 먼저 체크
+        if (!User.Identity.IsAuthenticated)
+        {
+            return RedirectToPage("/Login");
+        }
+
+        return Page();
+    }
+}
+```
+
+3. [Authorize] 사용
+
+- 미들웨어(요청을 가로채서 처리하는 "문지기" 같은 존재)가 요청을 받자마자 인증 확인
+- 인증 안 되면 OnGet 실행조차 안 함
+
+```cs
+[Authorize]
+public class IndexModel : PageModel
+{
+    public void OnGet()
+    {
+        // 이미 인증된 사용자만 여기 도달
+    }
+}
+```
+
+- ASP.NET Core 요청 처리 순서
+
+```txt
+브라우저 요청
+    ↓
+1. 미들웨어 (Authentication/Authorization)  ← 여기서 먼저 체크!
+    ↓
+2. 라우팅
+    ↓
+3. OnGet() 메서드 실행
+    ↓
+4. cshtml 렌더링
+    ↓
+응답 반환
+```

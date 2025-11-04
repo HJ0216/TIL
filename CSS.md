@@ -178,6 +178,11 @@
 }
 ```
 
+- Flexbox의 기본 동작
+- Flexbox 컨테이너의 자식 요소(flex 아이템)는 기본적으로 min-height: auto
+  - 아무리 부모가 작아도, 자식은 자신의 콘텐츠 크기만큼은 유지하려고 함 → 결과적으로 부모 컨테이너를 넘어서게 됨
+  - `min-height: 0`: flex 아이템의 기본 min-height: auto를 오버라이드하여 자식이 부모를 넘어서는 것을 방지
+
 #### flex UI
 
 - Menu
