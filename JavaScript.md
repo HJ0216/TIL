@@ -758,6 +758,9 @@ $('.list').append('<li class="tab-button">새 탭</li>');
 - `e.currentTarget`은 지금 이벤트 리스너가 달린 곳(this)
 - `e.preventDefault()` 실행하면 이벤트 기본 동작을 막아줌
 - `e.stopPropagation()` 실행하면 내 상위요소로의 이벤트 버블링을 중단해줌
+  - 사용을 피해야 하는 이유
+    - 이벤트 흐름을 추적하기 복잡해짐
+    - 코드가 커질수록 어디서 propagation이 멈췄는지 찾기 힘듦
 
 ```html
 <div class="tab-button">
@@ -872,6 +875,29 @@ window.addEventListener('popstate', (event) => {
     // 예: event.state.albumId를 사용해 페이지 콘텐츠 업데이트
   }
 });
+```
+
+### window.location.reload() vs DOM 제거
+
+- window.location.reload();
+
+  - 브라우저가 서버에서 페이지를 다시 요청(네트워크 요청 발생)
+  - 모든 JavaScript 상태가 초기화(모든 이벤트 리스너가 제거되고 다시 설정됨)
+  - 페이지 깜빡임 현상 발생
+
+- ## DOM 제거
+
+- 특정 DOM 요소만 제거(페이지의 나머지 부분은 그대로 유지)
+- 네트워크 요청 없음
+- JavaScript 상태 유지
+- 성능상 훨씬 효율적
+
+```js
+const card = document.querySelector(`[data-user-id="${userId}"]`);
+const item = card?.closest('.item');
+if (item) {
+  item.remove();
+}
 ```
 
 ### 기타 JS 라이브러리
