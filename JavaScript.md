@@ -885,12 +885,12 @@ window.addEventListener('popstate', (event) => {
   - 모든 JavaScript 상태가 초기화(모든 이벤트 리스너가 제거되고 다시 설정됨)
   - 페이지 깜빡임 현상 발생
 
-- ## DOM 제거
+- DOM 제거
 
-- 특정 DOM 요소만 제거(페이지의 나머지 부분은 그대로 유지)
-- 네트워크 요청 없음
-- JavaScript 상태 유지
-- 성능상 훨씬 효율적
+  - 특정 DOM 요소만 제거(페이지의 나머지 부분은 그대로 유지)
+  - 네트워크 요청 없음
+  - JavaScript 상태 유지
+  - 성능상 훨씬 효율적
 
 ```js
 const card = document.querySelector(`[data-user-id="${userId}"]`);
