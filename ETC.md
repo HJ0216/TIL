@@ -434,7 +434,7 @@ public class FileProcessor
         _inputFile = File.OpenRead(input);    // ✅ 성공
         _outputFile = File.OpenWrite(output); // ❌ 예외! (디스크 공간 부족)
 
-        // 결과: _inputFile만 열려있음 → 메모리 누수
+        // 결과: _inputFile만 열려있음 → 리소스 누수 (파일 핸들이 닫히지 않음)
     }
 }
 ```
