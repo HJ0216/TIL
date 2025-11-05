@@ -150,7 +150,7 @@ sudo alternatives --config javac
 
 ```bash
 # nohup으로 백그라운드 실행
-nohup java -jar build/libs/luckylog-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+nohup java -jar build/libs/lucky-log-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
 
 # 실행 확인
 ps aux | grep java
