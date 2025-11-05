@@ -900,6 +900,40 @@ if (item) {
 }
 ```
 
+### requestAnimationFrame
+
+1. 브라우저는 화면을 그림 → 잠깐 쉼 → 다시 그림을 반복
+2. `requestAnimationFrame`은 "다음번에 그릴 때 이거 해줘!"라고 예약하는 것
+3. 그래야 변화가 보여서 애니메이션이 작동함
+
+```js
+// 1. 토스트를 오른쪽 밖에 숨겨놓음 (1장면)
+toast.style.transform = 'translateX(400px)';
+
+// 2. DOM에 추가
+container.appendChild(toast);
+
+// 3. requestAnimationFrame 없이 바로 변경하면?
+toast.style.transform = 'translateX(0)';
+// → 브라우저: "어? 1장면 그리기도 전에 2장면이 왔네? 그럼 1장면 건너뛰고 2장면만 그릴게"
+// 결과: 애니메이션 안 보임 ❌
+```
+
+```js
+// 1. 토스트를 오른쪽 밖에 숨겨놓음 (1장면)
+toast.style.transform = 'translateX(400px)';
+
+// 2. DOM에 추가
+container.appendChild(toast);
+
+// 3. requestAnimationFrame 사용
+requestAnimationFrame(() => {
+  toast.style.transform = 'translateX(0)';
+});
+// → 브라우저: "오케이! 1장면 그릴게. 다 그렸어! 이제 2장면 그릴게!"
+// 결과: 1장면 → 2장면 부드럽게 이동 ✅
+```
+
 ### 기타 JS 라이브러리
 
 - [swiper](https://swiperjs.com/get-started#use-swiper-from-cdn)
