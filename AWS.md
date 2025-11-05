@@ -42,7 +42,7 @@
   | `443`     | HTTPS 웹 접속 (기본 포트) | 보안 연결 (예: `https://example.com`)                                              |
   | `8080`    | 웹 개발/테스트용 포트     | 웹 브라우저나 모바일 앱에서 API 호출을 받아야 함 (`http://public-ip-address:8080`) |
 
-  - 22번 포트는 웹 서버용이 아니므로, 브라우저로 http://public-ip-address:22 해도 응답 없음
+  - 22번 포트는 웹 서버용이 아니므로, 브라우저로 `http://public-ip-address:22` 해도 응답 없음
   - 웹 서비스 사용 시, 80, 443, 또는 8080 같은 포트를 사용해야 함
 
 - 보안그룹과 네트워크 ACL
@@ -82,8 +82,8 @@ git --version # 설치 확인
 
 git clone https://github.com/hj0216/lucky-log.git
 
-# Java 17 설치 (Spring Boot 3.x용)
-sudo yum install java-17-amazon-corretto -y
+# Java 17 설치 (Spring Boot 3.x용, Amazon Linux 2023 기준)
+sudo dnf install java-17-amazon-corretto -y
 java -version # 설치 확인
 
 cd lucky-log
@@ -165,7 +165,7 @@ kill [PID번호]
 
 ### 설정 파일 관리
 
-1. Local에서 설정 파일을 복사 후 추가한 다음 빌드
+1. Local에서 설정 파일을 서버로 복사 후 빌드
 
 ### 환경 변수 관리
 
