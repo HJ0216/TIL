@@ -1,15 +1,21 @@
 # Today I learned
 
-[#️⃣ C#](https://github.com/HJ0216/TIL/blob/main/C%23.md)  
-[☕ Java](https://github.com/HJ0216/TIL/blob/main/Java.md)  
-[🟨 JavaScript](https://github.com/HJ0216/TIL/blob/main/JavaScript.md)  
+### [☁️ AWS](https://github.com/HJ0216/TIL/blob/main/AWS.md)
 
+### [#️⃣ C#](https://github.com/HJ0216/TIL/blob/main/C%23.md)
 
-[🍃 SpringBoot](https://github.com/HJ0216/TIL/blob/main/SpringBoot.md)  
-[🖼️ WPF](https://github.com/HJ0216/TIL/blob/main/WPF.md)  
+### [🎨 CSS](https://github.com/HJ0216/TIL/blob/main/CSS.md)
 
-[🎨 CSS](https://github.com/HJ0216/TIL/blob/main/CSS.md)  
+### [🗃️ Database](https://github.com/HJ0216/TIL/blob/main/Database.md)
 
-[♾️ N8N](https://github.com/HJ0216/TIL/blob/main/N8N.md)
+### [☕ Java](https://github.com/HJ0216/TIL/blob/main/Java.md)
 
-[🎸 ETC](https://github.com/HJ0216/TIL/blob/main/ETC.md)
+### [🟨 JavaScript](https://github.com/HJ0216/TIL/blob/main/JavaScript.md)
+
+### [♾️ N8N](https://github.com/HJ0216/TIL/blob/main/N8N.md)
+
+### [🖼️ WPF](https://github.com/HJ0216/TIL/blob/main/WPF.md)
+
+### [🌿 Thymeleaf](https://github.com/HJ0216/TIL/blob/main/Thymeleaf.md)
+
+### [🎸 ETC](https://github.com/HJ0216/TIL/blob/main/ETC.md)
