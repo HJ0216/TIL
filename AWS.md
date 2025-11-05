@@ -1,0 +1,213 @@
+## EC2
+
+### AMI(Amazon Machine Image)
+
+- 인스턴스를 실행할 때 필요한 정보를 제공
+- 운영 체제와 소프트웨어를 적절히 구성한 상태로 제공되는 템플릿
+
+### Key Pair
+
+- EC2 인스턴스에 연결할 때 자격을 증명하는 보안 키
+  - Public Key: EC2 인스턴스에 저장
+  - Private Key: 사용자의 컴퓨터에 별도로 저장하고, 해당 키를 이용하여 자격을 증명하고 가상 서버에 접근
+
+### EC2 네트워킹
+
+- Subnet
+
+  - 부분 네트워크
+  - Subnet Mask
+    - 서브넷을 구분하고 식별하는 수단
+    - 네트워크 ID(서브넷을 구분하는 기준)와 호스트 ID(동일한 서브넷에서 대상을 구분하는 기준 값)로 구성
+      - 같은 서브넷: IP주소의 네트워크 ID는 동일, 호스트 ID는 상이
+      - 다른 서브넷: IP주소의 네트워크 ID가 상이
+
+- Routing
+
+  - 네트워킹 통신을 수행할 때 목적지 경로를 선택하는 작업
+  - 라우터: 라우팅을 수행하는 장비
+  - 라우팅 테이블: 서브넷의 경로 리스트로 목적지 네트워크에 대한 최적 경로를 선택해서 전달
+
+- 보안 그룹
+
+  - EC2 인스턴스의 송수신 트래픽을 제어하는 가상의 방화벽 역할
+    - 트래픽을 정의하는 방법: 프로토콜, 포트 번호, IP 대역 등
+  - 인바운드 규칙: 수신 트래픽 허용/거부
+  - 아웃바운드 규칙: 송신 트래픽 허용/거부
+
+  | 포트 번호 | 용도                      | 설명                                                                               |
+  | --------- | ------------------------- | ---------------------------------------------------------------------------------- |
+  | `22`      | **SSH 접속**              | EC2 리눅스 서버에 원격 접속할 때 사용 (예: `ssh ec2-user@IP`)                      |
+  | `80`      | HTTP 웹 접속 (기본 포트)  | 브라우저에서 포트 없이 접속 (예: `http://13.209.12.34`)                            |
+  | `443`     | HTTPS 웹 접속 (기본 포트) | 보안 연결 (예: `https://example.com`)                                              |
+  | `8080`    | 웹 개발/테스트용 포트     | 웹 브라우저나 모바일 앱에서 API 호출을 받아야 함 (`http://public-ip-address:8080`) |
+
+  - 22번 포트는 웹 서버용이 아니므로, 브라우저로 http://public-ip-address:22 해도 응답 없음
+  - 웹 서비스 사용 시, 80, 443, 또는 8080 같은 포트를 사용해야 함
+
+- 보안그룹과 네트워크 ACL
+
+  - 보안 그룹
+
+    - 인스턴스 별 트래픽 접근 통제
+    - 이전 상태 정보를 기억하고 다음에 그 상태를 활용하는 스테이트풀 접근 통제
+    - 허용 규칙만 나열하며 허용 규칙에 해당하지 않으면 자동 거부
+
+  - 네트워크 ACL(Access Control List)
+
+    - 서브넷 별 트래픽 접근 통제
+    - 이전 상태 정보를 기억하지 않아 다음에 그 상태를 활용하지 않는 스테이트리스 접근 통제
+    - 허용 규칙과 거부 규칙이 모두 존재하여 규칙을 순차적으로 확인하고 허용과 거부를 판단
+
+### 탄력적 IP
+
+- 고정 공인 IP 주소
+- 필요한 경우
+  - 도메인 연결됨
+  - 외부 서비스 연동됨(특정 IP 등록 필요)
+- 🔴 탄력적 IP 할당했으면 반드시 EC2에 연결하거나, 안 쓰면 삭제!
+
+### MobaXterm을 활용한 EC2 접속
+
+- Remote Host: Public IP address
+- Specify username: ec2-user
+- Use private key: 해당 인스턴스 key 선택
+
+### EC2에 git 설치 및 프로젝트 빌드
+
+```bash
+# linux 기준
+sudo yum install git -y
+git --version # 설치 확인
+
+git clone https://github.com/hj0216/lucky-log.git
+
+# Java 17 설치 (Spring Boot 3.x용)
+sudo yum install java-17-amazon-corretto -y
+java -version # 설치 확인
+
+cd lucky-log
+
+chmod +x gradlew # 실행 권한 부여
+./gradlew build # 빌드
+java -jar build/libs/lucky-log-0.0.1-SNAPSHOT.jar # 빌드 후 생성된 jar 파일 실행
+```
+
+#### Build fail
+
+```bash
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Could not determine the dependencies of task ':bootJar'.
+> Could not resolve all dependencies for configuration ':runtimeClasspath'.
+> Failed to calculate the value of task ':compileJava' property 'javaCompiler'.
+> Cannot find a Java installation on your machine (Linux 6.1.156-177.286.amzn2023.x86_64 amd64) matching: {languageVersion=17, vendor=any vendor, implementation=vendor-specific, nativeImageCapable=false}.
+Toolchain download repositories have not been configured.
+# Java 17 toolchain을 찾지 못해 실패
+# EC2 서버에 Java 17이 설치되어 있지 않거나 경로가 설정되지 않은 상황
+# Java 설치 및 경로 설정 후에도 발생 시, Gradle이 로컬 JDK를 사용하지 않고 toolchain 다운로드만 허용된 상태에서 자동 검색 실패(toolchain 자동 다운로드만 활성화되고, 로컬 JDK fallback이 비활성화된 상태)
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.AMAZON # Gradle에게 로컬 JDK 사용하도록 명시
+    }
+}
+```
+
+```bash
+[ec2-user@ip-172-31-43-99 lucky-log]$ ./gradlew -q javaToolchains
+
++ Options
+  | Auto-detection: Enabled
+  | Auto-download: Enabled
+
++ Amazon Corretto JRE 17.0.17+10-LTS
+  | Location: /usr/lib/jvm/java-17-amazon-corretto.x86_64
+  | Language Version: 17
+  | Vendor: Amazon Corretto
+  | Architecture: amd64
+  | Is JDK: false
+  # EC2 서버에서 감지된 것은 JRE이고, Gradle이 요구하는 것은 JDK
+  # Gradle toolchain은 javac가 필요하므로 JDK가 아니면 실패
+  | Detected by: Common Linux Locations
+
+# java와 javac는 정상적으로 출력되지만, Gradle Toolchain이 이를 JRE로 오인하는 경우 원인
+# 시스템 설정이 JRE를 우선 사용하게 되어 있어서 Gradle이 그것만 보고 오류가 나는 상태
+# (Amazon Linux에서 alternatives 설정이 JRE 우선으로 잡혀 있기 때문)
+# JDK = 개발용 (javac 포함), JRE = 실행용 (javac 없음)
+
+# alternatives에서 JDK로 명시 지정
+sudo alternatives --config java
+# /usr/lib/jvm/java-17-amazon-corretto.x86_64/bin/java 항목을 선택
+sudo alternatives --config javac
+# /usr/lib/jvm/java-17-amazon-corretto.x86_64/bin/javac 항목을 선택
+
+```
+
+### EC2에서 백그라운드 실행
+
+```bash
+# nohup으로 백그라운드 실행
+nohup java -jar build/libs/luckylog-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+
+# 실행 확인
+ps aux | grep java
+
+# 로그 보기
+tail -f app.log
+
+# 종료할 때
+ps aux | grep java
+kill [PID번호]
+```
+
+### 설정 파일 관리
+
+1. Local에서 설정 파일을 복사 후 추가한 다음 빌드
+
+### 환경 변수 관리
+
+1. 환경 변수 설정
+
+```bash
+# .env 파일에 있는 환경 변수들을 읽어서, 해당 값들을 java -jar 실행 시 환경 변수로 설정
+# 해당 명령 실행에만 적용 (일시적)
+# 터미널 세션 종료 전까지 환경에 남게 설정하는 방법은 .env에 DB 설정이 남은 상태에서 다른 프로젝트 실행 → 충돌 가능
+env $(cat .env | xargs) java -jar build/libs/xxx.jar
+```
+
+### 포트 포워딩
+
+```bash
+# 1. Nginx 설치
+sudo yum install nginx -y
+
+# 2. 설정 파일 생성
+sudo nano /etc/nginx/conf.d/luckylog.conf
+server {
+    listen 80;
+    server_name luckylog.com www.luckylog.com;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+# 3. Nginx 시작
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+# Nginx 실행 중인지 확인
+sudo systemctl status nginx
+```
+
+### 📚 참고
+
+[AWS 교과서](https://product.kyobobook.co.kr/detail/S000210532528)  
+[SpringBoot 프로젝트 EC2 배포하기](https://velog.io/@jonghyun3668/SpringBoot-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-EC2-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0)
+[[aws] EC2 Public instance(EIP) 생성 및 연결](https://minjii-ya.tistory.com/21)
+[내 도메인을 만들어보자!](https://co-de.tistory.com/69)

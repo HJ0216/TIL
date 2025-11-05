@@ -2464,3 +2464,14 @@ public class IndexModel : PageModel
     ↓
 응답 반환
 ```
+
+### @section Scripts
+
+1. 스크립트 로딩 위치를 제어
+2. 페이지별 스크립트를 분리(해당 페이지에 필요한 모듈만 로딩)
+
+| 페이지      | 로딩되는 JS                       |
+| ----------- | --------------------------------- |
+| PageA       | `/js/chartPage.js`                |
+| PageB       | `/js/calendarPage.js`             |
+| 공통 페이지 | 아무것도 안 로딩 (필요 시 공통만) |
