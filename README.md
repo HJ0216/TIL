@@ -8,14 +8,14 @@
 
 ### [🗃️ Database](https://github.com/HJ0216/TIL/blob/main/Database.md)
 
+### [🎸 ETC](https://github.com/HJ0216/TIL/blob/main/ETC.md)
+
 ### [☕ Java](https://github.com/HJ0216/TIL/blob/main/Java.md)
 
 ### [🟨 JavaScript](https://github.com/HJ0216/TIL/blob/main/JavaScript.md)
 
 ### [♾️ N8N](https://github.com/HJ0216/TIL/blob/main/N8N.md)
 
-### [🖼️ WPF](https://github.com/HJ0216/TIL/blob/main/WPF.md)
-
 ### [🌿 Thymeleaf](https://github.com/HJ0216/TIL/blob/main/Thymeleaf.md)
 
-### [🎸 ETC](https://github.com/HJ0216/TIL/blob/main/ETC.md)
+### [🖼️ WPF](https://github.com/HJ0216/TIL/blob/main/WPF.md)

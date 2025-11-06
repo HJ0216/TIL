@@ -196,7 +196,7 @@ my-springboot-app/
 
 - 하위 프로젝트의 build.gradle 파일에 org.springframework.boot 플러그인과 io.spring.dependency-management 플러그인이 누락되어 의존성 버전을 제대로 가져오지 못해 발생하는 오류 → 하위 프로젝트에서도 스프링 부트의 의존성을 사용하려면 플러그인 설정이 필요
 
-```json
+```groovy
 // root
 allprojects {
   group = 'com.comeus'
@@ -234,7 +234,7 @@ subprojects {
 
 ### 상위 프로젝트의 spring-boot-starter dependency를 못 읽어오는 오류
 
-```json
+```groovy
 dependencies {
     implementation project(':web')
 }
@@ -255,7 +255,7 @@ dependencies {
   - 컴파일 시점에만 필요로 하는 의존성도 있고, 실행 시점에만 필요로 하는 의존성도 있음  
     → 그래서 Gradle에서 의존성(dependency)를 추가할 때 어느 범위로 노출시킬 것인지 결정할 수 있음
 
-- complieOnly
+- compileOnly
 
   - 컴파일 경로에만 설정
   - 빌드 결과물의 크기가 줄어드는 장점
@@ -394,38 +394,6 @@ public class PersonService {
 - orphanRemoval: 부모 컬렉션에서 제거된 자식 엔티티가 자동으로 DB에서 삭제
 - FetchType.Lazy: 지연 로딩, 연관된 엔티티에 실제로 접근하는 시점에 필요한 데이터를 조회하는 방식
 
-### Spring Security
-
-```bash
-dependencies {
-  implementation 'org.springframework.boot:spring-boot-starter-security'
-}
-```
-
-```java
-@Configuration
-public class SecurityConfig {
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-    // 모든 HTTP 요청에 대한 접근 허용
-        .csrf(csrf -> csrf.disable())
-        // CSRF 보호 기능 비활성화
-        .headers(headers -> headers
-            .frameOptions(frameOptions -> frameOptions.disable())
-            // X-Frame-Options 헤더 비활성화
-        );
-    return http.build();
-  }
-}
-```
-
-- frameOptions
-  - 보안 때문에 Spring Security는 자기 페이지가 `<iframe>`(액자)에 들어가는 것을 금지
-  - 내 애플리케이션이 H2 콘솔 화면을 프레임(`<iframe>`) 구조로 만들어서 응답
-    - H2 데이터베이스 콘솔 화면은 이 '액자' 기술을 이용해서 만들어짐
-  - frameOptions.disable()을 통해 액자 금지 규칙 비활성화
-
 ### private 필드값 테스트
 
 1. ReflectionTestUtils
@@ -532,9 +500,9 @@ assertThat(users.get(0).getName()).isEqualTo("John");
 
 ```java
 .andExpect(jsonPath("$.email").value("test@email.com"))
-.andExpected(jsonPath("$.id").value(123))
-.andExpected(jsonPath("$.active").value(true))
-.andExpected(jsonPath("$.name").value(user.getName()))
+.andExpect(jsonPath("$.id").value(123))
+.andExpect(jsonPath("$.active").value(true))
+.andExpect(jsonPath("$.name").value(user.getName()))
 ```
 
 - Hamcrest 매처 사용
@@ -542,12 +510,12 @@ assertThat(users.get(0).getName()).isEqualTo("John");
   - 크기, 포함, 범위, 패턴, 존재여부 등
 
 ```java
-.andExpected(jsonPath("$", hasSize(3)))                      // 배열 크기
-.andExpected(jsonPath("$", is(emptyList())))                 // 빈 배열
-.andExpected(jsonPath("$.password").doesNotExist())          // 존재하지 않음
-.andExpected(jsonPath("$.age", greaterThan(18)))             // 범위 비교
-.andExpected(jsonPath("$.email", containsString("@")))       // 부분 포함
-.andExpected(jsonPath("$[*].id", containsInAnyOrder(1,2,3))) // 배열 내용
+.andExpect(jsonPath("$", hasSize(3)))                      // 배열 크기
+.andExpect(jsonPath("$", is(emptyList())))                 // 빈 배열
+.andExpect(jsonPath("$.password").doesNotExist())          // 존재하지 않음
+.andExpect(jsonPath("$.age", greaterThan(18)))             // 범위 비교
+.andExpect(jsonPath("$.email", containsString("@")))       // 부분 포함
+.andExpect(jsonPath("$[*].id", containsInAnyOrder(1,2,3))) // 배열 내용
 ```
 
 ### 테스트 코드 접근 제한자
@@ -648,7 +616,7 @@ class UserServiceTest {
 }
 ```
 
-- @injectmocks
+- @InjectMocks
   - 값 객체들: String, Duration, Money → Mock할 필요 없음
     - Mock은 필요한 협력 객체(인터페이스)에만 사용하고, 값 객체는 실제 객체를 사용
   - 테스트마다 다른 값의 경우, Mock할 필요 없음
@@ -711,11 +679,11 @@ class UserServiceIntegrationTest {
 
 - 공통 속성 기재
 
-```bash
+```yaml
 server:
   servlet:
     session:
-      timeout: 10m  # 10분 후 자동 만료
+      timeout: 10m # 10분 후 자동 만료
 
 spring:
   config:
@@ -738,7 +706,7 @@ logging:
     root: INFO # 모든 라이브러리(Spring, Hibernate 등) 로그는 INFO 레벨만
     com.fortunehub.luckylog: DEBUG # com.fortunehub.luckylog 패키지의 로그는 DEBUG까지 상세하게
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %logger{36}.%M - %msg%n"
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %logger{36}.%M - %msg%n'
 ```
 
 - ✨ 변수는 .env에서 관리하고, .gitignore에 추가하여 공개되지 않도록 유의
@@ -750,12 +718,12 @@ logging:
 
 - local 환경 전용 속성 기재
 
-```bash
+```yaml
 spring:
   datasource:
-    url: {LOCAL_DB_URL}
-    username: {LOCAL_DB_USER}
-    password: {LOCAL_DB_PASSWORD}
+    url: { LOCAL_DB_URL }
+    username: { LOCAL_DB_USER }
+    password: { LOCAL_DB_PASSWORD }
     driver-class-name: org.h2.Driver
   h2:
     console:
@@ -772,8 +740,8 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG  # SQL 쿼리 보기
-    org.hibernate.type: TRACE  # 파라미터 값까지 보기
+    org.hibernate.SQL: DEBUG # SQL 쿼리 보기
+    org.hibernate.type: TRACE # 파라미터 값까지 보기
 ```
 
 - IntelliJ에서 profile local 설정하는 방법
@@ -783,7 +751,7 @@ logging:
 
 - 운영 환경 전용 속성 기재
 
-```bash
+```yaml
 spring:
   datasource:
     url: ${PROD_DB_URL}
@@ -833,39 +801,35 @@ nohup java -jar -Dspring.profiles.active=prod lucky-log.jar > app.log 2>&1 &
 ### Spring Security
 
 ```bash
-Using generated security password:
-This generated password is for development use only.
-Your security configuration must be updated before running your application in production.
-# Spring Security가 자동으로 활성화되어서 임시 비밀번호를 생성
-```
-
-- Spring Security가 활성화되어 있는데 보안 설정을 따로 구성하지 않았을 때 자동으로 기본 보안 설정이 적용되면서 나타남
-
-  - 기본 사용자명: user
-  - 기본 비밀번호: 랜덤 생성된 UUID (콘솔에 출력됨)
-  - 모든 엔드포인트에 인증 요구
-
-1. 의존성 제외
-2. Auto Configuration 제외
-
-```java
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
-public class YourApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(YourApplication.class, args);
-    }
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 ```
 
-3. 임시 비밀번호 설정
-
-```bash
-# application.properties
-spring.security.user.name=admin
-spring.security.user.password=yourpassword
+```java
+@Configuration
+public class SecurityConfig {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+    // 모든 HTTP 요청에 대한 접근 허용
+        .csrf(csrf -> csrf.disable())
+        // CSRF 보호 기능 비활성화
+        .headers(headers -> headers
+            .frameOptions(frameOptions -> frameOptions.disable())
+            // X-Frame-Options 헤더 비활성화
+        );
+    return http.build();
+  }
+}
 ```
 
-4. Spring Security 관련 설정 등록
+- frameOptions
+
+  - 보안 때문에 Spring Security는 자기 페이지가 `<iframe>`(액자)에 들어가는 것을 금지
+  - 내 애플리케이션이 H2 콘솔 화면을 프레임(`<iframe>`) 구조로 만들어서 응답
+    - H2 데이터베이스 콘솔 화면은 이 '액자' 기술을 이용해서 만들어짐
+  - frameOptions.disable()을 통해 액자 금지 규칙 비활성화
 
 - CSRF disabled 이유
 
@@ -906,6 +870,44 @@ spring.security.user.password=yourpassword
   ❌ 공격 실패!  
   */
   ```
+
+```bash
+Using generated security password:
+This generated password is for development use only.
+Your security configuration must be updated before running your application in production.
+# Spring Security가 자동으로 활성화되어서 임시 비밀번호를 생성
+```
+
+- Spring Security가 활성화되어 있는데 보안 설정을 따로 구성하지 않았을 때 자동으로 기본 보안 설정이 적용되면서 나타남
+
+  - 기본 사용자명: user
+  - 기본 비밀번호: 랜덤 생성된 UUID (콘솔에 출력됨)
+  - 모든 엔드포인트에 인증 요구
+
+1. 의존성 제외
+2. Auto Configuration 제외
+
+```java
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+public class YourApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(YourApplication.class, args);
+    }
+}
+```
+
+3. 임시 비밀번호 설정
+
+```yaml
+# application.yaml
+spring:
+  security:
+    user:
+      name: admin
+      password: password
+```
+
+4. Spring Security 관련 설정 등록
 
 ### 📚 참고
 
