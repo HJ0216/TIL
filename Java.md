@@ -213,6 +213,8 @@ subprojects {
   // Gradle에서 Java 프로젝트를 빌드하려면 기본적으로 java 플러그인이 필요
   // java 플러그인을 통해 컴파일, 테스트, jar 파일 생성 등의 작업들(tasks)이 수행 가능
   apply plugin: 'io.spring.dependency-management'
+  // dependency-management 플러그인은 Spring Boot의 BOM을 직접 알지 못함
+  // * BOM:라이브러리들의 버전 목록
 
   java {
     toolchain {
@@ -223,10 +225,8 @@ subprojects {
   dependencyManagement {
     imports {
       mavenBom "org.springframework.boot:spring-boot-dependencies:3.4.5"
-      // dependency-management 플러그인은 Spring Boot의 BOM을 직접 알지 못함
-      // spring-boot-dependencies BOM은 org.springframework.boot 플러그인이 자동으로 설정
-      // dependency-management 플러그인만 적용하면 BOM을 직접 import
-      // * BOM:라이브러리들의 버전 목록
+      // plugin에 dependency-management 사용 시, dependency-management에 BOM을 직접 import
+      // plugin에 org.springframework.boot 사용 시, dependency-management 자동 적용되어 dependencyManagement 블록 불필요
     }
   }
 }
