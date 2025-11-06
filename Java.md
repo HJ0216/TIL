@@ -830,6 +830,83 @@ java -jar -Dspring.profiles.active=prod lucky-log.jar
 nohup java -jar -Dspring.profiles.active=prod lucky-log.jar > app.log 2>&1 &
 ```
 
+### Spring Security
+
+```bash
+Using generated security password:
+This generated password is for development use only.
+Your security configuration must be updated before running your application in production.
+# Spring Security가 자동으로 활성화되어서 임시 비밀번호를 생성
+```
+
+- Spring Security가 활성화되어 있는데 보안 설정을 따로 구성하지 않았을 때 자동으로 기본 보안 설정이 적용되면서 나타남
+
+  - 기본 사용자명: user
+  - 기본 비밀번호: 랜덤 생성된 UUID (콘솔에 출력됨)
+  - 모든 엔드포인트에 인증 요구
+
+1. 의존성 제외
+2. Auto Configuration 제외
+
+```java
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+public class YourApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(YourApplication.class, args);
+    }
+}
+```
+
+3. 임시 비밀번호 설정
+
+```bash
+# application.properties
+spring.security.user.name=admin
+spring.security.user.password=yourpassword
+```
+
+4. Spring Security 관련 설정 등록
+
+- CSRF disabled 이유
+
+  - Access Token
+
+  ```js
+  // JavaScript 코드로 직접 Header에 넣어서 보냄
+  fetch('/api/data', {
+    headers: {
+      Authorization: 'Bearer ' + accessToken,
+    },
+  });
+
+  /*
+  악성 사이트가 공격 시도할 경우,
+  악성 사이트 → 내 API 호출 시도
+  ❌ Header에 토큰 못 넣음
+  ❌ 공격 실패!
+  */
+  ```
+
+- Refresh Token
+
+  ```js
+  // 쿠키는 브라우저가 자동으로 보냄
+  document.cookie = 'refreshToken=abc123';
+
+  // 악성 사이트에서 요청하면?
+  // ✅ 쿠키가 자동으로 따라감 → 위험!
+  fetch('https://내사이트.com/refresh');
+
+  cookie.setSameSite('Strict');
+
+  /*
+  "이 쿠키는 내 사이트에서만 사용해! 다른 사이트에서 온 요청에는 쿠키 안 보내줄게!"
+  악성 사이트 → 내 API 호출 시도
+  ❌ 쿠키가 안 따라감
+  ❌ 공격 실패!  
+  */
+  ```
+
 ### 📚 참고
 
 [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
