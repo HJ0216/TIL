@@ -118,7 +118,7 @@ gradlew.bat # Windows용 실행 파일
 > 3. 필요한 Gradle 버전이 없다면 gradle-wrapper.jar가 자동 다운로드
 > 4. 해당 Gradle 버전으로 프로젝트 빌드
 
-```bash
+```txt
 # Gradle Wrapper와 프로젝트 구조
 my-springboot-app/
 ├── build.gradle
@@ -214,7 +214,7 @@ subprojects {
   // java 플러그인을 통해 컴파일, 테스트, jar 파일 생성 등의 작업들(tasks)이 수행 가능
   apply plugin: 'io.spring.dependency-management'
   // dependency-management 플러그인은 Spring Boot의 BOM을 직접 알지 못함
-  // * BOM:라이브러리들의 버전 목록
+  // * BOM: 라이브러리들의 버전 목록
 
   java {
     toolchain {
@@ -301,20 +301,23 @@ dependencies {
 -- table
 create table Person(
   id bigint auto_increment,
-  name varchar(255),
+  name varchar(255) not null,
   primary key (id)
 );
 
 create table Address(
   id bigint auto_increment,
-  city varchar(255),
-  street varchar(255),
+  city varchar(255) not null,
+  street varchar(255) not null,
   person_id bigint,
   primary key (id)
 );
 ```
 
 ```java
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 public class Person {
   // Address가 person_id를 보유
@@ -331,10 +334,16 @@ public class Person {
 
   // 양방향 연관관계 설정
   public void setAddress(Address address) {
-      this.address = address;
+    this.address = address;
+    if (address != null) {
+      address.setPerson(this);
+    }
   }
 }
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 public class Address {
   // person_id를 보유
@@ -383,7 +392,7 @@ public class PersonService {
   }
 
   public void savePerson(){
-    Person saved = personRepository.save(new Person());
+    Person saved = personRepository.save(new Person("name"));
     // 연관관계 주인쪽에 설정
     Address address = addressRepository.save(new Address("seoul", "gangnamdaero", saved));
   }
@@ -721,9 +730,9 @@ logging:
 ```yaml
 spring:
   datasource:
-    url: { LOCAL_DB_URL }
-    username: { LOCAL_DB_USER }
-    password: { LOCAL_DB_PASSWORD }
+    url: ${LOCAL_DB_URL}
+    username: ${LOCAL_DB_USER}
+    password: ${LOCAL_DB_PASSWORD}
     driver-class-name: org.h2.Driver
   h2:
     console:
@@ -826,10 +835,9 @@ public class SecurityConfig {
 
 - frameOptions
 
-  - 보안 때문에 Spring Security는 자기 페이지가 `<iframe>`(액자)에 들어가는 것을 금지
-  - 내 애플리케이션이 H2 콘솔 화면을 프레임(`<iframe>`) 구조로 만들어서 응답
-    - H2 데이터베이스 콘솔 화면은 이 '액자' 기술을 이용해서 만들어짐
-  - frameOptions.disable()을 통해 액자 금지 규칙 비활성화
+  - H2 콘솔은 `<iframe>` 구조로 화면을 구성
+  - Spring Security는 보안상의 이유로 기본적으로 페이지가 `<iframe>`에 포함되는 것을 금지
+  - 따라서 H2 콘솔을 사용하려면 `frameOptions().disable()`을 통해 이 기능을 비활성화해야 함
 
 - CSRF disabled 이유
 
@@ -911,8 +919,6 @@ spring:
 
 ### 📚 참고
 
-[Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
-
-[[gradle] implementation, api 차이](https://dkswnkk.tistory.com/759)
-
-[[Gradle] Gradle Java 플러그인과 implementation와 api의 차이](https://mangkyu.tistory.com/296)
+- [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
+- [[gradle] implementation, api 차이](https://dkswnkk.tistory.com/759)
+- [[Gradle] Gradle Java 플러그인과 implementation와 api의 차이](https://mangkyu.tistory.com/296)
