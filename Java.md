@@ -705,8 +705,135 @@ class UserServiceIntegrationTest {
   - CSV(Comma-Separated Values) 형식으로 여러 테스트 데이터를 직접 코드에 넣어줌
   - 각 줄이 테스트 1회 실행에 쓰일 파라미터 집합
 
+### 배포 전 프로필 분리
+
+1. `application.yaml`
+
+- 공통 속성 기재
+
+```bash
+server:
+  servlet:
+    session:
+      timeout: 10m  # 10분 후 자동 만료
+
+spring:
+  config:
+    import:
+      - classpath:application-prompts.yaml
+  messages:
+    encoding: UTF-8
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+  model: gemini-2.5-flash
+
+jwt:
+  secret: ${JWT_SECRET}
+  token-validity: ${JWT_TOKEN_VALIDITY}
+
+logging:
+  level:
+    root: INFO # 모든 라이브러리(Spring, Hibernate 등) 로그는 INFO 레벨만
+    com.fortunehub.luckylog: DEBUG # com.fortunehub.luckylog 패키지의 로그는 DEBUG까지 상세하게
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %logger{36}.%M - %msg%n"
+```
+
+- ✨ 변수는 .env에서 관리하고, .gitignore에 추가하여 공개되지 않도록 유의
+  - .env 파일 IntelliJ에서 사용하는 방법
+    - EnvFile 플러그인 설치 후, .env 파일 추가
+  - 또는 구성 편집 → 환경 변수에서 .env 관련 설정 추가
+
+2. `application-local.yaml`
+
+- local 환경 전용 속성 기재
+
+```bash
+spring:
+  datasource:
+    url: {LOCAL_DB_URL}
+    username: {LOCAL_DB_USER}
+    password: {LOCAL_DB_PASSWORD}
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG  # SQL 쿼리 보기
+    org.hibernate.type: TRACE  # 파라미터 값까지 보기
+```
+
+- IntelliJ에서 profile local 설정하는 방법
+  - 구성 편집 → 환경 변수: `SPRING_PROFILES_ACTIVE=local` 추가
+
+3. `application-prod.yaml`
+
+- 운영 환경 전용 속성 기재
+
+```bash
+spring:
+  datasource:
+    url: ${PROD_DB_URL}
+    username: ${PROD_DB_USER}
+    password: ${PROD_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        dialect: org.hibernate.dialect.MySQLDialect
+
+logging:
+  level:
+    root: WARN
+    com.fortunehub.luckylog: INFO
+```
+
+- 서버에서 profile 및 환경변수 설정하는 방법
+
+```bash
+# ~/.bashrc 파일 편집
+vi ~/.bashrc
+
+# 파일 맨 아래에 추가 (i 눌러서 입력 모드)
+export PROD_DB_URL=jdbc:mysql://your-rds-endpoint:3306/luckylog_prod
+export PROD_DB_USER=admin
+export PROD_DB_PASSWORD=your-rds-password
+export JWT_SECRET=production-super-secret-key-change-this
+export JWT_TOKEN_VALIDITY=3600000
+export GEMINI_API_KEY=your-gemini-api-key
+
+# ESC 누르고 :wq 입력해서 저장
+
+source ~/.bashrc # 파일을 즉시 적용(또는 . ~/.bashrc)
+
+# 빌드
+
+java -jar -Dspring.profiles.active=prod lucky-log.jar
+# nohup으로 백그라운드 실행
+nohup java -jar -Dspring.profiles.active=prod lucky-log.jar > app.log 2>&1 &
+```
+
 ### 📚 참고
 
-[Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)  
-[[gradle] implementation, api 차이](https://dkswnkk.tistory.com/759)  
+[Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
+
+[[gradle] implementation, api 차이](https://dkswnkk.tistory.com/759)
+
 [[Gradle] Gradle Java 플러그인과 implementation와 api의 차이](https://mangkyu.tistory.com/296)
