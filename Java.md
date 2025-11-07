@@ -917,6 +917,79 @@ spring:
 
 4. Spring Security 관련 설정 등록
 
+### Spring Boot 프로파일 활성화 우선순위
+
+1. 커맨드 라인 인자
+
+```bash
+java -jar app.jar --spring.profiles.active=prod
+```
+
+2. 환경 변수
+
+```bash
+export SPRING_PROFILES_ACTIVE=prod
+java -jar app.jar
+```
+
+3. application.yml의 spring.profiles.active
+
+```yaml
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:prod}
+```
+
+### Health Check
+
+앱이 살아있고 정상인지 확인하는 것
+
+1. build.gradle에 의존성 추가
+
+```groovy
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
+```
+
+2. application.yml 설정
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+        # 외부에 공개할 엔드포인트 목록
+        # health: 헬스 체크용
+        # info: 앱 정보 (버전, 설명 등)
+        # 다른 것들: metrics, env, loggers 등 (보안상 안 열림)
+
+      base-path:
+        /actuator
+        # URL 시작 경로
+        # /actuator/health, /actuator/info 이렇게 접근
+
+  endpoint:
+    health:
+      show-details:
+        when-authorized
+        # 헬스 정보를 얼마나 자세히 보여줄지
+        # never: {"status":"UP"} 만
+        # always: DB상태, 디스크 등 다 보여줌
+        # when-authorized: 인증된 사용자에게만 자세히
+```
+
+3. 확인
+
+```bash
+# 1. 로컬에서 앱 실행 후
+curl http://localhost:8080/actuator/health
+
+# 2. 서버에 배포 후
+curl http://localhost:8080/actuator/health
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
