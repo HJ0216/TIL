@@ -111,7 +111,6 @@ Toolchain download repositories have not been configured.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
-        vendor = JvmVendorSpec.AMAZON # Gradle에게 로컬 JDK 사용하도록 명시
     }
 }
 ```
@@ -249,8 +248,10 @@ sudo systemctl status nginx
     - EC2(Public)와 분리하여 선택(Private)
   - 퍼블릭 엑세스
     - 아니오(EC2 내부에서만 접근 가능)
-  - VPC 보안 그룹(방화벽)
-    - default
+  - VPC 보안 그룹(방화벽) - RDS 전용 보안 그룹 생성 - 인바운드 규칙
+    - 타입: MySQL/Aurora (3306)
+    - 소스: EC2 보안 그룹 ID (sg-xxxxx)
+    - 설명: Allow from EC2 instances
   - 가용 영역
     - 연결할 EC2의 가용 영역과 동일하게 설정(가용 영역이 다를 경우, 통신할 때마다 비용 발생)
 - 데이터 베이스 인증
@@ -285,7 +286,9 @@ sudo systemctl status nginx
   - 80 (HTTP): 0.0.0.0/0
   - 443 (HTTPS): 0.0.0.0/0
   - 22 (SSH): 0.0.0.0/0 (위치 무관)
+    - 보안상 위험, 특정 IP 주소 또는 IP 범위로 제한
   - 8080(Spring Boot): 0.0.0.0/0
+    - 단, nginx 사용 시, nginx를 통해 접속할 수 있도록 삭제
 
 2. RDS 생성
 
@@ -321,6 +324,8 @@ mysql -h rds-endpoint -P 3306 -u root -p
 # 3. 권한 부여
 CREATE USER 'db_user'@'%' IDENTIFIED BY 'password';
 # '%': 모든 호스트에서 접속 허용 (어디서든 연결 가능)
+# RENAME USER 'db_user'@'%' TO 'db_user'@'ec2_private_ip';
+# ec2_private_ip에서만 접속 가능
 GRANT CREATE, ALTER, SELECT, INSERT, UPDATE, DELETE ON luckylog.* TO 'db_user'@'%';
 # luckylog 데이터베이스의 모든 테이블에 대한 권한
 FLUSH PRIVILEGES;
@@ -468,7 +473,7 @@ WantedBy=multi-user.target # 일반적인 서버 부팅 시 자동 시작
 10. 빌드 파일 deploy 폴더로 이동
 
 ```bash
-sudo mkdir -p /home/deploy/app
+sudo mkdir -p /home/deploy/lucky-log
 
 sudo cp build/libs/lucky-log-0.0.1-SNAPSHOT.jar /home/deploy/lucky-log/luckylog.jar
 # luckylog.jar로 통일할 경우, systemd 서비스 파일 한 번만 설정(배포 스크립트 간단)
