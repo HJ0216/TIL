@@ -937,14 +937,6 @@ java -jar app.jar
 ```yaml
 spring:
   profiles:
-    active: prod
-```
-
-4. application.yml의 기본값
-
-```yaml
-spring:
-  profiles:
     active: ${SPRING_PROFILES_ACTIVE:prod}
 ```
 
