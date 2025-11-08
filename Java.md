@@ -1006,7 +1006,10 @@ LuckylogApplicationTests > contextLoads() FAILED
 * Spring Boot가 테스트 실행할 때
   - `main/resources/application.yaml` 먼저 읽어서 테스트 환경에서 의도하지 않은 동작이 발생할 수 있음
   - `test/resources/application.yaml` 생성해서 main 내용을 오버라이드
-    - `-Dspring.profiles.active=test` 지정 필요 X(application-test.yaml 사용 시, `-Dspring.profiles.active=test` 지정 필요 O, `@SpringBootTest(properties = "spring.profiles.active=test")` 테스트코드에 추가 필요)
+    - 프로필 지정 불필요 (자동으로 test 설정이 적용됨)
+  - 또는 `application-test.yaml` 사용 시 프로필 활성화 필요:
+    - `-Dspring.profiles.active=test` 추가
+    - `@SpringBootTest(properties = "spring.profiles.active=test")` 추가
 
 ### 📚 참고
 
