@@ -598,18 +598,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3 # GitHub 저장소의 코드를 가상 환경으로 pull
+      - uses: actions/checkout@v4 # GitHub 저장소의 코드를 가상 환경으로 pull
 
       - name: Set up JDK 17 # Java 환경 설정
-        uses: actions/setup-java@v3 # GitHub Actions에서 제공하는 사전 제작된 액션(Action)을 사용
+        uses: actions/setup-java@v4 # GitHub Actions에서 제공하는 사전 제작된 액션(Action)을 사용
         with:
           java-version: '17'
           distribution: 'corretto'
+          cache: 'gradle' # Gradle 캐싱 추가 (빌드 속도 향상 🚀)
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Run tests
-        run: | # /test/resource/application.yaml을 사용하므로 profile 지정 X
-          chmod +x ./gradlew
-          ./gradlew test
+        run: ./gradlew test # /test/resource/application.yaml을 사용하므로 profile 지정 X
 
   build:
     name: Build Application
@@ -617,13 +619,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up JDK 17 # 가상 환경에 Java(JDK)를 설치하고 설정해주는 작업
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'corretto'
+          cache: 'gradle'
 
       - name: Create application-prompts.yaml
         run: | # |: 여러 줄의 문자열(줄바꿈 유지)
@@ -631,10 +634,11 @@ jobs:
           ${{ secrets.APPLICATION_PROMPTS_YAML }}
           EOF
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build (without tests)
-        run: |
-          chmod +x ./gradlew
-          ./gradlew clean build -x test
+        run: ./gradlew clean build -x test
 
       - name: Upload JAR
         uses: actions/upload-artifact@v4
@@ -643,6 +647,7 @@ jobs:
         with:
           name: app-jar
           path: build/libs/*.jar
+          retention-days: 1 # 아티팩트 보관 기간
 
   deploy:
     name: Deploy to EC2
@@ -656,7 +661,7 @@ jobs:
           name: app-jar
 
       - name: Deploy to EC2
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
@@ -666,27 +671,34 @@ jobs:
           # EC2의 임시 폴더 /tmp/로 전송
 
       - name: Restart Service
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            echo "📦 Deploying JAR file..."
             sudo mv /tmp/*.jar /home/deploy/lucky-log/luckylog.jar
             sudo chown deploy:deploy /home/deploy/lucky-log/luckylog.jar
+
+            echo "🔄 Restarting service..."
             sudo systemctl restart luckylog
 
-            echo "Waiting for application to start..."
-            sleep 90  # 60 → 90초로 늘리기
-
             # Health check
-            if curl -f http://localhost:8080/actuator/health; then
-              echo "Deployment successful!"
-            else
-              echo "Health check failed!"
-              sudo journalctl -u luckylog -n 50  # 에러 로그 출력
-              exit 1
-            fi
+            echo "⏳ Waiting for application to start..."
+            for i in {1..20}; do
+              if curl -s -f http://localhost:8080/actuator/health; then
+                echo "✅ Deployment successful!"
+                exit 0
+              fi
+              echo "Health check attempt $i failed. Retrying in 5 seconds..."
+              sleep 5
+            done
+
+            echo "❌ Health check failed!"
+            echo "=== 마지막 50줄 로그 ==="
+            sudo journalctl -u luckylog -n 50  # 에러 로그 출력
+            exit 1
 ```
 
 ```txt
