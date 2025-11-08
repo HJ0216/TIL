@@ -86,7 +86,7 @@ Java 소스코드(.java)를 JVM이 실행할 수 있는 바이트코드(.class)�
 JVM은 .jar 파일을 통해 프로그램을 실행할 수 있음(`java -jar`)
 
 1. Compile: `.java` → `.class` 변환
-2. Process: `application.yml` 같은 설정 복사
+2. Process: `application.yaml` 같은 설정 복사
 3. Test: 단위 테스트 실행
 4. Package: `.class`, 리소스를 JAR로 묶음
 5. 결과물: `build/libs/`에 `.jar` 생성
@@ -932,7 +932,7 @@ export SPRING_PROFILES_ACTIVE=prod
 java -jar app.jar
 ```
 
-3. application.yml의 spring.profiles.active
+3. application.yaml의 spring.profiles.active
 
 ```yaml
 spring:
@@ -952,7 +952,7 @@ dependencies {
 }
 ```
 
-2. application.yml 설정
+2. application.yaml 설정
 
 ```yaml
 management:
@@ -989,6 +989,24 @@ curl http://localhost:8080/actuator/health
 # 2. 서버에 배포 후
 curl http://localhost:8080/actuator/health
 ```
+
+### 빌드 오류
+
+```bash
+LuckylogApplicationTests > contextLoads() FAILED
+    java.lang.IllegalStateException at DefaultCacheAwareContextLoaderDelegate.java:180
+        Caused by: org.springframework.boot.context.config.ConfigDataResourceNotFoundException at ConfigDataResourceNotFoundException.java:97
+```
+
+- `ConfigData`: Spring Boot의 설정 파일 (application.yaml 등)
+- `ResourceNotFound`: 리소스를 찾을 수 없음
+- `Exception`: 예외 발생
+- "설정 파일에서 참조한 리소스를 찾을 수 없다"
+
+* Spring Boot가 테스트 실행할 때
+  - `main/resources/application.yaml` 먼저 읽어서 테스트 환경에서 의도하지 않은 동작이 발생할 수 있음
+  - `test/resources/application.yaml` 생성해서 main 내용을 오버라이드
+    - `-Dspring.profiles.active=test` 지정 필요 X(application-test.yaml 사용 시, `-Dspring.profiles.active=test` 지정 필요 O)
 
 ### 📚 참고
 

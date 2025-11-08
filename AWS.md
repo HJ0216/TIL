@@ -575,6 +575,150 @@ server {
 }
 ```
 
+### GitHub Actions으로 CI/CD 구축하기
+
+1. GitHub Actions에서 환경변수 관리
+
+- GitHub 저장소 Settings > Secrets and variables > Actions에서 등록
+
+2. workflow 작성
+
+```yaml
+# .github/workflows/deploy.yaml
+name: CI/CD Pipeline # 워크플로우의 이름
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test: # Job의 고유 ID
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3 # GitHub 저장소의 코드를 가상 환경으로 pull
+
+      - name: Set up JDK 17 # Java 환경 설정
+        uses: actions/setup-java@v3 # GitHub Actions에서 제공하는 사전 제작된 액션(Action)을 사용
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Run tests
+        run: | # /test/resource/application.yaml을 사용하므로 profile 지정 X
+          chmod +x ./gradlew
+          ./gradlew test
+
+  build:
+    name: Build Application
+    needs: test # test Job이 성공해야만 실행(의존성)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17 # 가상 환경에 Java(JDK)를 설치하고 설정해주는 작업
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Create application-prompts.yaml
+        run: | # |: 여러 줄의 문자열(줄바꿈 유지)
+          cat > src/main/resources/application-prompts.yaml << 'EOF'
+          ${{ secrets.APPLICATION_PROMPTS_YAML }}
+          EOF
+
+      - name: Build (without tests)
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        # 빌드된 JAR 파일을 GitHub Actions 아티팩트로 저장
+        # 다음 Job(deploy)에서 이 파일을 다운로드하여 사용
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+
+  deploy:
+    name: Deploy to EC2
+    needs: build # 빌드 성공해야 배포 시작
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+
+      - name: Deploy to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: '*.jar'
+          target: '/tmp/'
+          # EC2의 임시 폴더 /tmp/로 전송
+
+      - name: Restart Service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo mv /tmp/*.jar /home/deploy/lucky-log/luckylog.jar
+            sudo chown deploy:deploy /home/deploy/lucky-log/luckylog.jar
+            sudo systemctl restart luckylog
+
+            echo "Waiting for application to start..."
+            sleep 90  # 60 → 90초로 늘리기
+
+            # Health check
+            if curl -f http://localhost:8080/actuator/health; then
+              echo "Deployment successful!"
+            else
+              echo "Health check failed!"
+              sudo journalctl -u luckylog -n 50  # 에러 로그 출력
+              exit 1
+            fi
+```
+
+```txt
+코드 push (main 브랜치)
+    ↓
+① Test Job 실행
+    - 환경 설정
+    - 테스트 실행
+    ↓ (성공 시)
+② Build Job 실행
+    - 환경 설정
+    - 설정 파일 생성
+    - JAR 파일 빌드
+    - 아티팩트 업로드
+    ↓ (성공 시)
+③ Deploy Job 실행
+    - JAR 다운로드
+    - EC2로 파일 전송
+    - 서비스 재시작
+    - 헬스체크
+    ↓
+배포 완료!
+```
+
+- GitHub Actions의 Job들은 서로 독립적
+
+  - `build` Job과 `deploy` Job은 완전히 다른 가상 환경(컴퓨터)에서 실행
+  - Artifact = "Job 간에 파일을 전달하기 위한 GitHub Actions 임시 저장소"
+
+- t2.micro (1GB RAM)이므로 빌드에 시간이 오래 걸림
+  - 그러므로, CI 빌드 후 파일만 EC2 서버에서 실행
+
 ### 📚 참고
 
 - [AWS 교과서](https://product.kyobobook.co.kr/detail/S000210532528)
