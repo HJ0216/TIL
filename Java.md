@@ -1013,13 +1013,14 @@ LuckylogApplicationTests > contextLoads() FAILED
 
 ### Neither BindingResult nor plain target object for bean name 'signupForm' available as request attribute
 
-- `@ModelAttribute`는 자동으로 모델에 빈객체를 추가해주지만, 객체 이름을 앞글자만 소문자로 만들어서 보냄
-  - 매개변수 이름과 무관
+- `@ModelAttribute`는 자동으로 모델에 빈객체를 추가해주지만, 매개변수 이름과 무관하게 클래스 이름의 첫 글자를 소문자로 변경해서 보냄
+  - SignupForm → signupForm
 
 ```java
   @GetMapping
   public String show(@ModelAttribute SignupForm form) {
     // model.addAttribute("signupForm", new SignupForm());
+    // @ModelAttribute가 자동으로 "signupForm" 이름의 빈 객체를 모델에 추가
     return "signup";
   }
 ```
@@ -1043,6 +1044,13 @@ LuckylogApplicationTests > contextLoads() FAILED
 <!-- /templates/fragments/header.html -->
 <a href="home">홈</a>
 <a href="user/profile">프로필</a>
+```
+
+- Thymeleaf에서 컨텍스트 경로 문제를 해결하는 표준적인 방법
+
+```html
+<a th:href="@{/user/profile}"></a>
+<!--컨텍스트 기반 상대경로로 처리됨-->
 ```
 
 ### 📚 참고
