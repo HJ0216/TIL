@@ -1011,6 +1011,40 @@ LuckylogApplicationTests > contextLoads() FAILED
     - `-Dspring.profiles.active=test` 추가
     - `@SpringBootTest(properties = "spring.profiles.active=test")` 추가
 
+### Neither BindingResult nor plain target object for bean name 'signupForm' available as request attribute
+
+- `@ModelAttribute`는 자동으로 모델에 빈객체를 추가해주지만, 객체 이름을 앞글자만 소문자로 만들어서 보냄
+  - 매개변수 이름과 무관
+
+```java
+  @GetMapping
+  public String show(@ModelAttribute SignupForm form) {
+    // model.addAttribute("signupForm", new SignupForm());
+    return "signup";
+  }
+```
+
+### Thymeleaf 페이지 상대 경로
+
+- 배포 환경이 바뀌어도 깨지지 않음
+
+```html
+<a href="/user/profile"></a>
+<!--로컬에선 /user/profile 잘 되지만,
+서버가 /app 컨텍스트 루트로 배포되면 /app/user/profile이 아닌 /user/profile로 요청되어 404 발생-->
+```
+
+- 템플릿 재사용성과 include 구조에 유리
+  - fragment를 여러 경로에서 include하면,
+    - 절대경로(/user/profile)를 쓰면 컨텍스트 루트가 다르면 깨짐
+    - 상대경로(user/profile)를 쓰면 현재 위치 기준으로 자동 해석
+
+```html
+<!-- /templates/fragments/header.html -->
+<a href="home">홈</a>
+<a href="user/profile">프로필</a>
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
