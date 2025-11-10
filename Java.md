@@ -466,6 +466,26 @@ public class UserTestBuilder {
   - `given(...).willThrow(new Exception());`
   - `then(mock).should().method();`
 
+### MockMvc
+
+- 실제 서버를 띄우지 않고도 Controller를 테스트할 수 있게 해주는 Spring의 테스트 도구
+  - Spring MVC의 HTTP 요청/응답 테스트 도구
+- @WebMvcTest가 자동으로 MockMvc를 생성함
+  - 이후, @Autowired로 실제 Bean 주입
+
+```java
+@Test
+void signup_Test() throws Exception {
+    mockMvc.perform( // HTTP 요청 시뮬레이션
+            post("/signup") // POST /signup
+            .param("email", "test@email.com") // 파라미터
+            .param("password", "Password123!")
+        )
+        .andExpect(status().isOk()) // 응답 검증
+        .andExpect(view().name("auth/signup")); // 뷰 이름 검증
+}
+```
+
 ### andExpect vs assertThat
 
 - .andExpect()
@@ -606,13 +626,16 @@ public String submit(
 
 ```java
 @ExtendWith(MockitoExtension.class)
+// @Mock → mock 객체 생성
+// @InjectMocks → mock 객체를 주입
+// 두 애노테이션을 자동으로 처리
 class UserServiceTest {
 
     @Mock
     private UserRepository userRepository; // 실제 DB X, Mockito mock
 
-    @InjectMocks
-    private UserService userService; // userRepository가 주입됨
+    @InjectMocks // 객체가 의존하는 필드(UserRepository 등)에 @Mock 객체를 주입
+    private UserService userService;
 
     @Test
     void testFindUser() {
@@ -1052,6 +1075,116 @@ LuckylogApplicationTests > contextLoads() FAILED
 <a th:href="@{/user/profile}"></a>
 <!--컨텍스트 기반 상대경로로 처리됨-->
 ```
+
+### `타입 매개변수 'S'에 대한 추론 타입 'S'이(가) 해당 바운드 내에 없으며, 'com.fortunehub.luckylog.domain.member.Member'을(를) 확장해야 합니다`
+
+```java
+verify(memberRepository, never()).save(any(Member.class));
+// any(Member.class)의 반환 타입이 Member가 아니라 Object로 추론되면서,
+// save(S entity)의 제네릭 타입 S extends Member 조건을 만족하지 못함
+
+verify(memberRepository, never()).save(ArgumentMatchers.<Member>any());
+// Mockito가 any()의 제네릭 타입을 명확히 Member로 인식
+```
+
+### `org.mockito.exceptions.misusing.PotentialStubbingProblem: Strict stubbing argument mismatch`
+
+```java
+given(memberRepository.save(req.toEntity(encodedPassword)))
+    .willThrow(new DataIntegrityViolationException("Duplicate entry for nickname"));
+// req.toEntity()를 호출할 때마다 새로운 Member 객체가 생성되기 때문에, Mock 설정 시의 객체와 실제 서비스에서 save() 호출 시의 객체가 달라서 Stubbing이 매칭되지 않음
+
+// any(Member.class) 사용
+given(memberRepository.save(any(Member.class)))
+    .willThrow(new DataIntegrityViolationException("Duplicate entry for nickname"));
+```
+
+### Spring Security와 Test Code
+
+```java
+@WebMvcTest(SignupController.class)
+class SignupControllerTest {}
+
+// 컨트롤러, 관련 MVC 컴포넌트, Jackson 등만 로딩하고 나머지 빈(Service, Repository, Security 등)은 로드하지 않음
+// Spring Security 설정도 로드되지 않거나, 필요한 경우 기본 설정으로 적용됨
+
+// Test Code 전용 TestSecurityConfig 생성
+@TestConfiguration
+public class TestSecurityConfig {}
+
+@Import(TestSecurityConfig.class)
+@WebMvcTest(SignupController.class)
+class SignupControllerTest {}
+```
+
+### Optional Input Value `@Size` 사용 시 유의점
+
+- HTML <input /> 필드에서 아무것도 입력 안 하면, 브라우저는 기본적으로 빈 문자열로
+  전송
+  - null이 아닌 length가 0으로 들어가 `@Size(min=2)` 검증 실패 → 오류 발생
+
+### `@RequiredArgsConstructor`와 super
+
+- Lombok @RequiredArgsConstructor만 사용하면 super(errorCode.getMessage()) 호출이 자동으로 되지 않음
+  - 부모 생성자를 호출해야 하는 경우는 직접 생성자를 작성하는 것이 필요
+
+```java
+@Getter
+public class CustomException extends RuntimeException {
+
+  private final ErrorCode errorCode;
+
+  public CustomException(ErrorCode errorCode) {
+    super(errorCode.getMessage()); // @RequiredArgsConstructor만 쓸 경우, 생성되지 않음
+    this.errorCode = errorCode;
+  }
+}
+```
+
+### HTTP Basic 인증
+
+- 클라이언트가 서버에 요청할 때 사용자 이름과 비밀번호를 HTTP 헤더에 실어서 보내는 방식
+  - Base64는 암호화가 아님, HTTPS 없이는 평문 노출 위험
+  - 서버가 세션을 저장할 필요 없이 요청마다 인증 가능
+  - Spring Security 등에서 HTTP Basic 인증을 비활성화하는 이유
+    - API에서는 주로 JWT, OAuth2 등 다른 인증 방식을 사용
+
+```txt
+Authorization: Basic dXNlcjpwYXNzd29yZA==
+user:password를 Base64로 인코딩한 문자열
+```
+
+### JWT(JSON Web Token)
+
+- 서버와 클라이언트 사이에서 인증 정보를 안전하게 전달하기 위해 사용되는 토큰 기반 인증 방식
+
+- JWT 동작 방식 (로그인 기준)
+  1. 클라이언트 → 서버: 로그인 요청
+  2. 서버 → 클라이언트: 인증 성공 시 JWT 발급
+  3. 클라이언트: JWT를 Authorization: Bearer <token> 헤더에 담아 요청
+  4. 서버: JWT 검증 → 사용자 인증/인가 처리
+
+### 테스트 전략별 비교
+
+- 📊 **커버리지 중심 (대기업, 금융권)**
+
+  - Service: 90%+
+  - Repository: 80%+
+  - Controller: 70%+
+  - 목표: 전체 80% 이상
+
+- 🎯 **핵심 로직 중심 (스타트업, 일반 기업)**
+
+  - Service 핵심 로직: 필수
+  - Repository 커스텀 쿼리: 권장
+  - Controller: 중요 API만
+  - 목표: 비즈니스 로직 신뢰성
+
+- ⚡ **실용주의 (소규모, 애자일)**
+
+  - 버그가 자주 나는 부분
+  - 리팩토링 예정인 부분
+  - 복잡한 비즈니스 로직만
 
 ### 📚 참고
 
