@@ -764,8 +764,7 @@ logging:
   - .env 파일 IntelliJ에서 사용하는 방법
     - EnvFile 플러그인 설치 후, .env 파일 추가
   - 또는 구성 편집 → 환경 변수에서 .env 관련 설정 추가
-  - .env 파일 사용이 로컬 개발용으로 프로덕션 배포 시에는 서버에서 환경변수나 시크릿 변수를 처리하는 다른 방법 사용(예: Github Actions: Actions secrets and variables
-    )
+  - .env 파일 사용이 로컬 개발용으로 프로덕션 배포 시에는 서버에서 환경변수나 시크릿 변수를 처리하는 다른 방법 사용(예: Github Actions: Actions secrets and variables)
 
 2. `application-local.yaml`
 
@@ -1147,8 +1146,7 @@ class SignupControllerTest {}
 
 ### Optional Input Value `@Size` 사용 시 유의점
 
-- HTML <input /> 필드에서 아무것도 입력 안 하면, 브라우저는 기본적으로 빈 문자열로
-  전송
+- HTML <input /> 필드에서 아무것도 입력 안 하면, 브라우저는 기본적으로 빈 문자열로 전송
   - null이 아닌 length가 0으로 들어가 `@Size(min=2)` 검증 실패 → 오류 발생
 
 ### `@RequiredArgsConstructor`와 super
