@@ -474,15 +474,22 @@ public class UserTestBuilder {
   - 이후, @Autowired로 실제 Bean 주입
 
 ```java
-@Test
-void signup_Test() throws Exception {
-    mockMvc.perform( // HTTP 요청 시뮬레이션
-            post("/signup") // POST /signup
-            .param("email", "test@email.com") // 파라미터
-            .param("password", "Password123!")
-        )
-        .andExpect(status().isOk()) // 응답 검증
-        .andExpect(view().name("auth/signup")); // 뷰 이름 검증
+@WebMvcTest(SignupController.class)
+class SignupControllerTest {
+  @Autowired
+  private MockMvc mockMvc;
+
+  @Test
+  void signup_Test() throws Exception {
+      mockMvc.perform( // HTTP 요청 시뮬레이션
+              post("/signup") // POST /signup
+              .param("email", "test@email.com") // 파라미터
+              .param("password", "Password123!")
+          )
+          .andExpect(status().isOk()) // 응답 검증
+          .andExpect(view().name("auth/signup")); // 뷰 이름 검증
+  }
+
 }
 ```
 
@@ -627,7 +634,7 @@ public String submit(
 ```java
 @ExtendWith(MockitoExtension.class)
 // @Mock → mock 객체 생성
-// @InjectMocks → mock 객체를 주입
+// @InjectMocks → mock 객체를 주입(생성자 → Setter → 필드순으로 주입 시도)
 // 두 애노테이션을 자동으로 처리
 class UserServiceTest {
 
@@ -705,6 +712,18 @@ class UserServiceIntegrationTest {
   - CSV(Comma-Separated Values) 형식으로 여러 테스트 데이터를 직접 코드에 넣어줌
   - 각 줄이 테스트 1회 실행에 쓰일 파라미터 집합
 
+```java
+@ParameterizedTest
+@CsvSource({
+    "test@email.com, password123",
+    "admin@email.com, admin123",
+    "invalid-email, short"
+})
+void validateSignup(String email, String password) {
+    // 테스트 로직
+}
+```
+
 ### 배포 전 프로필 분리
 
 1. `application.yaml`
@@ -745,6 +764,8 @@ logging:
   - .env 파일 IntelliJ에서 사용하는 방법
     - EnvFile 플러그인 설치 후, .env 파일 추가
   - 또는 구성 편집 → 환경 변수에서 .env 관련 설정 추가
+  - .env 파일 사용이 로컬 개발용으로 프로덕션 배포 시에는 서버에서 환경변수나 시크릿 변수를 처리하는 다른 방법 사용(예: Github Actions: Actions secrets and variables
+    )
 
 2. `application-local.yaml`
 
@@ -1110,7 +1131,14 @@ class SignupControllerTest {}
 
 // Test Code 전용 TestSecurityConfig 생성
 @TestConfiguration
-public class TestSecurityConfig {}
+public class TestSecurityConfig {
+    @Bean
+    public SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .csrf(csrf -> csrf.disable());
+        return http.build();
+    }
+}
 
 @Import(TestSecurityConfig.class)
 @WebMvcTest(SignupController.class)
@@ -1159,10 +1187,41 @@ user:password를 Base64로 인코딩한 문자열
 - 서버와 클라이언트 사이에서 인증 정보를 안전하게 전달하기 위해 사용되는 토큰 기반 인증 방식
 
 - JWT 동작 방식 (로그인 기준)
+
   1. 클라이언트 → 서버: 로그인 요청
   2. 서버 → 클라이언트: 인증 성공 시 JWT 발급
   3. 클라이언트: JWT를 Authorization: Bearer <token> 헤더에 담아 요청
   4. 서버: JWT 검증 → 사용자 인증/인가 처리
+
+- JWT 저장 위치
+
+  - localStorage
+    - 클라이언트 브라우저
+    - 스크립트로 토큰 접근 가능하므로 XSS 공격에 매우 취약
+  - sessionStorage
+    - 탭 세션
+    - 스크립트로 토큰 접근 가능하므로 XSS 공격에 매우 취약
+  - HttpOnly 쿠키
+    - 브라우저 쿠키
+    - SameSite, CSRF 토큰 등으로 CSRF 방어 필요
+
+- Access Token + Refresh Token 구조
+
+  - Access Token → 짧은 유효기간 (5~15분)
+    - Access Token은 메모리에 보관하고 요청 시 Authorization 헤더에 포함하여 전송 → XSS로 유출되어도 피해 최소화
+  - Refresh Token → HttpOnly 쿠키에 저장 (재발급용)
+
+    - 서버 측 권장 설정
+
+    ```http
+    Set-Cookie: refresh_token=<token>;
+    HttpOnly; Secure; SameSite=Strict; Path=/auth/refresh;
+    ```
+
+    - HttpOnly: JS에서 쿠키 접근 불가 → XSS 방어
+    - Secure: HTTPS에서만 전송
+    - SameSite=Strict: CSRF 공격 방어
+    - Path: 특정 경로로만 쿠키 전송 제한
 
 ### 테스트 전략별 비교
 
