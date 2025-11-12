@@ -937,3 +937,31 @@ WHERE UserId = 123
   - 실제 저장 공간: 최대 200바이트
     - 영문/숫자/기호: 1바이트 = 1자
     - 한글: 2~3바이트 = 1자 (인코딩에 따라 다름)
+
+### DB Collation(데이터베이스 정렬 규칙)
+
+- `Collation`: 문자 데이터를 어떻게 비교하고 정렬할 것인가
+  - "A"와 "a"를 같은 것으로 볼지(case-insensitive)
+  - "ㄱ"과 "가"의 정렬 순서를 어떻게 할지
+  - "é"와 "e"를 같은 문자로 취급할지 등을 결정
+- 주요 Collation(MySQL 기준)
+  - `utf8mb4_general_ci`: `"A" = "a"`
+    - `ci` = case-insensitive (대소문자 구분 안 함)
+  - `utf8mb4_unicode_ci`: Unicode 표준 기반 비교, `"ß" = "ss"`
+  - `utf8mb4_bin`: 바이너리 비교, `"A" ≠ "a"`
+
+| 적용 범위             | 설정 위치             | 예시                                                                                     |
+| --------------------- | --------------------- | ---------------------------------------------------------------------------------------- |
+| **서버 단위**         | `my.cnf` 설정         | `collation_server=utf8mb4_general_ci`                                                    |
+| **데이터베이스 단위** | `CREATE DATABASE`     | `CREATE DATABASE test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`                 |
+| **테이블 단위**       | `CREATE TABLE`        | `CREATE TABLE user (name VARCHAR(50)) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;` |
+| **컬럼 단위**         | 컬럼 정의 시          | `name VARCHAR(50) COLLATE utf8mb4_bin`                                                   |
+| **쿼리 단위**         | `COLLATE` 키워드 사용 | `SELECT * FROM user ORDER BY name COLLATE utf8mb4_bin;`                                  |
+
+- 권장 설정
+  - Character set: `utf8mb4`(완전한 UTF-8 지원, 이모지 포함)
+  - Collation: `utf8mb4_unicode_ci`
+    - `general_ci`는 Unicode 표준이 아니라 MySQL 독자 규칙
+      향후 다른 시스템(DB, 언어 라이브러리 등)과 연동 시 비교 결과가 다를 수 있음
+  - Column-level binary 비교 필요 시: `utf8mb4_bin`
+    - 대소문자 구분 컬럼 예시: Password, Key 등

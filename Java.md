@@ -656,9 +656,23 @@ class UserServiceTest {
 ```
 
 - @InjectMocks
+
   - 값 객체들: String, Duration, Money → Mock할 필요 없음
     - Mock은 필요한 협력 객체(인터페이스)에만 사용하고, 값 객체는 실제 객체를 사용
   - 테스트마다 다른 값의 경우, Mock할 필요 없음
+  - 😵 Mocking하지 않을 필드를 @Mock으로 선언할 경우, InjectMocks가 가짜 객체 주입
+
+  ```java
+  //@Mock
+  //private ObjectMapper objectMapper;
+
+  @BeforeEach
+  void setUp() {
+    // 실제 ObjectMapper 인스턴스를 주입
+    ReflectionTestUtils.setField(geminiService, "objectMapper", new ObjectMapper());
+
+  }
+  ```
 
 ### @MockBean
 
@@ -793,7 +807,7 @@ spring:
 logging:
   level:
     org.hibernate.SQL: DEBUG # SQL 쿼리 보기
-    org.hibernate.type: TRACE # 파라미터 값까지 보기
+    org.hibernate.orm: TRACE # 파라미터 값까지 보기
 ```
 
 - IntelliJ에서 profile local 설정하는 방법
@@ -1221,6 +1235,27 @@ user:password를 Base64로 인코딩한 문자열
     - SameSite=Strict: CSRF 공격 방어
     - Path: 특정 경로로만 쿠키 전송 제한
 
+#### JWT와 Storage, Cookie
+
+| 항목                 | localStorage                     | sessionStorage                       | Cookie                                             |
+| -------------------- | -------------------------------- | ------------------------------------ | -------------------------------------------------- |
+| **저장 위치**        | 브라우저 (클라이언트)            | 브라우저 (클라이언트)                | 브라우저                                           |
+| **데이터 지속성**    | **영구 저장** (삭제 전까지 유지) | **세션 단위** (탭/창 닫으면 삭제)    | 만료시간(`expires`)까지 유지                       |
+| **자동 전송 여부**   | ❌ 서버로 자동 전송 안 됨        | ❌ 서버로 자동 전송 안 됨            | ✅ 요청 시 자동으로 서버로 전송됨 (`Cookie` 헤더)  |
+| **보안 취약성**      | JS 접근 가능 → XSS에 취약        | JS 접근 가능 → XSS에 취약            | JS 접근 가능(기본값), `HttpOnly` 설정 시 접근 불가 |
+| **사용 목적**        | 사용자 설정, 캐시, 장기 저장     | 일시적 데이터 (ex. 입력값 임시 저장) | 세션 유지, 인증 정보 전송 등                       |
+| **도메인 공유 여부** | 동일 출처(origin) 내에서만 접근  | 동일 탭 내 동일 출처에서만 접근      | 도메인 단위 공유 가능 (`.example.com`)             |
+
+- CSR
+  - Access Token: localStorage/sessionStorage/JS변수(메모리) 저장 (API 호출 시 Authorization 헤더로 전송)
+    - XSS를 막기 위해 쿠키에 HttpOnly를 설정하면 JS에서는 꺼낼 수 없음, auth header에 추가 불가
+  - Refresh Token: HttpOnly Cookie에 저장 (자동 전송, JS 접근 불가)
+- SSR
+  - 서버(예: Next.js, Spring Boot, Nest.js 등) 가 HTML을 렌더링해서 클라이언트에 내려주는 방식
+  - 브라우저가 localStorage에 엑세스 토큰을 가지고 있어도, 서버는 “요청 직전에 localStorage를 읽는 방법”이 없음
+  - 서버는 오직 HTTP 요청 헤더로 전달되는 쿠키만 접근 가능
+  - Access Token, Refresh Token 모두 Cookie 사용
+
 ### 테스트 전략별 비교
 
 - 📊 **커버리지 중심 (대기업, 금융권)**
@@ -1242,6 +1277,133 @@ user:password를 Base64로 인코딩한 문자열
   - 버그가 자주 나는 부분
   - 리팩토링 예정인 부분
   - 복잡한 비즈니스 로직만
+
+### log 설정
+
+```java
+log.error("예상치 못한 오류 발생: {}", e);
+// 예외 객체의 toString() 결과만 출력
+
+log.error("예상치 못한 오류 발생", e);
+// 전체 스택 트레이스 기록
+```
+
+### JPA의 flush 타이밍과 식별자 생성 전략(GenerationType)
+
+- `JpaRepository.save(entity)` 호출 시,
+  - 엔티티를 Persistence Context(영속성 컨텍스트) 에 등록 (managed 상태)
+  - flush() 되기 전까지 실제 SQL은 실행되지 않음
+    → 즉, INSERT SQL은 보통 트랜잭션 커밋 시점에 실행됨
+  - `GenerationType.IDENTITY` 전략을 사용할 때 예외적으로 즉시 INSERT가 발생하는 경우
+
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
+// DB가 식별자(기본키) 를 생성
+// JPA는 엔티티를 DB에 넣기 전까지는 id 값을 알 수 없음
+// save() → 즉시 INSERT SQL 실행
+// DB에서 auto_increment된 id 값을 가져와서 엔티티에 채움
+// 이후 flush/commit 때 다시 INSERT 하지 않음
+```
+
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE) // or TABLE
+private Long id;
+// DB 시퀀스에서 다음 값을 미리 가져옴
+// Hibernate는 @SequenceGenerator 설정을 보고 시퀀스 조회 쿼리를 날림 (select nextval(...))
+// ID를 미리 받아오면 INSERT를 지연시킬 수 있으므로 save() 시점에는 insert 안 됨
+// flush 또는 트랜잭션 커밋 시점에만 insert 수행됨
+// 커밋: @Transactional이 붙은 서비스 메서드가 정상 종료 시
+// commit: 트랜잭션 메서드 종료 시
+// flush: 변경 내용이 쿼리 결과에 반영되도록 JPQL 실행 시
+```
+
+### Exception과 Logging
+
+- `throw exception`: 사용자 관점의 “피드백” 목적
+  - 클라이언트(사용자 또는 API 소비자)에게 “무엇이 잘못되었는지”를 알려줌
+    - 이메일 중복 → “이미 사용 중인 이메일입니다.”
+    - 인증 실패 → “로그인이 필요합니다.”
+    - 서버 과부하 → “잠시 후 다시 시도해주세요.”
+  - 응답의 일부로 사용자에게 전달
+    - View 기반 → 화면에 메시지 표시
+    - REST API → JSON 응답 + HTTP 상태코드
+    - 사용자 친화적 메시지 (이모지나 설명 포함 가능)
+    - 내부 구현 정보(DB 구조, 예외 스택 등)는 절대 노출하지 않음
+
+```java
+if (userRepository.existsByEmail(email)) {
+    throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+}
+```
+
+- `log`: 내부 관점의 “기록/추적” 목적
+  - 운영자나 개발자가 사후에 문제를 파악하기 위한 기록
+  - 사용자에게는 노출되지 않음 (서버 내부 기록)
+  - 예외 객체(e)를 함께 출력해 stack trace 확보
+  - 로그 레벨로 심각도 구분:
+    - log.debug() → 디버깅용
+    - log.info() → 정상 흐름 정보
+    - log.warn() → 잠재적 문제
+    - log.error() → 실제 장애/예외 상황
+
+```java
+catch (Exception e) {
+    log.error("오류 발생: {}", e.getMessage(), e);
+    throw new CustomException(ErrorCode.GEMINI_API_ERROR, e);
+}
+```
+
+### `@JsonKey`
+
+- 직렬화 (Java 객체 → JSON 문자열)
+  - FortuneType.OVERALL 객체를 JSON으로 변환할 때, 일반적인 Enum 이름("OVERALL") 대신, @JsonValue가 붙은 필드의 값("overall")을 사용
+  - 역직렬화 (JSON 문자열 → Java 객체)
+    - JSON 문자열에서 "overall"이라는 값을 읽었을 때, Jackson은 이 문자열을 Enum의 이름으로 매핑하는 대신, Enum 상수 중 @JsonValue 필드 값이 "overall"인 상수를 찾아 매핑(즉, FortuneType.OVERALL을 찾아냄)
+
+```java
+public enum FortuneType {
+  OVERALL("🔮", "종합", "overall", true),
+
+  @JsonValue
+  private final String jsonKey;
+}
+```
+
+### from(), to()
+
+- form.toRequest();
+  - Form이 Request에 대한 의존을 갖게 됨
+  - Form의 역할(입력 유효성 검사)이 아닌, 서비스 계층 객체를 만드는 역할까지 맡게 됨
+
+```java
+class Form {
+    private String name;
+    private int age;
+
+    public Request toRequest() {
+        return new Request(this.name, this.age);
+    }
+}
+```
+
+- request.from(form);
+  - 서비스 레이어(비즈니스 로직)가 필요로 하는 데이터를 정의
+  - 변환 책임을 갖고, 필요한 레이어 DTO나 Entity로 만들어 줌
+  - Request가 자신을 만드는 모든 방법을 관리(응집도 향상)
+
+```java
+class Request {
+    private String name;
+    private int age;
+
+    public static Request from(Form form) {
+        return new Request(form.getName(), form.getAge());
+    }
+}
+```
 
 ### 📚 참고
 
