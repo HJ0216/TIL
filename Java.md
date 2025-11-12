@@ -807,7 +807,7 @@ spring:
 logging:
   level:
     org.hibernate.SQL: DEBUG # SQL 쿼리 보기
-    org.hibernate.orm: TRACE # 파라미터 값까지 보기
+    org.hibernate.orm.jdbc.bind: TRACE # 파라미터 값까지 보기
 ```
 
 - IntelliJ에서 profile local 설정하는 방법
@@ -1356,7 +1356,7 @@ catch (Exception e) {
 }
 ```
 
-### `@JsonKey`
+### `@JsonValue`
 
 - 직렬화 (Java 객체 → JSON 문자열)
   - FortuneType.OVERALL 객체를 JSON으로 변환할 때, 일반적인 Enum 이름("OVERALL") 대신, @JsonValue가 붙은 필드의 값("overall")을 사용
