@@ -1351,7 +1351,7 @@ if (userRepository.existsByEmail(email)) {
 
 ```java
 catch (Exception e) {
-    log.error("오류 발생: {}", e.getMessage(), e);
+    log.error("오류 발생", e);
     throw new CustomException(ErrorCode.GEMINI_API_ERROR, e);
 }
 ```
@@ -1364,6 +1364,8 @@ catch (Exception e) {
     - JSON 문자열에서 "overall"이라는 값을 읽었을 때, Jackson은 이 문자열을 Enum의 이름으로 매핑하는 대신, Enum 상수 중 @JsonValue 필드 값이 "overall"인 상수를 찾아 매핑(즉, FortuneType.OVERALL을 찾아냄)
 
 ```java
+@Getter
+@RequiredArgsConstructor
 public enum FortuneType {
   OVERALL("🔮", "종합", "overall", true),
 

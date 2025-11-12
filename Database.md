@@ -952,7 +952,7 @@ WHERE UserId = 123
 
 | 적용 범위             | 설정 위치             | 예시                                                                                     |
 | --------------------- | --------------------- | ---------------------------------------------------------------------------------------- |
-| **서버 단위**         | `my.cnf` 설정         | `collation_server=utf8mb4_general_ci`                                                    |
+| **서버 단위**         | `my.cnf` 설정         | `collation_server=utf8mb4_unicode_ci`                                                    |
 | **데이터베이스 단위** | `CREATE DATABASE`     | `CREATE DATABASE test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`                 |
 | **테이블 단위**       | `CREATE TABLE`        | `CREATE TABLE user (name VARCHAR(50)) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;` |
 | **컬럼 단위**         | 컬럼 정의 시          | `name VARCHAR(50) COLLATE utf8mb4_bin`                                                   |
