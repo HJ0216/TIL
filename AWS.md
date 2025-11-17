@@ -731,6 +731,304 @@ jobs:
 - t2.micro (1GB RAM)이므로 빌드에 시간이 오래 걸림
   - 그러므로, CI 빌드 후 파일만 EC2 서버에서 실행
 
+### Grafana Loki
+
+- 로그 집계(log aggregation) 시스템
+- 주요 구성 요소
+
+  - Promtail: 로그 수집 에이전트 (로그 파일을 읽어 Loki로 전송)
+  - Loki: 로그 저장 및 쿼리 처리 서버
+  - Grafana: 로그 시각화 및 검색 UI
+
+- t2.micro 스펙
+  - RAM: 1GB (실제 사용 가능 ~900MB)
+  - Spring Boot(~400MB)
+  - Loki(~200MB) + Promtail(~50MB) + Grafana(~150MB)  
+    → 스왑 메모리 설정 필요
+
+`free -h`
+
+- 시스템의 메모리 사용량을 확인
+
+```bash
+$ free -h
+        total   used    free   shared  buff/cache   available
+Mem:    949Mi   369Mi   239Mi  0.0Ki        340Mi       440Mi
+Swap:   0B      0B      0B
+```
+
+**Mem (메모리)**
+
+- total: 전체 물리 메모리
+- used: 실제 사용 중인 메모리
+- free: 완전히 사용되지 않은 메모리
+- shared: 공유 메모리
+  - 일반적으로 각 프로그램은 자기만의 메모리 공간을 가지지만, shared 메모리는 여러 프로그램이 동시에 접근할 수 있음
+- buff/cache: 버퍼와 캐시로 사용되는 메모리
+- available: 실제로 사용 가능한 메모리 (캐시 포함)
+
+**Swap (스왑)**
+
+- 디스크를 메모리처럼 사용하는 가상 메모리 영역
+
+1. 스왑 메모리 생성
+
+```bash
+# 1. 스왑 파일 생성(4GB)
+sudo dd if=/dev/zero of=/swapfile bs=128M count=32
+
+# 2. 권한 설정
+sudo chmod 600 /swapfile
+
+# 3. 스왑 활성화
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# 4. 재부팅 후에도 유지
+echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
+
+# 5. 확인
+free -h
+               total        used        free      shared  buff/cache   available
+Mem:           949Mi       369Mi       239Mi       0.0Ki       340Mi       440Mi
+Swap:          4.0Gi          0B       4.0Gi  ← 이게 생겨야 함!
+```
+
+2. Docker 설치
+
+```bash
+# 1. Docker 설치
+sudo yum install -y docker
+
+# 2. Docker 시작
+sudo service docker start
+
+# 3. ec2-user에게 Docker 권한 주기
+sudo usermod -a -G docker ec2-user
+
+# 4. 현재 세션에 권한 적용
+newgrp docker
+
+# 5. Docker Compose 설치
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# 6. 실행 권한 추가
+sudo chmod +x /usr/local/bin/docker-compose
+
+# 7. 설치 확인
+docker --version
+docker-compose --version
+```
+
+**이거 순서대로 실행하고 마지막에 버전 나오는지 확인해줘!**
+
+예상 결과:
+
+```
+Docker version 20.10.xx
+Docker Compose version v2.xx.x
+```
+
+3. Loki 설치
+
+```bash
+# 1. 작업 디렉토리 생성
+mkdir -p ~/loki/promtail
+cd ~/loki
+
+# 2. docker-compose.yml 생성
+cat > docker-compose.yml << 'EOF'
+version: '3.8'
+
+services:
+  loki:
+    image: grafana/loki:2.9.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-data:/loki
+    mem_limit: 180m
+    mem_reservation: 120m
+    restart: unless-stopped
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    volumes:
+      - /var/log:/var/log:ro
+      - /home/deploy:/home/deploy:ro
+      - ./promtail/config.yml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    mem_limit: 80m
+    mem_reservation: 50m
+    restart: unless-stopped
+
+volumes:
+  loki-data:
+EOF
+
+# 3. Promtail 설정 파일 생성
+cat > promtail/config.yml << 'EOF'
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # 시스템 로그
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: system
+          host: luckylog-server
+          __path__: /var/log/messages
+
+  # Spring Boot 애플리케이션 로그 (경로 수정!)
+  - job_name: springboot
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: springboot
+          app: luckylog
+          __path__: /home/deploy/logs/luckylog/*.log
+
+  # 현재 실행 중인 로그
+  - job_name: springboot-current
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: springboot
+          app: luckylog
+          type: current
+          __path__: /home/deploy/logs/luckylog/luckylog.log
+
+  # 롤링된 과거 로그들
+  - job_name: springboot-archived
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: springboot
+          app: luckylog
+          type: archived
+          __path__: /home/deploy/logs/luckylog/luckylog-*.log
+EOF
+
+# 4. 설정 파일 확인
+ls -la
+cat docker-compose.yml
+cat promtail/config.yml
+```
+
+4. Docker Compose 실행
+
+```bash
+# Docker Compose 실행
+docker-compose up -d
+[+] Running 4/4
+ ✔ Network loki_default       Created    0.2s
+ ✔ Volume loki_loki-data      Created    0.0s
+ ✔ Container loki-loki-1      Started    1.0s
+ ✔ Container loki-promtail-1  Started    1.4s
+
+# 상태 확인
+docker-compose ps
+
+NAME              IMAGE                    COMMAND                  SERVICE    CREATED         STATUS         PORTS
+loki-loki-1       grafana/loki:2.9.0       "/usr/bin/loki -conf…"   loki       3 minutes ago   Up 3 minutes   0.0.0.0:3100->3100/tcp, [::]:3100->3100/tcp
+loki-promtail-1   grafana/promtail:2.9.0   "/usr/bin/promtail -…"   promtail   3 minutes ago   Up 3 minutes
+
+# 메모리 사용량
+docker stats --no-stream
+
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O        PIDS
+f6bb1514c186   loki-promtail-1   0.21%     21.16MiB / 80MiB    26.46%    2.95kB / 13.8kB   2.39MB / 770kB   6
+a8166ded3d8d   loki-loki-1       0.18%     56.45MiB / 180MiB   31.36%    15.2kB / 1.71kB   30.4MB / 201kB   6
+
+# Promtail 로그 확인 (로그 파일 잘 읽는지 체크)
+docker-compose logs promtail | tail -30
+
+# Promtail이 로그 파일들을 찾아서 읽기 시작했다는 메시지
+# Seeked 메시지: 로그 파일의 읽기 시작 위치를 찾음, Offset:0 Whence:0 = 파일 처음부터 읽기 시작
+# tail routine: started: 해당 파일을 추적(tail) 시작, 새로운 로그가 추가되면 실시간으로 읽어서 Loki로 전송
+promtail-1  | ts=2025-11-17T11:40:53.075847665Z caller=log.go:168 level=info msg="Seeked /home/deploy/logs/luckylog/luckylog-2025-11-11.0.log - &{Offset:0 Whence:0}"
+promtail-1  | level=info ts=2025-11-17T11:40:53.07633742Z caller=tailer.go:145 component=tailer msg="tail routine: started" path=/home/deploy/logs/luckylog/luckylog-2025-11-11.0.log
+```
+
+5. AWS 보안그룹 설정
+
+- EC2의 3100번 포트를 열어야 로컬 PC에서 Grafana가 Loki에 접속할 수 있음
+- EC2 인스턴스 - 보안 - 보안그룹 - 인바운드 규칙 편집
+  - 규칙 추가
+    - 유형: 사용자 지정 TCP
+    - 포트 범위: 3100
+    - 소스: 내 IP(IP 고정 시)
+    - 설명: Loki
+
+6. 로컬 PC에서 Grafana 실행
+
+- Docker Desktop 설치 및 실행
+- 터미널/PowerShell 열고 Grafana 실행
+
+```bash
+# Grafana 컨테이너 실행
+docker run -d -p 3000:3000 -e "GF_SECURITY_ADMIN_PASSWORD=admin123" --name=grafana grafana/grafana:10.0.0
+
+# 실행 확인
+docker ps
+
+# 브라우저에서 Grafana 접속
+http://localhost:3000
+# Username: admin
+# Password: admin123
+```
+
+7. Grafana에서 Loki 연결
+
+- Add data source
+- loki
+  - HTTP 섹션
+    - URL: http://EC2\_퍼블릭IP:3100
+  - Save & Test
+    - Data source successfully connected. 문구 확인
+
+8. 로그 확인하기
+
+- Explore
+  - 상단 데이터소스에서 Loki 선택
+  - label filters: job, springboot
+  - run query
+
+9. 대시보드 만들기
+
+- 시간당 로그 발생량
+  - create dashboard
+  - Add visualization
+  - 데이터소스: Loki
+  - Code 쿼리: `sum(count_over_time({job="springboot"}[1h]))`
+    - run queries
+  - Title: 시간당 로그 발생량
+  - Visualization: Time series
+  - Time range: Last 30days
+  - apply
+- 최근 경고/에러
+  - Code 쿼리: `{job="springboot"} |~ "WARN|ERROR"`
+  - Visualization: **Logs** 또는 **Table**
+  - Title: 최근 경고/에러
+  - apply
+- save dashboard
+
 ### 📚 참고
 
 - [AWS 교과서](https://product.kyobobook.co.kr/detail/S000210532528)
