@@ -825,7 +825,7 @@ docker compose version
 # Docker Compose version v2.40.3
 ```
 
-3. Loki 설치
+#### 3. Loki 설치
 
 ```bash
 # 1. 작업 디렉토리 생성
@@ -870,7 +870,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=granafa-admin-1234
+      - GF_SECURITY_ADMIN_PASSWORD=password_입력
     volumes:
       - grafana-data:/var/lib/grafana # 컨테이너 재시작해도 대시보드 설정 유지
       # grafana-data라는 볼륨을 컨테이너의 /var/lib/grafana에 연결
@@ -920,26 +920,25 @@ cat docker-compose.yml
 cat promtail/config.yml
 ```
 
-#### 동작 방식
+- 동작 방식
+  - 애플리케이션  
+    → 로그 파일 생성  
+    → Promtail이 로그 파일 읽기 (/var/log, /home/deploy)  
+    → Loki로 전송 (포트 3100)  
+    → Loki에 저장 (loki-data 볼륨)  
+    → Grafana 등으로 조회 가능
 
-애플리케이션  
-→ 로그 파일 생성  
-→ Promtail이 로그 파일 읽기 (/var/log, /home/deploy)  
-→ Loki로 전송 (포트 3100)  
-→ Loki에 저장 (loki-data 볼륨)  
-→ Grafana 등으로 조회 가능
-
-4. AWS 보안그룹 설정
+#### 4. AWS 보안그룹 설정
 
 - EC2의 3000번 포트를 열어야 Grafana에 접속할 수 있음
 - EC2 인스턴스 - 보안 - 보안그룹 - 인바운드 규칙 편집
   - 규칙 추가
     - 유형: 사용자 지정 TCP
-    - 포트 범위: 3100
+    - 포트 범위: 3000
     - 소스: 내 IP(IP 고정 시)
     - 설명: Grafana Web UI
 
-5. Docker Compose 실행
+#### 5. Docker Compose 실행
 
 ```bash
 # Docker Compose 실행
@@ -969,26 +968,29 @@ promtail-1  | level=info ts=2025-11-17T11:40:53.07633742Z caller=tailer.go:145 c
 # tail routine: started: 해당 파일을 추적(tail) 시작, 새로운 로그가 추가되면 실시간으로 읽어서 Loki로 전송
 ```
 
-6. Grafana 접속
-   http://EC2-IP:3000
+#### 6. Grafana 접속
 
-7. Grafana에서 Loki 연결
+- `http://EC2-IP:3000`
+- Username: admin
+- Password: password
+
+#### 7. Grafana에서 Loki 연결
 
 - Add data source
 - loki
   - HTTP 섹션
-    - URL: http://loki:3100
+    - URL: `http://loki:3100`
   - Save & Test
     - Data source successfully connected. 문구 확인
 
-8. 로그 확인하기
+#### 8. 로그 확인하기
 
 - Explore
   - 상단 데이터소스에서 Loki 선택
   - label filters: job, springboot
   - run query
 
-9. 대시보드 만들기
+#### 9. 대시보드 만들기
 
 - 시간당 로그 발생량
   - create dashboard
