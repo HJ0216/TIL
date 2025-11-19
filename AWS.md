@@ -770,6 +770,8 @@ Swap:   0B      0B      0B
 
 #### 1. 스왑 메모리 생성
 
+> Swap 메모리를 너무 크게 설정하면, 디스크 공간 부족이 발생할 수 있음
+
 ```bash
 # 1. 스왑 파일 생성(4GB)
 sudo dd if=/dev/zero of=/swapfile bs=128M count=32
