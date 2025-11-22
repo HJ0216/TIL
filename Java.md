@@ -1433,7 +1433,6 @@ public static FortuneCategory create(FortuneType fortuneType, Integer displayOrd
 2. of (단순 변환)
 
 ```java
-// 단일 매개변수
 public static FortuneCategory of(FortuneType fortuneType) {
    FortuneCategory category = new FortuneCategory();
    category.fortuneType = fortuneType;
@@ -1456,7 +1455,7 @@ public static FortuneCategory from(String typeCode) {
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder  // Lombok
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FortuneCategory {
 
@@ -1470,6 +1469,7 @@ public class FortuneCategory {
    private Integer displayOrder;
    private Boolean enabled;
 }
+
 // 사용
 FortuneCategory category = FortuneCategory.builder()
    .fortuneType(FortuneType.LOVE)
@@ -1498,7 +1498,6 @@ FortuneTypeResponse response = new FortuneTypeResponse(1, "종합", "🔮", "ove
 2. Builder 패턴
 
 ```java
-// ✅ 생성자는 private, Builder 사용
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -1540,7 +1539,7 @@ return member;
 
 ```java
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)  // ✅ protected
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     private Long id;
@@ -1548,11 +1547,11 @@ public class Member {
     private String email;
 }
 
-// Hibernate가 만드는 프록시 (내부적으로)
+// Hibernate가 내부적으로 만드는 프록시
 class Member$HibernateProxy extends Member {
 
     protected Member$HibernateProxy() {
-        super();  // ✅ protected라서 호출 가능!
+        super();  // protected라서 호출 가능
     }
 
     @Override
