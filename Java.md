@@ -1407,6 +1407,179 @@ class Request {
 }
 ```
 
+### 객체 생성 방식
+
+- Entity → 정적 팩토리 메서드
+  - 생성 과정이 복잡하고 검증이 필요
+  - JPA 때문에 기본 생성자 필수 (protected) → public 생성자 열면 검증 우회 가능
+- 검증 필요 → 정적 팩토리 메서드
+- DTO → 생성자
+- 단순 전달 → 생성자
+- 복잡함 → Builder
+
+#### Entity 생성 패턴
+
+1. create (생성)
+
+```java
+public static FortuneCategory create(FortuneType fortuneType, Integer displayOrder) {
+   FortuneCategory category = new FortuneCategory();
+   category.fortuneType = fortuneType;
+   category.displayOrder = displayOrder;
+   return category;
+}
+```
+
+2. of (단순 변환)
+
+```java
+public static FortuneCategory of(FortuneType fortuneType) {
+   FortuneCategory category = new FortuneCategory();
+   category.fortuneType = fortuneType;
+   return category;
+}
+```
+
+3. from (타입 변환)
+
+```java
+public static FortuneCategory from(String typeCode) {
+   FortuneType type = FortuneType.fromCode(typeCode);
+   return FortuneCategory.of(type);
+}
+```
+
+4. builder (복잡한 경우)
+
+```java
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class FortuneCategory {
+
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private Integer id;
+
+   @Enumerated(EnumType.STRING)
+   private FortuneType fortuneType;
+
+   private Integer displayOrder;
+   private Boolean enabled;
+}
+
+// 사용
+FortuneCategory category = FortuneCategory.builder()
+   .fortuneType(FortuneType.LOVE)
+   .displayOrder(1)
+   .enabled(true)
+   .build();
+```
+
+#### DTO 생성 패턴
+
+1. 생성자
+
+```java
+@Getter
+@AllArgsConstructor
+public class FortuneTypeResponse {
+    private Integer id;
+    private String name;
+    private String emoji;
+    private String code;
+}
+
+FortuneTypeResponse response = new FortuneTypeResponse(1, "종합", "🔮", "overall");
+```
+
+2. Builder 패턴
+
+```java
+@Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class FortuneResult {
+    private Long id;
+    private Member member;
+    private String title;
+    private Integer resultYear;
+    // ... 많은 필드들
+}
+
+// 사용
+FortuneResult result = FortuneResult.builder()
+    .member(member)
+    .title("운세")
+    .resultYear(2025)
+    .build();
+```
+
+#### 왜 JPA는 기본 생성자가 필요한가?
+
+```java
+// 1. DB에서 조회
+// SELECT * FROM member WHERE id = 1;
+
+// 2. JPA가 내부적으로 하는 일
+Member member = new Member();  // 리플렉션으로 기본 생성자 호출(일반적으로는 private 필드에 접근 못 함, 리플렉션은 강제로 접근 가능)
+member.setEmail("test@email.com");  // 필드에 값 주입
+member.setPassword("encrypted");
+member.setRole(MemberRole.USER);
+
+// 3. 반환
+return member;
+```
+
+#### AccessLevel.PROTECTED를 쓰는 이유
+
+지연 로딩 동작 시 프록시 객체 생성
+
+```java
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Member {
+    @Id
+    private Long id;
+
+    private String email;
+}
+
+// Hibernate가 내부적으로 만드는 프록시
+class Member$HibernateProxy extends Member {
+
+    protected Member$HibernateProxy() {
+        super();  // protected라서 호출 가능
+    }
+
+    @Override
+    public String getEmail() {
+        // 실제 DB에서 조회
+        return loadRealEntity().getEmail();
+    }
+}
+```
+
+```java
+@Entity
+public class Order {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+}
+
+// 조회
+Order order = orderRepository.findById(1L).orElseThrow();
+
+// member는 프록시 객체 (아직 DB 조회 안 함)
+Member memberProxy = order.getMember();
+// 실제 타입: Member$HibernateProxy (Member를 상속)
+
+// 실제 사용 시점에 DB 조회
+String email = memberProxy.getEmail();  // 이때 SELECT 쿼리 실행
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
