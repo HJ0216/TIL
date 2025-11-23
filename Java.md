@@ -1921,6 +1921,128 @@ INSERT INTO fortune_result_category (fortune_result_id, fortune_category_id)
 VALUES (1, 3);  -- HEALTH
 ```
 
+### 양방향 연관관계 편의 메서드
+
+```java
+@Entity
+public class FortuneResult {
+    @OneToMany(mappedBy = "fortuneResult", cascade = CascadeType.ALL)
+    private List<FortuneResultCategory> categories = new ArrayList<>();
+}
+
+@Entity
+public class FortuneResultCategory {
+    @ManyToOne
+    @JoinColumn(name = "fortune_result_id", nullable = false) // ← FK, NOT NULL
+    private FortuneResult fortuneResult;
+}
+
+    // JPA가 하는 일:
+    // 1. fortuneResult 필드를 확인
+    // 2. fortuneResult.getId() 호출
+    // 3. 그 ID 값을 fortune_result_id 컬럼에 저장
+```
+
+```java
+FortuneResult result = new FortuneResult();
+FortuneResultCategory category = new FortuneResultCategory();
+
+// ❌ 부모 쪽만 설정 (한쪽 관계만 설정)
+result.getCategories().add(category);
+
+// ❌ 자식 쪽 설정 누락!
+// category.setFortuneResult(result);  ← 이걸 안 함!
+
+fortuneResultRepository.save(result);
+```
+
+```sql
+-- FortuneResult INSERT
+INSERT INTO fortune_result (...) VALUES (...);
+-- id = 1 생성
+
+-- FortuneResultCategory INSERT
+INSERT INTO fortune_result_category
+(fortune_result_id, fortune_category_id)
+VALUES (NULL, 1);  -- ❌ fortune_result_id가 NULL!
+
+-- 💥 에러 발생!
+-- Column 'fortune_result_id' cannot be null
+-- 또는 FK constraint violation
+```
+
+```java
+@Entity
+public class FortuneResult {
+
+    @OneToMany(mappedBy = "fortuneResult", cascade = CascadeType.ALL)
+    private List<FortuneResultCategory> categories = new ArrayList<>();
+
+    // ✅ 연관관계 편의 메서드
+    public void addCategory(FortuneResultCategory category) {
+        this.categories.add(category);      // 1. 부모 쪽 설정 (읽기 전용)
+        category.setFortuneResult(this);    // 2. 자식 쪽 설정 (DB 반영!) ← 핵심!
+    }
+}
+```
+
+#### Id만 저장하는 경우
+
+```java
+@Column(name = "fortune_result_id")
+private Long fortuneResultId;
+```
+
+```java
+// 매번 Repository로 조회
+// 1. 카테고리 조회
+FortuneResultCategory category = categoryRepository.findById(1L);
+
+// 2. ID 꺼내기
+Long fortuneResultId = category.getFortuneResultId();  // 123
+
+// 3. 그 ID로 다시 조회
+FortuneResult result = fortuneResultRepository.findById(fortuneResultId);
+
+// 4. 제목 얻음
+String title = result.getTitle();  // "2025년 운세"
+```
+
+```java
+// cascade 불가능
+FortuneResult result = new FortuneResult();
+FortuneResultCategory category = new FortuneResultCategory();
+category.setFortuneResultId(???);  // result의 ID가 아직 없음! 💥
+
+fortuneResultRepository.save(result); // ID 생성됨
+category.setFortuneResultId(result.getId()); // 이제 설정
+categoryRepository.save(category); // 따로 저장
+```
+
+```java
+@ManyToOne
+private FortuneResult fortuneResult;
+```
+
+```java
+// repository 조회 없이 바로 객체 데이터에 접근 가능
+// 1. 카테고리 조회
+FortuneResultCategory category = categoryRepository.findById(1L);
+
+// 2. 제목 얻음
+String title = category.getFortuneResult().getTitle(); // "2025년 운세"
+```
+
+```java
+// cascade 가능
+FortuneResult result = new FortuneResult();
+FortuneResultCategory category = new FortuneResultCategory();
+category.setFortuneResult(result); // 객체 바로 설정
+
+result.addCategory(category);
+fortuneResultRepository.save(result); // Cascade로 category도 자동 저장!
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
