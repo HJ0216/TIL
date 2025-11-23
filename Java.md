@@ -1595,11 +1595,11 @@ public Authentication attemptAuthentication(
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
-    // ① 인증 전 토큰 생성 (사용자 입력값 담기)
+    // 인증 전 토큰 생성 (사용자 입력값 담기)
     UsernamePasswordAuthenticationToken authRequest =
         new UsernamePasswordAuthenticationToken(username, password);
 
-    // ② AuthenticationManager에게 인증 요청
+    // AuthenticationManager에게 인증 요청
     return this.getAuthenticationManager().authenticate(authRequest);
 }
 ```
@@ -1613,7 +1613,7 @@ public Authentication authenticate(Authentication authentication) {
     // 여러 AuthenticationProvider 중 적절한 것을 찾아서 위임
     for (AuthenticationProvider provider : getProviders()) {
         if (provider.supports(authentication.getClass())) {
-            // ③ Provider에게 실제 인증 처리 위임
+            // Provider에게 실제 인증 처리 위임
             return provider.authenticate(authentication);
         }
     }
@@ -1676,7 +1676,7 @@ protected void successfulAuthentication(
         HttpServletResponse response,
         Authentication authResult) {
 
-    // ⑦ SecurityContext에 인증 정보 저장
+    // SecurityContext에 인증 정보 저장
     SecurityContextHolder.getContext().setAuthentication(authResult);
 
     // 이제 어디서든 사용 가능!
@@ -1730,12 +1730,6 @@ public record SaveFortuneRequest(
     @Max(value = 2100, message = "운세 연도는 2100년 이하여야 합니다.")
     Integer fortuneResultYear
 ) {
-
-    public SaveFortuneRequest {
-        if (responses != null && responses.isEmpty()) {
-            throw new IllegalArgumentException("운세 결과가 비어있습니다.");
-        }
-    }
 }
 ```
 
@@ -1749,6 +1743,8 @@ public record SaveFortuneRequest(
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FortuneService {
+
+    private static final int MAX_SAVE_COUNT = 5;
 
     private final FortuneResultRepository fortuneResultRepository;
 
@@ -1787,7 +1783,7 @@ public class FortuneService {
 
     private boolean isExceedMaxSaveCount(Member member) {
         long count = fortuneResultRepository.countByMemberAndIsActiveTrue(member);
-        return count >= 100; // 예: 최대 100개
+        return count >= MAX_SAVE_COUNT;
     }
 }
 ```
@@ -1890,6 +1886,9 @@ public Long save(Member member, SaveFortuneRequest request, BirthInfoForm birth)
     FortuneResult result = FortuneResult.create(member, request, birth);
 
     // 2. Categories 추가 (메모리에만 존재)
+    List<FortuneCategory> categories = fortuneCategoryRepository
+        .findByFortuneTypeIn(fortuneTypes);
+
     categories.forEach(category -> {
         FortuneResultCategory resultCategory =
             FortuneResultCategory.create(result, category);
