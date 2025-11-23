@@ -1580,6 +1580,347 @@ Member memberProxy = order.getMember();
 String email = memberProxy.getEmail();  // 이때 SELECT 쿼리 실행
 ```
 
+### spring security 과정
+
+1. 로그인 요청
+2. Filter가 요청 받음
+
+```java
+// UsernamePasswordAuthenticationFilter
+public Authentication attemptAuthentication(
+        HttpServletRequest request,
+        HttpServletResponse response) {
+
+    // 요청에서 username, password 추출
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+
+    // ① 인증 전 토큰 생성 (사용자 입력값 담기)
+    UsernamePasswordAuthenticationToken authRequest =
+        new UsernamePasswordAuthenticationToken(username, password);
+
+    // ② AuthenticationManager에게 인증 요청
+    return this.getAuthenticationManager().authenticate(authRequest);
+}
+```
+
+3. AuthenticationManager가 인증 처리
+
+```java
+// ProviderManager (AuthenticationManager 구현체)
+public Authentication authenticate(Authentication authentication) {
+
+    // 여러 AuthenticationProvider 중 적절한 것을 찾아서 위임
+    for (AuthenticationProvider provider : getProviders()) {
+        if (provider.supports(authentication.getClass())) {
+            // ③ Provider에게 실제 인증 처리 위임
+            return provider.authenticate(authentication);
+        }
+    }
+}
+```
+
+4. AuthenticationProvider가 실제 인증 수행
+
+```java
+// DaoAuthenticationProvider
+public Authentication authenticate(Authentication authentication) {
+
+    String username = authentication.getName();
+    String password = authentication.getCredentials().toString();
+
+    // UserDetailsService 호출하여 DB에서 사용자 조회
+    UserDetails user = userDetailsService.loadUserByUsername(username);
+
+    // 비밀번호 검증
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+        throw new BadCredentialsException("비밀번호 불일치");
+    }
+
+    // 인증 성공 시, 인증된 토큰 생성
+    UsernamePasswordAuthenticationToken result =
+        new UsernamePasswordAuthenticationToken(
+            user,                      // UserDetails
+            null,                      // 비밀번호는 null 처리
+            user.getAuthorities()      // 권한 목록
+        );
+
+    return result;
+}
+```
+
+5. UserDetailsService가 DB 조회
+
+```java
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        // DB에서 사용자 조회
+        User user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("사용자 없음"));
+
+        // UserDetails로 변환하여 반환
+        return new CustomUserDetails(user);
+    }
+}
+```
+
+6. SecurityContext에 저장
+
+```java
+// Filter로 돌아와서
+protected void successfulAuthentication(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Authentication authResult) {
+
+    // ⑦ SecurityContext에 인증 정보 저장
+    SecurityContextHolder.getContext().setAuthentication(authResult);
+
+    // 이제 어디서든 사용 가능!
+    // @AuthenticationPrincipal CustomUserDetails userDetails
+}
+```
+
+### 검증 로직
+
+#### 1. Controller
+
+- HTTP 관련 검증
+- 세션 체크, 인증 확인
+- 목적: 웹 요청의 문제를 빠르게 응답
+
+```java
+@PostMapping
+public ResponseEntity<Map<String, Object>> save(
+    @AuthenticationPrincipal CustomUserDetails userDetails,
+    @SessionAttribute(name = "birthInfo", required = false) BirthInfoForm birthInfo,
+    @Valid @RequestBody SaveFortuneRequest request
+) {
+    if (birthInfo == null) {
+    // 세션 검증 (Controller 책임)
+    }
+
+    try {
+    } catch (IllegalArgumentException e) {
+      // 비즈니스 검증 예외
+    } catch (Exception e) {
+      // 시스템 예외
+    }
+}
+```
+
+#### 2. DTO
+
+- 입력값 형식 검증
+- `@NotNull`, `@Min`, `@Max`
+
+```java
+public record SaveFortuneRequest(
+    @NotNull(message = "운세 옵션 정보는 필수입니다.")
+    FortuneOptionForm option,
+
+    @NotEmpty(message = "운세 결과는 필수입니다.")
+    List<FortuneResponseDto> responses,
+
+    @NotNull(message = "운세 연도는 필수입니다.")
+    @Min(value = 2000, message = "운세 연도는 2000년 이상이어야 합니다.")
+    @Max(value = 2100, message = "운세 연도는 2100년 이하여야 합니다.")
+    Integer fortuneResultYear
+) {
+
+    public SaveFortuneRequest {
+        if (responses != null && responses.isEmpty()) {
+            throw new IllegalArgumentException("운세 결과가 비어있습니다.");
+        }
+    }
+}
+```
+
+#### 3. Service
+
+- 비즈니스 로직 검증
+- 중복 체크, 권한 체크, 개수 제한
+
+```java
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class FortuneService {
+
+    private final FortuneResultRepository fortuneResultRepository;
+
+    @Transactional
+    public void save(Member member, SaveFortuneRequest request, BirthInfoForm birthInfo) {
+        // 비즈니스 규칙 검증
+        validateBusinessRules(member, request, birthInfo);
+
+        FortuneResult fortuneResult = FortuneResult.create(member, request, birthInfo);
+    }
+
+    private void validateBusinessRules(Member member, SaveFortuneRequest request, BirthInfoForm birthInfo) {
+        // 회원 검증
+        if (member == null || !member.isActive()) {
+            throw new IllegalArgumentException("유효하지 않은 회원입니다.");
+        }
+
+        // 중복 저장 검증
+        if (isDuplicateFortune(member, request)) {
+            throw new IllegalArgumentException("이미 동일한 운세가 저장되어 있습니다.");
+        }
+
+        // 저장 개수 제한 검증
+        if (isExceedMaxSaveCount(member)) {
+            throw new IllegalArgumentException("저장 가능한 운세 개수를 초과했습니다.");
+        }
+    }
+
+    private boolean isDuplicateFortune(Member member, SaveFortuneRequest request) {
+        return fortuneResultRepository.existsByMemberAndResultYearAndPeriodType(
+            member,
+            request.getFortuneResultYear(),
+            request.getOption().getPeriod()
+        );
+    }
+
+    private boolean isExceedMaxSaveCount(Member member) {
+        long count = fortuneResultRepository.countByMemberAndIsActiveTrue(member);
+        return count >= 100; // 예: 최대 100개
+    }
+}
+```
+
+#### 4. Entity
+
+- 목적: 어떤 경로로 호출되든 도메인 규칙 보장
+- 도메인 규칙 검증
+- 필수값 체크, 날짜 유효성, 상태 일관성
+
+```java
+@Entity
+public class FortuneResult extends BaseTimeEntity {
+
+    // ... 필드들
+
+    public static FortuneResult create(
+        Member member,
+        SaveFortuneRequest request,
+        BirthInfoForm birth
+    ) {
+        // ✅ 엔티티 생성 시 필수값 검증
+        validateInputs(member, request, birth);
+
+        FortuneResult result = new FortuneResult();
+        result.member = member;
+        result.title = generateTitle(request);
+        result.resultYear = request.getFortuneResultYear();
+        result.gender = birth.getGender();
+        result.birthDate = createBirthDate(birth);
+        result.birthTimeZone = birth.getTime();
+        result.birthRegion = birth.getCity();
+        result.aiType = request.getOption().getAi();
+        result.periodType = request.getOption().getPeriod();
+
+        return result;
+    }
+
+    private static void validateInputs(Member member, SaveFortuneRequest request, BirthInfoForm birth) {
+        if (member == null) {
+            throw new IllegalArgumentException("회원 정보는 필수입니다.");
+        }
+        if (request == null) {
+            throw new IllegalArgumentException("운세 요청 정보는 필수입니다.");
+        }
+        if (birth == null) {
+            throw new IllegalArgumentException("생년월일 정보는 필수입니다.");
+        }
+        if (birth.getYear() == null || birth.getMonth() == null || birth.getDay() == null) {
+            throw new IllegalArgumentException("생년월일은 필수입니다.");
+        }
+    }
+
+    private static LocalDate createBirthDate(BirthInfoForm birth) {
+        try {
+            return LocalDate.of(birth.getYear(), birth.getMonth(), birth.getDay());
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(
+                String.format("유효하지 않은 생년월일입니다: %d-%d-%d",
+                    birth.getYear(), birth.getMonth(), birth.getDay()),
+                e
+            );
+        }
+    }
+
+    private static String generateTitle(SaveFortuneRequest request) {
+        return String.format("%d년 %s %s",
+            request.getFortuneResultYear(),
+            request.getOption().getPeriod().getDisplayName(),
+            request.getFortuneTypesAsString()
+        );
+    }
+}
+```
+
+### CasCade
+
+- 연관관계 편의 메서드 + Cascade 설정하면 부모만 save해도 자식까지 자동 INSERT
+
+```java
+@Entity
+public class FortuneResult {
+
+    // ✅ Cascade.ALL 설정
+    @OneToMany(mappedBy = "fortuneResult", cascade = CascadeType.ALL)
+    private List<FortuneResultCategory> categories = new ArrayList<>();
+
+    // ✅ 연관관계 편의 메서드
+    public void addCategory(FortuneResultCategory category) {
+        this.categories.add(category);      // 1. 리스트에 추가
+        category.setFortuneResult(this);    // 2. 양방향 관계 설정
+    }
+}
+```
+
+```java
+@Transactional
+public Long save(Member member, SaveFortuneRequest request, BirthInfoForm birth) {
+    // 1. FortuneResult 생성 (아직 저장 안 됨)
+    FortuneResult result = FortuneResult.create(member, request, birth);
+
+    // 2. Categories 추가 (메모리에만 존재)
+    categories.forEach(category -> {
+        FortuneResultCategory resultCategory =
+            FortuneResultCategory.create(result, category);
+        result.addCategory(resultCategory);  // ← 연관관계 편의 메서드
+    });
+
+    // 3. ✅ result만 저장!
+    fortuneResultRepository.save(result);
+    // → Cascade 덕분에 categories도 자동으로 INSERT됨!
+
+    return result.getId();
+}
+```
+
+```sql
+-- ① FortuneResult INSERT
+INSERT INTO fortune_result (member_id, title, result_year, ...)
+VALUES (1, '2024년 월별 운세', 2024, ...);
+-- id = 1 생성
+
+-- ② FortuneResultCategory INSERT (Cascade로 자동!)
+INSERT INTO fortune_result_category (fortune_result_id, fortune_category_id)
+VALUES (1, 1);  -- COMPREHENSIVE
+
+INSERT INTO fortune_result_category (fortune_result_id, fortune_category_id)
+VALUES (1, 2);  -- WEALTH
+
+INSERT INTO fortune_result_category (fortune_result_id, fortune_category_id)
+VALUES (1, 3);  -- HEALTH
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
