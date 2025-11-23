@@ -1751,12 +1751,12 @@ public class FortuneService {
     @Transactional
     public void save(Member member, SaveFortuneRequest request, BirthInfoForm birthInfo) {
         // 비즈니스 규칙 검증
-        validateBusinessRules(member, request, birthInfo);
+        validateBusinessRules(member, request);
 
         FortuneResult fortuneResult = FortuneResult.create(member, request, birthInfo);
     }
 
-    private void validateBusinessRules(Member member, SaveFortuneRequest request, BirthInfoForm birthInfo) {
+    private void validateBusinessRules(Member member, SaveFortuneRequest request) {
         // 회원 검증
         if (member == null || !member.isActive()) {
             throw new IllegalArgumentException("유효하지 않은 회원입니다.");
@@ -1920,7 +1920,7 @@ INSERT INTO fortune_result_category (fortune_result_id, fortune_category_id)
 VALUES (1, 3);  -- HEALTH
 ```
 
-### 양방향 연관관계 편의 메서드
+#### 양방향 연관관계 편의 메서드
 
 ```java
 @Entity
