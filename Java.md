@@ -2103,7 +2103,7 @@ public class WithMockCustomUserSecurityContextFactory
         // 인증이 완료된 상태를 가정하므로 검증 과정 생략
         Authentication auth = new UsernamePasswordAuthenticationToken(
             userDetails,                    // Principal
-            userDetails.getPassword(),      // Credentials
+            null,      // Credentials, 보안상의 이유로 credentials (비밀번호)를 null로 설정
             userDetails.getAuthorities()    // Authorities
         );
 
@@ -2170,6 +2170,25 @@ public ResponseEntity<?> save(
 ) {
     fortuneService.save(...);
     return ResponseEntity.ok(...);
+}
+```
+
+```java
+// @RestControllerAdvice
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<ApiResponse> handleValidation(
+    MethodArgumentNotValidException ex
+) {
+  log.warn("[API Validation 실패] {}", ex.getMessage());
+
+  Map<String, String> errors = new HashMap<>();
+  ex.getBindingResult().getFieldErrors().forEach(error ->
+      errors.put(error.getField(), error.getDefaultMessage())
+  );
+
+  return ResponseEntity.badRequest()
+                        .body(
+                            ApiResponse.error(ErrorCode.ARGUMENT_NOT_VALID.getMessage(), errors));
 }
 ```
 
