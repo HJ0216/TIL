@@ -974,6 +974,20 @@ spring:
 
 4. Spring Security 관련 설정 등록
 
+#### authenticationEntryPoint
+
+```java
+.exceptionHandling(handling -> handling
+  .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+);
+```
+
+- 미인증 시 Spring Security 기본 동작:
+
+  - 폼 로그인 설정한 경우, 로그인 페이지로 리다이렉트
+  - 폼 로그인 설정을 하지 않았을 경우, 403(Forbidden)을 반환
+  - 명시적으로 401(Unauthorized) 상태 코드를 반환하기 위해 사용
+
 ### Spring Boot 프로파일 활성화 우선순위
 
 1. 커맨드 라인 인자
@@ -2040,6 +2054,142 @@ category.setFortuneResult(result); // 객체 바로 설정
 
 result.addCategory(category);
 fortuneResultRepository.save(result); // Cascade로 category도 자동 저장!
+```
+
+### WithMockCustomUser 생성
+
+1. WithMockCustomUser.java
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+// 어노테이션이 런타임에도 유지되도록 설정
+@WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
+// SecurityContext를 만들 Factory 클래스 지정
+public @interface WithMockCustomUser {
+  // 커스텀 어노테이션 정의
+
+    long id() default 1L;
+    // @WithMockCustomUser(id = 2L) 이런 식으로 사용 가능
+
+    String email() default "test@test.com";
+
+    String nickname() default "테스터";
+}
+```
+
+2. WithMockCustomUserSecurityContextFactory.java
+
+```java
+public class WithMockCustomUserSecurityContextFactory
+    implements WithSecurityContextFactory<WithMockCustomUser> {
+
+    @Override
+    public SecurityContext createSecurityContext(WithMockCustomUser annotation) {
+
+        // 1. Member 객체 생성
+        Member member = new Member(
+            annotation.email(),
+            "encodedPassword",
+            annotation.nickname()
+        );
+
+        // 2. ID 설정 (private 필드라서 Reflection 사용)
+        ReflectionTestUtils.setField(member, "id", annotation.id());
+
+        // 3. CustomUserDetails 생성
+        CustomUserDetails userDetails = new CustomUserDetails(member);
+
+        // 4. Authentication 객체 생성
+        // 인증이 완료된 상태를 가정하므로 검증 과정 생략
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+            userDetails,                    // Principal
+            null,      // Credentials, 보안상의 이유로 credentials (비밀번호)를 null로 설정
+            userDetails.getAuthorities()    // Authorities
+        );
+
+        // 5. SecurityContext 생성 및 Authentication 설정
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+
+        return context;
+    }
+}
+```
+
+#### UsernamePasswordAuthenticationToken
+
+```java
+new UsernamePasswordAuthenticationToken(
+    request.getEmail(),      // 1️⃣ principal: "test@test.com"
+    request.getPassword()    // 2️⃣ credentials: "1234"
+    // 3️⃣ authorities 없음 → 2개 파라미터 생성자 호출
+)
+// authenticated = false
+
+new UsernamePasswordAuthenticationToken(
+    userDetails,                  // 1️⃣ principal: CustomUserDetails 객체
+    userDetails.getPassword(),    // 2️⃣ credentials: "$2a$10$..."
+    userDetails.getAuthorities()  // 3️⃣ authorities: [ROLE_USER]
+    // 3개 파라미터 생성자 호출
+)
+// authenticated = true
+```
+
+### `@Valid` 검증 실패
+
+1. BindingResult가 있는 경우
+
+```java
+@Controller
+public class SignupController {
+
+    @PostMapping("/signup")
+    public String signup(
+        @Valid @ModelAttribute SignupForm signupForm, // @Valid
+        BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) { // 예외 안 던지고 여기서 처리
+            return "auth/signup"; // 폼으로 돌아감
+        }
+
+        authService.signup(...);
+        return "redirect:/";
+    }
+}
+```
+
+2. BindingResult가 없는 경우
+
+- Validation 실패 → MethodArgumentNotValidException 발생
+- Controller 메서드 실행 안 됨
+- `@RestControllerAdvice`가 예외 처리
+
+```java
+public ResponseEntity<?> save(
+    @Valid @RequestBody SaveFortuneRequest request  // BindingResult 없음!
+) {
+    fortuneService.save(...);
+    return ResponseEntity.ok(...);
+}
+```
+
+```java
+// @RestControllerAdvice
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<ApiResponse> handleValidation(
+    MethodArgumentNotValidException ex
+) {
+  log.warn("[API Validation 실패] {}", ex.getMessage());
+
+  Map<String, String> errors = new HashMap<>();
+  ex.getBindingResult().getFieldErrors().forEach(error ->
+      errors.put(error.getField(), error.getDefaultMessage())
+  );
+
+  return ResponseEntity.badRequest()
+                        .body(
+                            ApiResponse.error(ErrorCode.ARGUMENT_NOT_VALID.getMessage(), errors));
+}
 ```
 
 ### 📚 참고
