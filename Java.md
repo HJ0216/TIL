@@ -2221,6 +2221,8 @@ public ResponseEntity<ApiResponse> handleValidation(
 ```java
 public class UserFixture {
 
+    private UserFixture() {}
+
     public static User createUser() {
         return User.builder()
             .name("홍길동")
@@ -2248,11 +2250,14 @@ public class UserFixture {
 ```
 
 ```java
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @Autowired
+    @Mock
     private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService
 
     @Test
     void 사용자_생성_테스트() {
