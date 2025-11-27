@@ -2192,6 +2192,92 @@ public ResponseEntity<ApiResponse> handleValidation(
 }
 ```
 
+### 테스트하기 좋은 코드
+
+1. 생성자 주입 사용
+
+- 객체를 직접 생성할 수 있게 해서 단위 테스트가 빠르고 쉬워짐
+
+2. final 필드로 불변성 보장
+
+- final은 생성 후 변경 불가 → 테스트 중 상태가 안 바뀜 → 예측 가능하고 안전함
+
+3. 의존성을 외부에서 주입
+
+- 의존성을 Mock으로 교체 가능
+
+4. 설정값도 생성자로 주입
+
+- 테스트마다 다른 값 사용 가능 → 다양한 시나리오 테스트 쉬움
+
+5. static 메서드 최소화
+
+- static은 Mock 불가 → 제어 불가능한 값(시간, 랜덤)을 제어 가능하게 → 안정적인 테스트
+
+### Entity Fixture
+
+- 테스트에 필요한 엔티티 객체를 미리 생성해두는 패턴
+
+```java
+public class UserFixture {
+
+    private UserFixture() {}
+
+    public static User createUser() {
+        return User.builder()
+            .name("홍길동")
+            .email("hong@example.com")
+            .age(30)
+            .build();
+    }
+
+    public static User createUser(String name, String email) {
+        return User.builder()
+            .name(name)
+            .email(email)
+            .age(30)
+            .build();
+    }
+
+    public static User createAdminUser() {
+        return User.builder()
+            .name("관리자")
+            .email("admin@example.com")
+            .role(Role.ADMIN)
+            .build();
+    }
+}
+```
+
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService
+
+    @Test
+    void 사용자_생성_테스트() {
+        User user = UserFixture.createUser();
+
+        User savedUser = userRepository.save(user);
+
+        assertNotNull(savedUser.getId());
+        assertEquals("홍길동", savedUser.getName());
+    }
+
+    @Test
+    void 관리자_권한_테스트() {
+        User admin = UserFixture.createAdminUser();
+
+        assertTrue(admin.isAdmin());
+    }
+}
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
