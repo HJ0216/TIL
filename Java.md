@@ -2278,6 +2278,313 @@ class UserServiceTest {
 }
 ```
 
+### N+1문제(JPA)
+
+#### 문제
+
+```java
+// FortuneResultCategory
+@ManyToOne
+private FortuneResult fortuneResult;
+// FK가 있으므로 FortuneResultId 값으로 조회 가능
+
+// FortuneCategory
+@Id
+private int id;
+private FortuneType fortuneType;
+// FK 없으므로 FortuneResultCategoryId 값으로 조회 불가능
+// → FortuneCategory 조회 시, FortuneCategoryId마다 조회 쿼리 발생
+```
+
+#### 해결 방법
+
+1. `@BatchSize`
+
+- LAZY 로딩할 때, 한 번에 몇 개씩 묶어서 가져올까
+  - 프록시 초기화할 때, 대기 중인 프록시들을 최대 n개까지 모아서 IN 쿼리로 한 번에 가져옴
+- 전역 설정 후, 필요 시 개별 설정
+- Fetch Join보다는 약간 느림
+- 고려 사항
+  - 너무 작으면 (10):
+    - 쿼리가 많이 나감
+    - 예: 1000개 조회 시 → 100번 쿼리
+  - 너무 크면 (1000):
+    - IN 절이 너무 길어짐
+    - DB에 부담
+    - 메모리 사용 증가
+
+```yml
+spring:
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100 # 모든 엔티티에 적용
+```
+
+```java
+@Entity
+public class FortuneResultCategory {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @BatchSize(size = 100)
+    private FortuneCategory fortuneCategory;
+}
+
+/**
+ * 설정 전
+FortuneCategory를 6번 조회
+SELECT * FROM fortune_category WHERE id = 2
+SELECT * FROM fortune_category WHERE id = 3
+SELECT * FROM fortune_category WHERE id = 4
+SELECT * FROM fortune_category WHERE id = 5
+SELECT * FROM fortune_category WHERE id = 7
+SELECT * FROM fortune_category WHERE id = 8
+
+  * 설정 후
+FortuneCategory를 1번에 조회
+SELECT * FROM fortune_category
+WHERE id IN (2, 3, 4, 5, 7, 8)
+*/
+```
+
+2. `Fetch Join`
+
+- 연관된 엔티티를 한 번의 쿼리로 함께 가져옴
+- 성능이 중요한 API에서 사용
+
+```java
+@Query("SELECT DISTINCT fr FROM FortuneResult fr " +
+       "LEFT JOIN FETCH fr.categories c " +
+       "LEFT JOIN FETCH c.fortuneCategory " +
+       "WHERE fr.member.id = :memberId AND fr.isActive = true")
+List<FortuneResult> findAllByMemberIdWithCategories(@Param("memberId") Long memberId);
+
+/**
+SELECT
+    fr.id,      c.id,       fc.id
+    fr.title,   c.id,       fc.fortune_type
+FROM fortune_result fr
+JOIN fortune_result_category c ON fr.id = c.fortune_result_id
+JOIN fortune_category fc ON c.fortune_category_id = fc.id
+
+-- 결과 (카테시안 곱)
+fr.id | fr.title  | c.id | fc.id | fc.type
+------|-----------|------|-------|--------
+1     | "2025운세" | 1    | 2     | LOVE
+1     | "2025운세" | 2    | 3     | MONEY    ← FortuneResult 중복!
+1     | "2025운세" | 3    | 4     | HEALTH   ← FortuneResult 중복!
+*/
+```
+
+- 카테시안 곱
+
+  - 메모리 증가 가능
+  - 네트워크 오버헤드
+  - MultipleBagFetchException
+    - Bag = 순서 없는 컬렉션 (중복 허용)
+  - 추가 작업 필요
+    - 8 rows → 1개의 FortuneResult 객체로 변환
+
+```java
+// OneToMany가 2개 이상일 때
+@Query("SELECT fr FROM FortuneResult fr
+        JOIN FETCH fr.categories
+        JOIN FETCH fr.items")  // ← MultipleBagFetchException!
+
+// 데이터가 엄청 많을 때
+// FortuneResult 1000개 × Category 평균 8개 = 8000 rows
+// → 메모리 부족 가능
+```
+
+- MultipleBagFetchException
+- 해결 방법
+  - 쿼리 2번 작성
+    - `@Query("SELECT fr FROM FortuneResult fr JOIN FETCH fr.categories")`
+    - `@Query("SELECT fr FROM FortuneResult fr JOIN FETCH fr.items")`
+  - Set으로 설정 시, Hibernate는 자동으로 중복 제거
+    - List 사용 시 Hibernate는 중복이 아닌지 의도적인 중복인지 알 수 없게 됨
+
+```java
+@Entity
+public class FortuneResult {
+    @OneToMany
+    private List<Category> categories;  // Bag 1
+
+    @OneToMany
+    private List<Item> items;           // Bag 2
+}
+
+@Query("SELECT fr FROM FortuneResult fr
+        JOIN FETCH fr.categories
+        JOIN FETCH fr.items")
+```
+
+```sql
+SELECT fr.*, c.*, i.*
+FROM fortune_result fr
+JOIN fortune_result_category c ON ...
+JOIN fortune_result_item i ON ...
+
+
+-- 데이터
+FortuneResult 1개
+├─ categories: [C1, C2, C3]
+└─ items: [I1, I2]
+
+-- 데이터베이스 결과 (카테시안 곱)
+fr.id | c.id | i.id
+------|------|-----
+1     | C1   | I1
+1     | C1   | I2   ← C1이 I1, I2와 각각 조합
+1     | C2   | I1
+1     | C2   | I2
+1     | C3   | I1
+1     | C3   | I2
+------|------|-----
+6 rows!
+```
+
+```java
+// Hibernate: "이 6개 row를 어떻게 변환하지?"
+
+// Row 1: FR(1) + C1 + I1
+//   → categories에 C1 추가, items에 I1 추가
+
+// Row 2: FR(1) + C1 + I2
+//   → categories에 C1 추가? (이미 있는데?)
+//   → items에 I2 추가
+
+// Row 3: FR(1) + C2 + I1
+//   → categories에 C2 추가
+//   → items에 I1 추가? (이미 있는데?)
+
+// Hibernate: "뭐가 뭔지 모르겠어! 에러!"
+// → MultipleBagFetchException 발생! 💥
+```
+
+```txt
+데이터
+FortuneResult(id=1, title="2025운세")
+├─ categories
+│   ├─ Category(id=1, type=LOVE)
+│   ├─ Category(id=2, type=MONEY)
+│   └─ Category(id=3, type=HEALTH)
+└─ items
+    ├─ Item(id=1, content="좋음")
+    └─ Item(id=2, content="나쁨")
+
+JOIN 결과 (6 rows)
+Row 1: FR(1) + Category(LOVE)   + Item(좋음)
+Row 2: FR(1) + Category(LOVE)   + Item(나쁨)  ← LOVE 중복
+Row 3: FR(1) + Category(MONEY)  + Item(좋음)
+Row 4: FR(1) + Category(MONEY)  + Item(나쁨)  ← MONEY 중복
+Row 5: FR(1) + Category(HEALTH) + Item(좋음)
+Row 6: FR(1) + Category(HEALTH) + Item(나쁨)  ← HEALTH 중복
+```
+
+```java
+// 목표: 이렇게 만들고 싶음
+FortuneResult(
+  id=1,
+  categories=[LOVE, MONEY, HEALTH],  // 3개
+  items=[좋음, 나쁨]                  // 2개
+)
+
+// 문제: 6개 row에서 어떻게?
+// Row 1 처리 → categories=[LOVE], items=[좋음]
+// Row 2 처리 → categories=[LOVE, LOVE?], items=[좋음, 나쁨]  ← LOVE 중복?
+// Row 3 처리 → categories=[LOVE, LOVE?, MONEY], items=[좋음, 나쁨, 좋음?]  ← 좋음 중복?
+
+// Hibernate: "List는 중복 허용하는데, 이게 진짜 중복인지 같은 객체인지 모르겠어!"
+// → 포기하고 에러 발생!
+```
+
+- Distinct의 역할
+  - SQL에는 적용 안 됨 (이미 카테시안 곱 실행)
+  - Hibernate가 메모리에서 중복 제거 보장
+
+1. DISTINCT 없을 때
+
+```java
+@Query("SELECT fr FROM FortuneResult fr
+        JOIN FETCH fr.categories")
+List<FortuneResult> find();
+```
+
+```sql
+SELECT fr.*, c.*
+FROM fortune_result fr
+JOIN fortune_result_category c ON fr.id = c.fortune_result_id
+
+-- 데이터베이스 결과
+fr.id | fr.title  | c.id | c.type
+------|-----------|------|--------
+1     | "2025운세" | 1    | LOVE
+1     | "2025운세" | 2    | MONEY
+1     | "2025운세" | 3    | HEALTH
+```
+
+```java
+// Hibernate가 Java 객체로 변환
+[
+  FortuneResult(id=1, categories=[LOVE]),
+  FortuneResult(id=1, categories=[MONEY]),     // 중복!
+  FortuneResult(id=1, categories=[HEALTH])     // 중복!
+]
+```
+
+2. DISTINCT 있을 때
+
+```java
+@Query("SELECT DISTINCT fr FROM FortuneResult fr
+        JOIN FETCH fr.categories")
+List<FortuneResult> find();
+```
+
+```sql
+SELECT fr.*, c.*
+FROM fortune_result fr
+JOIN fortune_result_category c ON fr.id = c.fortune_result_id
+-- DISTINCT 없음!
+
+--데이터베이스 결과
+fr.id | fr.title  | c.id | c.type
+------|-----------|------|--------
+1     | "2025운세" | 1    | LOVE
+1     | "2025운세" | 2    | MONEY
+1     | "2025운세" | 3    | HEALTH
+```
+
+```java
+// Hibernate가 Java 객체로 변환
+// 1단계: DB에서 3 rows 받음
+ResultSet:
+  Row 1: FR(id=1), Category(LOVE)
+  Row 2: FR(id=1), Category(MONEY)
+  Row 3: FR(id=1), Category(HEALTH)
+
+// 2단계: Hibernate가 메모리에서 처리
+// "어? id=1이 3번 나왔네? DISTINCT 있으니까 하나로 합치자!"
+
+// 3단계: 최종 결과
+[
+  FortuneResult(id=1, categories=[LOVE, MONEY, HEALTH])  // 하나로 합쳐짐!
+]
+// size = 1  ✅
+```
+
+- 일반 JOIN
+  - 연관된 Entity는 LAZY 로딩 (나중에 N+1 발생할 수 있음)
+
+```java
+// 일반 JOIN
+FortuneResult result = repository.find...();
+result.getCategories();  // ← 여기서 추가 쿼리! (N+1)
+
+// FETCH JOIN
+FortuneResult result = repository.find...();
+result.getCategories();  // ← 이미 로딩됨! (추가 쿼리 없음)
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
