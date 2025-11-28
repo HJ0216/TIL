@@ -2280,7 +2280,20 @@ class UserServiceTest {
 
 ### N+1문제(JPA)
 
-#### 문제
+- 보통 특정 엔티티 목록을 조회한 후, 루프를 돌면서 연관된 엔티티에 접근할 때 성능 문제 발생
+
+```java
+// 1. 특정 회원의 모든 운세 결과를 조회 (쿼리 1번)
+// SQL: SELECT * FROM fortune_result WHERE member_id = ?
+List<FortuneResult> results = fortuneResultRepository.findAllByMemberId(memberId);
+
+// 2. 각 운세 결과에 포함된 카테고리 정보에 접근 (결과가 N개일 경우 N번의 추가 쿼리 발생)
+for (FortuneResult result : results) {
+    // getCategories()는 LAZY 로딩이므로, 실제 데이터에 접근하는 시점에 쿼리가 실행됨
+    // SQL: SELECT * FROM fortune_category WHERE id = ? (N번 실행)
+    String firstCategoryName = result.getCategories().get(0).getFortuneCategory().getName(); // N+1 문제 발생 지점
+}
+```
 
 ```java
 // FortuneResultCategory
@@ -2400,8 +2413,9 @@ fr.id | fr.title  | c.id | fc.id | fc.type
   - 쿼리 2번 작성
     - `@Query("SELECT fr FROM FortuneResult fr JOIN FETCH fr.categories")`
     - `@Query("SELECT fr FROM FortuneResult fr JOIN FETCH fr.items")`
-  - Set으로 설정 시, Hibernate는 자동으로 중복 제거
-    - List 사용 시 Hibernate는 중복이 아닌지 의도적인 중복인지 알 수 없게 됨
+  - `Set`으로 컬렉션 타입 변경
+    - `Set`은 중복을 허용하지 않는 자료구조이므로, Hibernate가 Cartesian 곱으로 인해 발생한 중복 데이터를 명확히 식별하고 제거할 수 있음
+    - `List`는 중복을 허용하기 때문에, Hibernate는 JOIN으로 발생한 중복이 의도된 것인지 아닌지 판단할 수 없어 예외를 발생
 
 ```java
 @Entity
@@ -2499,8 +2513,9 @@ FortuneResult(
 ```
 
 - Distinct의 역할
-  - SQL에는 적용 안 됨 (이미 카테시안 곱 실행)
-  - Hibernate가 메모리에서 중복 제거 보장
+  - SQL의 `DISTINCT`와는 다르게 동작
+    - SQL에 `DISTINCT`가 적용되더라도, JOIN된 컬럼들 때문에 row 데이터가 달라져서 중복이 제거되지 않음(이미 카테시안 곱 실행)
+  - JPQL의 `DISTINCT`는 추가적으로, 애플리케이션 레벨에서 조회된 루트 엔티티(root entity)의 중복을 제거하는 기능을 보장
 
 1. DISTINCT 없을 때
 
