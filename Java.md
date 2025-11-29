@@ -2684,7 +2684,7 @@ WHERE fortune_result_id IN (1, 2, 3, ..., 10);
 
 #### 코드 비교
 
-- `@EntityGraph `
+- `@EntityGraph`
 
 ```java
 // Repository
@@ -2733,18 +2733,18 @@ result.getItems();       // 이 시점에 쿼리 나감 (Lazy)
 -- 1번: FortuneResult만
 SELECT * FROM fortune_result WHERE id = 1;
 
--- 2번: categories 접근할 때
+-- 2번: categories 접근할 때(만약 여러 FortuneResult를 조회했다면 IN 절에 ID 목록이 들어감)
 SELECT * FROM fortune_result_category
-WHERE fortune_result_id IN (1);  -- Batch Size 적용
+WHERE fortune_result_id IN (1);
 
--- 3번: items 접근할 때
+-- 3번: items 접근할 때(만약 여러 FortuneResult를 조회했다면 IN 절에 ID 목록이 들어감)
 SELECT * FROM fortune_result_item
-WHERE fortune_result_id IN (1);  -- Batch Size 적용
+WHERE fortune_result_id IN (1);
 ```
 
 ### `@EntityGraph` vs `Fetch Join`
 
--`@EntityGraph`
+- `@EntityGraph`
 
 - 조건 간단함
 - 정렬 필요 없음
@@ -2805,7 +2805,7 @@ Optional<FortuneResult> findById(Long id);
 
 // FortuneResult(1) - Category(1)
 // FortuneResult(1) - Category(2)
-/ FortuneResult(1) - Category(3)
+// FortuneResult(1) - Category(3)
 ```
 
 2. 여러 개 조회 (List로 받기)
