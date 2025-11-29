@@ -2600,6 +2600,232 @@ FortuneResult result = repository.find...();
 result.getCategories();  // ← 이미 로딩됨! (추가 쿼리 없음)
 ```
 
+### `@EntityGraph` vs `@BatchSize`
+
+- `@EntityGraph`
+
+```java
+@EntityGraph(attributePaths = {"categories", "items"})
+Optional<FortuneResult> findById(Long id);
+```
+
+```sql
+-- 한 방에 모든 걸 JOIN으로 가져오려고 시도!
+-- List 2개를 동시에 JOIN 못 함 ❌
+SELECT
+    fr.*,
+    c.*,   -- categories를 JOIN으로!
+    i.*    -- items를 JOIN으로!
+FROM fortune_result fr
+LEFT JOIN fortune_result_category c ON c.fortune_result_id = fr.id
+LEFT JOIN fortune_result_item i ON i.fortune_result_id = fr.id
+WHERE fr.id = 1;
+```
+
+- `@BatchSize`
+
+```java
+// @EntityGraph 없음!
+Optional<FortuneResult> findById(Long id);
+
+@BatchSize(size = 10)
+private List<FortuneResultCategory> categories;
+```
+
+```sql
+-- 여러 쿼리로 나눠서 가져옴
+
+-- 1번: FortuneResult만
+SELECT * FROM fortune_result WHERE id = 1;
+
+-- 2번: categories 접근할 때 (Lazy Loading)
+SELECT * FROM fortune_result_category
+WHERE fortune_result_id IN (1, 2, 3, ..., 10);  -- Batch로!
+
+-- 3번: items 접근할 때 (Lazy Loading)
+SELECT * FROM fortune_result_item
+WHERE fortune_result_id IN (1, 2, 3, ..., 10);
+```
+
+#### 시각적 비교
+
+- **@EntityGraph (한 방에 JOIN)**
+  - List 2개를 동시에 JOIN 하면 **카테시안 곱** 발생
+  - Hibernate가 막아버림 (MultipleBagFetchException)
+
+```txt
+┌──────────────┐
+│ FortuneResult│
+│     +        │  ← 한 번의 쿼리로
+│  categories  │     모든 걸 JOIN!
+│     +        │
+│    items     │
+└──────────────┘
+      ↓
+[단일 거대 쿼리]
+```
+
+- **@BatchSize (나눠서 가져오기)**
+  - 쿼리를 나눠서 실행
+
+```txt
+┌──────────────┐
+│ FortuneResult│ ← 1번 쿼리
+└──────────────┘
+↓
+┌──────────────┐
+│ categories │ ← 2번 쿼리 (Lazy)
+└──────────────┘
+↓
+┌──────────────┐
+│ items │ ← 3번 쿼리 (Lazy)
+└──────────────┘
+```
+
+#### 코드 비교
+
+- `@EntityGraph`
+
+```java
+// Repository
+@EntityGraph(attributePaths = {"categories", "items"})
+Optional<FortuneResult> findById(Long id);
+
+// 사용
+FortuneResult result = repository.findById(1L).get();
+// ↑ 이 시점에 categories, items 전부 로딩됨! (JOIN 쿼리 1번)
+
+result.getCategories();  // 이미 로딩됨 (쿼리 안 나감)
+result.getItems();       // 이미 로딩됨 (쿼리 안 나감)
+```
+
+```sql
+-- 딱 1번! (하지만 List 2개면 에러)
+SELECT fr.*, c.*, i.*
+FROM fortune_result fr
+LEFT JOIN fortune_result_category c ...
+LEFT JOIN fortune_result_item i ...
+WHERE fr.id = 1;
+```
+
+- `@BatchSize`
+
+```java
+// Repository - @EntityGraph 없음!
+Optional<FortuneResult> findById(Long id);
+
+// Entity
+@BatchSize(size = 10)
+private List<FortuneResultCategory> categories;
+
+@BatchSize(size = 10)
+private List<FortuneResultItem> items;
+
+// 사용
+FortuneResult result = repository.findById(1L).get();
+// ↑ 이 시점엔 FortuneResult만 로딩됨! (쿼리 1번)
+
+result.getCategories();  // 이 시점에 쿼리 나감 (Lazy)
+result.getItems();       // 이 시점에 쿼리 나감 (Lazy)
+```
+
+```sql
+-- 1번: FortuneResult만
+SELECT * FROM fortune_result WHERE id = 1;
+
+-- 2번: categories 접근할 때(만약 여러 FortuneResult를 조회했다면 IN 절에 ID 목록이 들어감)
+SELECT * FROM fortune_result_category
+WHERE fortune_result_id IN (1);
+
+-- 3번: items 접근할 때(만약 여러 FortuneResult를 조회했다면 IN 절에 ID 목록이 들어감)
+SELECT * FROM fortune_result_item
+WHERE fortune_result_id IN (1);
+```
+
+### `@EntityGraph` vs `Fetch Join`
+
+- `@EntityGraph`
+
+- 조건 간단함
+- 정렬 필요 없음
+- 1단계만 로딩
+
+```java
+// 1. ID로 조회
+@EntityGraph(attributePaths = {"member", "categories"})
+Optional<FortuneResult> findById(Long id);
+
+// 2. 간단한 조건
+@EntityGraph(attributePaths = {"member"})
+Optional<FortuneResult> findByIdAndIsActiveTrue(Long id);
+
+// 3. 전체 조회
+@EntityGraph(attributePaths = {"writer"})
+List<Post> findAll();
+```
+
+- `Fetch Join`
+  - 2단계 로딩 (categories.fortuneCategory)
+  - DISTINCT 필요
+  - ORDER BY 필요
+  - WHERE 조건 복잡
+
+```java
+// 1. 2단계 이상 로딩
+@Query("SELECT f FROM FortuneResult f "
+    + "JOIN FETCH f.categories c "
+    + "JOIN FETCH c.fortuneCategory fc")
+
+// 2. DISTINCT 필요(목록 조회 시, 일대다 관계)
+@Query("SELECT DISTINCT f FROM FortuneResult f "
+    + "JOIN FETCH f.items")
+
+// 3. 정렬 필요
+@Query("SELECT f FROM FortuneResult f "
+    + "JOIN FETCH f.member "
+    + "ORDER BY f.createdAt DESC")
+
+// 4. 복잡한 WHERE
+@Query("SELECT f FROM FortuneResult f "
+    + "JOIN FETCH f.member m "
+    + "WHERE m.status = 'ACTIVE' AND f.type IN :types")
+```
+
+#### 일대다 관계에서의 선택
+
+1. 1개만 조회 (ID로 찾기)
+
+- ID로 조회 → **FortuneResult 1개만** 나옴
+- 그 1개에 딸린 categories, items 로딩
+- **중복 없음!** (FortuneResult가 1개니까)
+
+```java
+@EntityGraph(attributePaths = {"categories", "items"})
+Optional<FortuneResult> findById(Long id);
+
+// FortuneResult(1) - Category(1)
+// FortuneResult(1) - Category(2)
+// FortuneResult(1) - Category(3)
+```
+
+2. 여러 개 조회 (List로 받기)
+
+- 중복 발생 가능
+
+```java
+// Fetch Join + DISTINCT 필요!
+@Query("SELECT DISTINCT fr FROM FortuneResult fr "
+    + "LEFT JOIN FETCH fr.categories "
+    + "WHERE fr.member.id = :memberId")
+List<FortuneResult> findByMemberId(@Param("memberId") Long memberId);
+
+// Distinct 없으면
+// FortuneResult(1) - Category(1)
+// FortuneResult(1) - Category(2) // 중복 발생
+// FortuneResult(2) - Category(3)
+// FortuneResult(2) - Category(4) // 중복 발생
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
