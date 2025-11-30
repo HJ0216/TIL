@@ -2826,6 +2826,73 @@ List<FortuneResult> findByMemberId(@Param("memberId") Long memberId);
 // FortuneResult(2) - Category(4) // 중복 발생
 ```
 
+### SELECT 쿼리가 발생한 이유
+
+```java
+// FortuneResultRepository
+@EntityGraph(attributePaths = {"categories.fortuneCategory", "items"})
+Optional<FortuneResult> findByIdAndMember_IdAndIsActiveTrue(Long fortuneId, Long memberId);
+
+
+// EntityGraph가 실제로 N+1 문제를 방지하는지 검증하는 테스트
+@Test
+@DisplayName("EntityGraph로 items와 categories를 함께 조회한다 (N+1 없음)")
+void findByIdAndMember_IdAndIsActiveTrue_FetchesItemsAndCategories() {
+  // given
+  FortuneResult saved = fortuneResultRepository.save(result);
+  fortuneResultRepository.flush(); // DB에 실제로 저장
+
+  entityManager.clear();
+  // 영속성 컨텍스트(1차 캐시)를 초기화하여 DB에서 새로 조회하도록 강제함 → 이를 생략하면 캐시된 엔티티를 반환하므로 EntityGraph 동작을 정확히 검증할 수 없음
+
+  // (repository.save 시, 영속성 컨텍스트(JPA가 엔티티를 관리하는 환경)에 캐시됨)
+
+  // when
+  Optional<FortuneResult> found = fortuneResultRepository
+      .findByIdAndMember_IdAndIsActiveTrue(saved.getId(), member.getId());
+  // 실제로 DB 조회 쿼리 실행
+
+  // then
+  assertThat(found).isPresent();
+  FortuneResult foundResult = found.get();
+
+  // 지연 로딩 없이 접근 가능
+  assertThat(foundResult.getItems()).isNotEmpty();
+  assertThat(foundResult.getCategories()).isNotEmpty();
+
+  // 2단계 fetch 확인
+  foundResult.getCategories().forEach(category -> {
+    assertThat(category.getFortuneCategory()).isNotNull();
+    assertThat(category.getFortuneCategory().getFortuneType()).isNotNull();
+  });
+}
+```
+
+```bash
+Hibernate: select null,fc1_0.fortune_type from fortune_category fc1_0 where fc1_0.id=?
+Hibernate: select null,fc1_0.fortune_type from fortune_category fc1_0 where fc1_0.id=?
+Hibernate: select fr1_0.id,fr1_0.ai_type,fr1_0.birth_date,fr1_0.birth_region,fr1_0.birth_time_zone,fr1_0.calendar,c1_0.fortune_result_id,c1_0.id,c1_0.fortune_category_id,fc1_0.id,fc1_0.fortune_type,fr1_0.created_at,fr1_0.gender,fr1_0.is_active,i1_0.fortune_result_id,i1_0.id,i1_0.accuracy,i1_0.content,i1_0.created_at,i1_0.period_value,i1_0.updated_at,fr1_0.member_id,fr1_0.period_type,fr1_0.result_year,fr1_0.title,fr1_0.updated_at from fortune_result fr1_0 left join member m1_0 on m1_0.id=fr1_0.member_id left join fortune_result_category c1_0 on fr1_0.id=c1_0.fortune_result_id left join fortune_category fc1_0 on fc1_0.id=c1_0.fortune_category_id left join fortune_result_item i1_0 on fr1_0.id=i1_0.fortune_result_id where fr1_0.id=? and m1_0.id=? and fr1_0.is_active order by fc1_0.id,i1_0.period_value
+```
+
+- `select fortune_category` 쿼리는 N+1이 아니라, JPA가 FortuneResultCategory를 저장할 때 @manytoone 연관 엔티티(FortuneCategory)를 검증하려고 하는 과정에서 JPA가 FortuneCategory 엔티티를 '조회(validate)'하려고 발생한 SELECT입니다.
+- Fixture 코드에서 CATEGORY_MAP에 미리 만들어 둔 FortuneCategory 엔티티들이 영속성 컨텍스트에 없어서 발생하는 쿼리
+
+```java
+static {
+    CATEGORY_MAP = Map.of(
+        FortuneType.OVERALL, FortuneCategory.create(1, FortuneType.OVERALL),
+        ...
+    );
+}
+```
+
+- FortuneCategory.create(1, ...)는 DB에서 가져온 엔티티가 아니라, 단순히 new FortuneCategory(...) 한 것과 같은 **비영속 엔티티**
+  - 메모리상에만 존재하고 영속성 컨텍스트에 관리되지 않음
+- FortuneResultCategory.create(result, category) 호출 시, JPA는 FortuneResultCategory를 영속화하려고 할 때 내부적으로 다음을 수행
+  - FortuneResultCategory는 @ManyToOne FortuneCategory 를 가짐
+  - JPA는 연관된 Category가 영속 엔티티인지 확인해야 함
+  - Category는 비영속이기 때문에 JPA는 Category.id가 유효한지 조회하려고 SELECT 실행
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
