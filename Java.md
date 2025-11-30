@@ -2843,9 +2843,9 @@ void findByIdAndMember_IdAndIsActiveTrue_FetchesItemsAndCategories() {
   fortuneResultRepository.flush(); // DB에 실제로 저장
 
   entityManager.clear();
-  // repository.save 시, 영속성 컨텍스트(JPA가 엔티티를 관리하는 환경)에 캐시됨
-  // // 영속성 컨텍스트(1차 캐시)를 초기화하여 DB에서 다시 조회하도록 강제
-  // → repository.findById 시, DB 조회 안 하고 1차 캐시(영속성 컨텍스트 내부의 캐시 저장소)에서 가져옴
+  // 영속성 컨텍스트(1차 캐시)를 초기화하여 DB에서 새로 조회하도록 강제함 → 이를 생략하면 캐시된 엔티티를 반환하므로 EntityGraph 동작을 정확히 검증할 수 없음
+
+  // (repository.save 시, 영속성 컨텍스트(JPA가 엔티티를 관리하는 환경)에 캐시됨)
 
   // when
   Optional<FortuneResult> found = fortuneResultRepository
