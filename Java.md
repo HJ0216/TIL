@@ -2893,6 +2893,153 @@ static {
   - JPA는 연관된 Category가 영속 엔티티인지 확인해야 함
   - Category는 비영속이기 때문에 JPA는 Category.id가 유효한지 조회하려고 SELECT 실행
 
+### Set과 `equals`/`hashCode`
+
+- equals/hashCode 미구현 시 Object 기본 구현(참조 비교) 사용 → 같은 데이터여도 다른 객체면 Set에 중복 추가 가능
+
+```java
+// Set에 추가할 때
+set.add(category1);
+// hashCode() 확인 → equals() 확인 → 중복이면 추가 안함
+```
+
+#### 클래스 기반 hashCode
+
+- 영속화 전후 hashCode가 동일하게 유지
+
+```java
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof FortuneResultCategory)) return false;
+    FortuneResultCategory that = (FortuneResultCategory) o;
+    return id != null && Objects.equals(id, that.id);
+    // 영속화 전(id=null) 객체는 항상 다른 객체로 취급
+}
+
+@Override
+public int hashCode() {
+    return getClass().hashCode();
+}
+```
+
+```java
+// 1. Id로 설정 시
+FortuneResultCategory category = new FortuneResultCategory();
+
+// 1. Set에 추가 (id = null)
+set.add(category);
+// hashCode = 0 (null의 hash)
+// Set 내부: {bucket[0] = category}
+
+// 2. DB 저장 후 id 생김
+entityManager.persist(...);  // id = 1L로 변경됨!
+
+// 3. hashCode가 바뀜!
+category.hashCode();  // 이제 1의 hash 값
+// Set 내부에서는 여전히 bucket[0]에 있는데
+// hashCode로 찾으면 bucket[1]을 찾음
+// → Set이 자기가 가진 객체를 못 찾음!
+
+set.contains(category);  // false!? (있는데도!)
+set.remove(category);    // 삭제 안됨!
+```
+
+- 지연 로딩 시 생성되는 프록시 객체와 사용하면 equals()는 true이지만 hashCode()가 달라짐
+
+```java
+FortuneResultCategory real = new FortuneResultCategory();
+real.setId(1L);
+
+FortuneResultCategory proxy = entityManager.getReference(FortuneResultCategory.class, 1L);
+
+// equals: instanceof를 사용하므로 → true (프록시도 FortuneResultCategory의 인스턴스)
+real.equals(proxy); // true
+
+// hashCode: getClass()를 사용하므로 → 다른 값!
+real.getClass();  // FortuneResultCategory.class
+proxy.getClass(); // FortuneResultCategory$HibernateProxy$xxx.class
+
+// 결과: equals는 true인데 hashCode가 달라서 Set에서 문제 발생 가능
+```
+
+#### 고정값 hashCode
+
+```java
+@Override
+public int hashCode() {
+    return 0;
+}
+
+// 모든 FortuneResultCategory가 hashCode = 0
+// → Set의 성능이 떨어짐 (모두 같은 bucket에 저장)
+// O(1) 검색이 O(n)이 됨
+```
+
+#### id 기반 hashCode
+
+- 프록시 객체와도 일관성 있게 동작
+- 영속화 전에 Set에 추가하면, 영속화 후 id가 생기면서 hashCode가 변경되어 Set에서 객체를 찾지 못하는 문제가 발생
+
+```java
+@Override
+public int hashCode() {
+    return Objects.hashCode(id);  // 클래스 정보 빼고 id만
+}
+
+// public static int hashCode(Object o) {
+//     return o != null ? o.hashCode() : 0;
+// }
+// 내부 구현에서 null check 함
+```
+
+#### 사용 방식
+
+- ID 기반 equals/hashCode를 사용
+  - 영속화 전(id가 null) 객체끼리는 동등하지 않다고 처리
+- 엔티티를 Set에 추가하기 전, 반드시 영속화(save)
+
+```java
+// ❌ 나쁜 예 - save 전에 Set에 추가
+Set<FortuneResultCategory> categories = new HashSet<>();
+categories.add(new FortuneResultCategory("행운"));  // id = null
+categories.add(new FortuneResultCategory("재물"));  // id = null
+// equals가 엉망이 됨
+
+// ✅ 좋은 예 - save 후에 Set에 추가
+FortuneResultCategory cat1 = repository.save(new FortuneResultCategory("행운")); // id = 1
+FortuneResultCategory cat2 = repository.save(new FortuneResultCategory("재물")); // id = 2
+Set<FortuneResultCategory> categories = new HashSet<>();
+categories.add(cat1);  // id로 비교 가능
+categories.add(cat2);
+```
+
+- `@OneToMany`
+- @OneToMany 관계에서 CascadeType.ALL을 사용하면 JPA가 부모 엔티티를 영속화할 때 자식 엔티티도 함께 영속화한 후 컬렉션에 추가
+
+```java
+@OneToMany(
+  mappedBy = "fortuneResult",
+  cascade = CascadeType.ALL,
+  orphanRemoval = true)
+@OrderBy("fortuneCategory.id ASC")
+private Set<FortuneResultCategory> categories = new LinkedHashSet<>();
+```
+
+- Child 엔티티는 영속화 전에는 Parent의 Set에 들어가지 않음
+- CascadeType.ALL → persist()할 때 Child도 동시에 영속화
+- 영속화 시점 이후에야 Parent가 Set을 채움
+
+  - `id=null` 상태에서 Set에 들어가는 상황 자체가 발생하지 않음
+
+#### 정리
+
+| 전략        | 특징                    | 장점               | 단점                      |
+| ----------- | ----------------------- | ------------------ | ------------------------- |
+| 클래스 기반 | `getClass().hashCode()` | 영속화 전후 일관성 | 프록시 객체와 불일치      |
+| ID 기반     | `Objects.hashCode(id)`  | 프록시와 일관성    | id null 상태에서 Set 문제 |
+| 고정값      | 상수 반환               | 간단함             | 성능 저하                 |
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)

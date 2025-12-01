@@ -965,3 +965,40 @@ WHERE UserId = 123
       향후 다른 시스템(DB, 언어 라이브러리 등)과 연동 시 비교 결과가 다를 수 있음
   - Column-level binary 비교 필요 시: `utf8mb4_bin`
     - 대소문자 구분 컬럼 예시: Password, Key 등
+
+### 기존 테이블이 있을 때, 컬럼 추가 방법
+
+```sql
+-- 1. 무효값으로 추가
+ALTER TABLE fortune_result_item
+ADD COLUMN period_sequence INT NOT NULL DEFAULT 0;
+
+-- 2. 업데이트
+UPDATE fortune_result_item
+SET period_sequence = CASE period_value
+    WHEN 'JANUARY' THEN 1
+    WHEN 'FEBRUARY' THEN 2
+    WHEN 'MARCH' THEN 3
+    WHEN 'APRIL' THEN 4
+    WHEN 'MAY' THEN 5
+    WHEN 'JUNE' THEN 6
+    WHEN 'JULY' THEN 7
+    WHEN 'AUGUST' THEN 8
+    WHEN 'SEPTEMBER' THEN 9
+    WHEN 'OCTOBER' THEN 10
+    WHEN 'NOVEMBER' THEN 11
+    WHEN 'DECEMBER' THEN 12
+    ELSE 0  -- ⚠️ 예외 케이스도 0
+END;
+
+-- 3. 검증
+SELECT COUNT(*), period_value
+FROM fortune_result_item
+WHERE period_sequence = 0
+GROUP BY period_value;
+-- → 결과 없으면 성공
+
+-- 4. 기본값 제거
+ALTER TABLE fortune_result_item
+ALTER COLUMN period_sequence DROP DEFAULT;
+```
