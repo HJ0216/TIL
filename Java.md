@@ -2901,8 +2901,13 @@ static {
 // Set에 추가할 때
 set.add(category1);
 // hashCode() 확인 → equals() 확인 → 중복이면 추가 안함
+```
 
-// ID 기반 equals/hashCode 구현
+#### 클래스 기반 hashCode
+
+- 영속화 전후 hashCode가 동일하게 유지
+
+```java
 @Override
 public boolean equals(Object o) {
     if (this == o) return true;
@@ -2915,11 +2920,8 @@ public boolean equals(Object o) {
 @Override
 public int hashCode() {
     return getClass().hashCode();
-    // ID 변경(영속화)되어도 hash값이 변하지 않음
 }
 ```
-
-- hashcode를 class로 설정한 이유
 
 ```java
 // 1. Id로 설정 시
@@ -2941,22 +2943,9 @@ category.hashCode();  // 이제 1의 hash 값
 
 set.contains(category);  // false!? (있는데도!)
 set.remove(category);    // 삭제 안됨!
-
-
-// 2. 고정 값
-@Override
-public int hashCode() {
-    return 0;  // 모든 객체가 같은 hash
-}
-
-// 모든 FortuneResultCategory가 hashCode = 0
-// → Set의 성능이 최악이 됨 (모두 같은 bucket에 저장)
-// O(1) 검색이 O(n)이 됨
 ```
 
-#### 프록시 객체
-
-- Hibernate는 지연 로딩(Lazy Loading) 시 실제 엔티티 대신 프록시 객체를 반환
+- 지연 로딩 시 생성되는 프록시 객체와 사용하면 equals()는 true이지만 hashCode()가 달라짐
 
 ```java
 FortuneResultCategory real = new FortuneResultCategory();
@@ -2974,6 +2963,24 @@ proxy.getClass(); // FortuneResultCategory$HibernateProxy$xxx.class
 // 결과: equals는 true인데 hashCode가 달라서 Set에서 문제 발생 가능
 ```
 
+#### 고정값 hashCode
+
+```java
+@Override
+public int hashCode() {
+    return 0;
+}
+
+// 모든 FortuneResultCategory가 hashCode = 0
+// → Set의 성능이 떨어짐 (모두 같은 bucket에 저장)
+// O(1) 검색이 O(n)이 됨
+```
+
+#### id 기반 hashCode
+
+- 프록시 객체와도 일관성 있게 동작
+- 영속화 전에 Set에 추가하면, 영속화 후 id가 생기면서 hashCode가 변경되어 Set에서 객체를 찾지 못하는 문제가 발생
+
 ```java
 @Override
 public int hashCode() {
@@ -2986,9 +2993,11 @@ public int hashCode() {
 // 내부 구현에서 null check 함
 ```
 
-- id != null 체크 추가
+#### 사용 방식
+
+- ID 기반 equals/hashCode를 사용
   - 영속화 전(id가 null) 객체끼리는 동등하지 않다고 처리
-  - Set에 넣기 전에 반드시 save 해야 함
+- 엔티티를 Set에 추가하기 전, 반드시 영속화(save)
 
 ```java
 // ❌ 나쁜 예 - save 전에 Set에 추가
@@ -3006,6 +3015,7 @@ categories.add(cat2);
 ```
 
 - `@OneToMany`
+- @OneToMany 관계에서 CascadeType.ALL을 사용하면 JPA가 부모 엔티티를 영속화할 때 자식 엔티티도 함께 영속화한 후 컬렉션에 추가
 
 ```java
 @OneToMany(
@@ -3021,16 +3031,6 @@ private Set<FortuneResultCategory> categories = new LinkedHashSet<>();
 - 영속화 시점 이후에야 Parent가 Set을 채움
 
   - `id=null` 상태에서 Set에 들어가는 상황 자체가 발생하지 않음
-
-- JPA 내부 동작 순서
-  1. parent(result) persist
-  2. cascade = ALL → children(cat1, item1)도 persist
-  3. DB insert 수행 → 모든 엔티티에 id 생성
-  4. flush
-  5. JPA는 영속성 컨텍스트에서 parent.getItems()를 초기화
-  - 이때 children을 Set에 넣음
-  - 넣을 때는 이미 id가 있는 상태
-  6. parent.categories / parent.items 는 id 존재 상태 객체만 포함
 
 ### 📚 참고
 
