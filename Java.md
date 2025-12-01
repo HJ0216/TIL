@@ -3032,6 +3032,14 @@ private Set<FortuneResultCategory> categories = new LinkedHashSet<>();
 
   - `id=null` 상태에서 Set에 들어가는 상황 자체가 발생하지 않음
 
+#### 정리
+
+| 전략        | 특징                    | 장점               | 단점                      |
+| ----------- | ----------------------- | ------------------ | ------------------------- |
+| 클래스 기반 | `getClass().hashCode()` | 영속화 전후 일관성 | 프록시 객체와 불일치      |
+| ID 기반     | `Objects.hashCode(id)`  | 프록시와 일관성    | id null 상태에서 Set 문제 |
+| 고정값      | 상수 반환               | 간단함             | 성능 저하                 |
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
