@@ -474,7 +474,9 @@ public class UserTestBuilder {
   - primitive wrapper(Long, Integer 등)는 null을 허용하지 않음
   - 이런 경우, 주로 any() 사용
 - nullable(Long.class) → null 매칭 가능
+  - 여기 null이 올 수 있고, 그걸 고려하는 테스트다를 드러낼 때 좋음
 - any() → null 매칭 가능
+  - 가장 일반적으로 사용
 
 ### MockMvc
 
@@ -3153,7 +3155,26 @@ public class RedisSessionConfig {
   - 하지만 세션에는 옛날 Member 엔티티 그대로 남아있음
 - Redis 메모리 낭비
 
-**세션에는 최소 정보만 저장**
+#### 세션에는 최소 정보만 저장
+
+- 사용자 ID, 닉네임, 권한 등 꼭 필요한 정보만 담은 가벼운 DTO(Data Transfer Object)를 만들어 세션에 저장
+- DTO는 `Serializable` 인터페이스를 구현
+
+```java
+public class UserSessionDto implements Serializable {
+    private static final long serialVersionUID = 1L; // 직렬화 버전 UID
+    private Long id;
+    private String nickname;
+    private String role;
+    // 생성자, Getter 등
+}
+
+- serialVersionUID
+  - 코드가 조금만 변해도 UID가 달라져서 역직렬화가 깨질 위험이 있음
+  - 명시적으로 UID를 고정해두면 동일한 클래스 구조라면 안정적으로 역직렬화 가능
+    - 만일, Java가 컴파일러가 자동 생성한 UID를 사용할 경우, 필드 하나만 추가해도 UID가 달라짐 → Redis 같은 세션 저장소에 저장된 이전 객체와 호환 안 됨
+
+```
 
 ### 📚 참고
 
