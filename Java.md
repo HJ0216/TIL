@@ -466,6 +466,18 @@ public class UserTestBuilder {
   - `given(...).willThrow(new Exception());`
   - `then(mock).should().method();`
 
+#### Mockito argument matching
+
+- any(Request.class) → null 매칭 가능
+  - 객체 타입(Object 타입)은 null을 허용
+- any(Long.class) → null 을 매칭 못함
+  - primitive wrapper(Long, Integer 등)는 null을 허용하지 않음
+  - 이런 경우, 주로 any() 사용
+- nullable(Long.class) → null 매칭 가능
+  - 여기 null이 올 수 있고, 그걸 고려하는 테스트다를 드러낼 때 좋음
+- any() → null 매칭 가능
+  - 가장 일반적으로 사용
+
 ### MockMvc
 
 - 실제 서버를 띄우지 않고도 Controller를 테스트할 수 있게 해주는 Spring의 테스트 도구
@@ -3039,6 +3051,129 @@ private Set<FortuneResultCategory> categories = new LinkedHashSet<>();
 | 클래스 기반 | `getClass().hashCode()` | 영속화 전후 일관성 | 프록시 객체와 불일치      |
 | ID 기반     | `Objects.hashCode(id)`  | 프록시와 일관성    | id null 상태에서 Set 문제 |
 | 고정값      | 상수 반환               | 간단함             | 성능 저하                 |
+
+### Redis Session
+
+- 서버 인스턴스가 여러 개여도 세션 공유 가능
+- 서버 재시작해도 세션 유지됨
+- 메모리 기반으로 속도가 빠름 → 인증 요청, 사용자 상태 정보 조회에 적합
+
+#### 설정
+
+1. 의존성 추가
+
+```java
+dependencies {
+    implementation 'org.springframework.session:spring-session-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+}
+```
+
+2. docker-compose.redis.yml
+
+```yml
+services:
+  redis: # 실제 Redis 서버
+    image: redis:7.2 # Redis 공식 Docker 이미지 7.2 버전을 사용
+    container_name: redis-local
+    ports:
+      - '6379:6379' # PC(호스트)에서 6379 포트로 접근하면 Docker 컨테이너 내부의 6379로 연결됨
+    command: ['redis-server', '--appendonly', 'yes']
+    # Docker 컨테이너 안에서 Redis 서버를 실행할 때 추가 옵션을 적용하는 명령
+    # redis-server Redis 실행 명령어
+    # --appendonly yes 옵션, Redis 데이터를 디스크에 영구 저장(AOF, Append Only File)
+    volumes:
+      - redis-data:/data # 컨테이너 내부 폴더 /data를 로컬 볼륨 redis-data에 저장
+
+  redis-insight: # Redis 모니터링/관리 웹 UI
+    image: redis/redisinsight:latest
+    container_name: redis-insight
+    ports:
+      - '5540:5540'
+    depends_on:
+      - redis
+
+volumes:
+  redis-data: # Docker가 내부적으로 redis-data라는 persistent volume을 생성해서 데이터 유지
+```
+
+- 도커 관련 명령어
+
+```bash
+docker compose -f docker-compose.redis.yml up -d
+docker compose -f docker-compose.redis.yml down
+```
+
+3. application-local.yml 설정
+
+- 운영은 AWS이므로 Docker 기반 Redis 사용
+  - Docker로 Redis 설치하면 local이나 AWS나 동일한 Redis를 사용하게 되므로 관리가 편리
+
+```yml
+spring:
+  redis:
+    host: localhost
+    port: 6379
+
+  session:
+    store-type: redis
+    timeout: 30m
+```
+
+4. @EnableRedisHttpSession 추가
+
+- 세션이 Redis에 저장됨
+  - 기존: 로컬에서 띄운 서버 → 로컬 JVM 메모리 안에 세션 저장
+- WAS memory session(In-memory session, Tomcat session)은 비활성화됨
+- JSESSIONID는 Redis 기반으로 변경됨
+
+```java
+@Configuration
+@EnableRedisHttpSession
+public class RedisSessionConfig {
+}
+```
+
+5. RedisInsight에서 Session 데이터 확인하기
+
+- RedisInsight는 Docker 컨테이너 안에서 실행 중이라면, RedisInsight에서 localhost는 사용자 PC가 아니라 자기 컨테이너 자신
+- RedisInsight와 Redis는 같은 docker-compose 안에서 실행되고 있어서 서로 컨테이너 이름으로 통신
+  - 내부 Docker 네트워크에서 컨테이너는 서로를 컨테이너 이름으로 주소처럼 사용
+- Redis 연결 시, localhost가 아닌 컨테이너 이름을 지정
+
+### Session과 Security User 객체
+
+세션(특히 Redis 세션)에 JPA 엔티티(Member 등)를 저장하면 위험
+
+- Redis는 세션 데이터를 저장할 때 byte로 직렬화(serialization)
+  - 엔티티는 직렬화가 안정적이지 않음
+    - 엔티티 내부에는 프록시 객체, 영속성 핸들러, Lazy 객체 등이 포함됨 → 직렬화 실패(Serialization error) 발생
+- 세션과 DB 상태가 불일치 → 버그 발생 가능
+  - 사용자가 로그인함
+  - 그 시점의 Member 엔티티가 세션에 저장됨
+  - 사용자가 DB에서 닉네임을 변경
+  - 하지만 세션에는 옛날 Member 엔티티 그대로 남아있음
+- Redis 메모리 낭비
+
+#### 세션에는 최소 정보만 저장
+
+- 사용자 ID, 닉네임, 권한 등 꼭 필요한 정보만 담은 가벼운 DTO(Data Transfer Object)를 만들어 세션에 저장
+- DTO는 `Serializable` 인터페이스를 구현
+
+```java
+public class UserSessionDto implements Serializable {
+    private static final long serialVersionUID = 1L; // 직렬화 버전 UID
+    private Long id;
+    private String nickname;
+    private String role;
+    // 생성자, Getter 등
+}
+```
+
+- serialVersionUID를 명시적으로 설정하는 이유
+  - 코드가 조금만 변해도 UID가 달라져서 역직렬화가 깨질 위험이 있음
+  - 명시적으로 UID를 고정해두면 동일한 클래스 구조라면 안정적으로 역직렬화 가능
+    - 만일, Java가 컴파일러가 자동 생성한 UID를 사용할 경우, 필드 하나만 추가해도 UID가 달라짐 → Redis 같은 세션 저장소에 저장된 이전 객체와 호환 안 됨
 
 ### 📚 참고
 
