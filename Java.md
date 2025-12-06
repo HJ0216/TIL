@@ -3134,7 +3134,7 @@ public class RedisSessionConfig {
 }
 ```
 
-#### RedisInsight에서 Session 데이터 확인하기
+5. RedisInsight에서 Session 데이터 확인하기
 
 - RedisInsight는 Docker 컨테이너 안에서 실행 중이라면, RedisInsight에서 localhost는 사용자 PC가 아니라 자기 컨테이너 자신
 - RedisInsight와 Redis는 같은 docker-compose 안에서 실행되고 있어서 서로 컨테이너 이름으로 통신
@@ -3168,13 +3168,12 @@ public class UserSessionDto implements Serializable {
     private String role;
     // 생성자, Getter 등
 }
+```
 
-- serialVersionUID
+- serialVersionUID를 명시적으로 설정하는 이유
   - 코드가 조금만 변해도 UID가 달라져서 역직렬화가 깨질 위험이 있음
   - 명시적으로 UID를 고정해두면 동일한 클래스 구조라면 안정적으로 역직렬화 가능
     - 만일, Java가 컴파일러가 자동 생성한 UID를 사용할 경우, 필드 하나만 추가해도 UID가 달라짐 → Redis 같은 세션 저장소에 저장된 이전 객체와 호환 안 됨
-
-```
 
 ### 📚 참고
 
