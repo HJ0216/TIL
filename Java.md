@@ -3193,10 +3193,11 @@ com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot construct 
 
 #### 해결책
 
-— Spring Security가 제공하는 직렬화 Serializer 사용
+— Spring Data Redis에서 제공하는 JdkSerializationRedisSerializer 사용(Java의 기본 직렬화를 사용)
 
 ```java
-// Bean으로 등록하지 않아도 기본이 JdkSerializationRedisSerializer
+// JSON 직렬화 대신 Java 기본 직렬화를 사용하도록 설정하여 역직렬화 오류를 해결
+// 단, 등록하지 않을 경우에도 JdkSerializationRedisSerializer 적용
 @Bean
 public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
     return new JdkSerializationRedisSerializer();
