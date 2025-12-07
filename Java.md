@@ -3120,6 +3120,11 @@ spring:
     timeout: 30m
 ```
 
+- TTL 우선순위
+  - `@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60)`
+  - `spring.session.timeout`
+  - `server.servlet.session.timeout`
+
 4. @EnableRedisHttpSession 추가
 
 - 세션이 Redis에 저장됨
@@ -3174,6 +3179,30 @@ public class UserSessionDto implements Serializable {
   - 코드가 조금만 변해도 UID가 달라져서 역직렬화가 깨질 위험이 있음
   - 명시적으로 UID를 고정해두면 동일한 클래스 구조라면 안정적으로 역직렬화 가능
     - 만일, Java가 컴파일러가 자동 생성한 UID를 사용할 경우, 필드 하나만 추가해도 UID가 달라짐 → Redis 같은 세션 저장소에 저장된 이전 객체와 호환 안 됨
+
+### JSON 직렬화 오류
+
+```bash
+com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot construct instance of org.springframework.security.authentication.UsernamePasswordAuthenticationToken (no Creators, like default constructor, exist): cannot deserialize from Object value (no delegate- or property-based Creator)
+```
+
+- Redis에서 SecurityContext를 가져올 때,
+  - UsernamePasswordAuthenticationToken을 JSON → 객체로 역직렬화(deserialize) 해야 하는데
+  - 이 클래스에는 기본 생성자(default constructor) 가 없어서 Jackson이 객체를 만들 수 없음
+  - 그래서 SecurityContext 저장/복원 과정에서 에러 발생
+
+#### 해결책
+
+— Spring Data Redis에서 제공하는 JdkSerializationRedisSerializer 사용(Java의 기본 직렬화를 사용)
+
+```java
+// JSON 직렬화 대신 Java 기본 직렬화를 사용하도록 설정하여 역직렬화 오류를 해결
+// 단, 등록하지 않을 경우에도 JdkSerializationRedisSerializer 적용
+@Bean
+public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
+    return new JdkSerializationRedisSerializer();
+}
+```
 
 ### 📚 참고
 
