@@ -3257,10 +3257,7 @@ docker compose version
 - 관리의 편의성을 위해 전역 env 파일을 복사해서 사용
 
 ```bash
-# 수정
-sudo nano /etc/luckylog/.env
-
-# 서비스 설정 파일이 바뀌었으니 다시 조회
+# 서비스 설정 파일이 변경될 경우, 다시 로드
 # systemd는 서비스 파일을 메모리에 캐싱해 두기 때문에 /etc/systemd/system/luckylog.service 또는 EnvironmentFile 같은 외부 파일을 변경해도 바로 반영되지 않음
 sudo systemctl daemon-reload
 
@@ -3312,7 +3309,7 @@ services:
         '--maxmemory',
         '300mb',
         '--maxmemory-policy', # Redis가 메모리를 넘지 않고 오래된 키부터 자동 제거
-        'allkeys-lru',
+        'allkeys-lru', # ⚠️주의: LRU 정책으로 인해 활성 사용자의 세션이 삭제될 수 있음, 대안: 'noeviction' (메모리 가득 차면 새 데이터 거부) 또는 ElastiCache 사용
         '--protected-mode',
         'yes',
         '--requirepass',
@@ -3343,7 +3340,9 @@ sudo docker exec redis-prod redis-cli CONFIG GET requirepass
 
 # Redis 조회
 sudo docker exec -it redis-prod redis-cli
-AUTH <password>
+AUTH $REDIS-PASSWORD
+# 자동화: 환경변수 사용
+# 수작업: redis-cli --interactive AUTH <password>
 ping
 KEYS *
 HGETALL spring:session:sessions:<sessionId>

@@ -1044,7 +1044,7 @@ unset REDIS_PASSWORD
 - ps aux로 프로세스 목록 조회 시 보일 수 있음
 
 ```bash
-REDIS_PASSWORD="mypassword" docker exec redis-prod redis-cli -a "$REDIS_PASSWORD" ping
+REDIS_PASSWORD=<password> docker exec redis-prod redis-cli -a "$REDIS_PASSWORD" ping
 ```
 
 4. .env 파일 사용
