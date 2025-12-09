@@ -3204,6 +3204,262 @@ public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
 }
 ```
 
+### 운영 환경에서 Redis 설치하기
+
+#### 운영 서버(EC2)에서 Redis 컨테이너 직접 띄우기
+
+특징
+
+- 로컬과 거의 동일한 구성 → 운영 설정 변경 최소화
+- 네트워크 Latency 거의 없음
+- Redis 장애 → 서비스 전체 장애 가능
+- 백업 스냅샷 관리 직접해야 함
+
+1. EC2에 Docker 설치
+
+```bash
+docker --version
+docker compose version
+
+# 없을 경우,
+sudo yum update -y
+sudo yum install -y docker
+# 부팅 시 자동으로 Docker 서비스가 실행되도록 설정
+sudo systemctl enable docker
+# 지금 당장 Docker 데몬을 실행시키기
+sudo systemctl start docker
+# Docker 그룹 반영(로그아웃 후 다시 로그인)
+# 기본적으로 docker 명령은 root 권한 필요
+# docker 그룹에 넣어주면 일반 사용자도 root 없이 docker 명령 사용 가능
+# -aG: append to Group (기존 그룹 유지 + docker 그룹 추가)
+sudo usermod -aG docker ec2-user
+
+# Docker Compose Plugin 설치
+sudo mkdir -p /usr/local/lib/docker/cli-plugins/
+
+sudo curl -SL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-$(uname -m)" -o /usr/local/lib/docker/cli-plugins/docker-compose
+# sudo curl -SL "URL": GitHub 릴리스 페이지에서 컴퓨터 CPU 아키텍처(arm64/x86_64)에 맞는 Docker Compose 바이너리를 다운로드하는 명령
+# -S : 에러 있을 때 메시지 보여줌
+# -L : 리다이렉트를 따라감(최신 릴리스 링크가 보통 리다이렉트됨)
+# "$(uname -m)" 부분이 CPU 아키텍처를 자동으로 넣어서 다운로드
+
+# Docker CLI 플러그인 전용 위치로 설치
+# 여기에 docker-compose라는 실행 파일을 두면, `docker compose` 명령이 자동으로 활성화됨
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+docker compose version
+# Docker Compose version v5.0.0
+```
+
+2. `.env`
+
+- `docker-compose.redis.yaml`과 같은 위치에 `.env` 생성 시, Docker Compose가 자동으로 읽으므로 해당 방식으로 사용
+  - ⛑️ 전역 env 파일을 command에서 `env_file:/etc/luckylog/.env`로 설정했으나, env파일을 인식하지 못함
+- 관리의 편의성을 위해 전역 env 파일을 복사해서 사용
+
+```bash
+# 서비스 설정 파일이 변경될 경우, 다시 로드
+# systemd는 서비스 파일을 메모리에 캐싱해 두기 때문에 /etc/systemd/system/luckylog.service 또는 EnvironmentFile 같은 외부 파일을 변경해도 바로 반영되지 않음
+sudo systemctl daemon-reload
+
+# luckylog 서비스를 재시작
+# 변경된 환경변수(.env), 변경된 service 파일 등이 새 프로세스에 적용됨
+sudo systemctl restart luckylog
+
+# 정상 동작 확인
+sudo systemctl status luckylog
+```
+
+systemd에서 EnvironmentFile을 로드하는 과정
+
+- systemd가 (root 권한으로) unit 파일과 EnvironmentFile을 읽어들임
+  - EnvironmentFile을 systemd가 직접 읽음 → root 로 읽기 때문에 파일 권한이 root:600이어도 문제 없음
+  - 서비스 내부에서 실행된 스크립트나 애플리케이션이 직접 .env 파일을 읽는 경우 → deploy가 읽을 수 없어서 실패
+- 이후 User=deploy 로 프로세스 권한을 낮춰 실행
+
+```bash
+# 파일의 소유자(owner) 를 root로, 그룹(group) 을 deploy로 변경
+sudo chown root:deploy /etc/luckylog/.env
+
+# 파일 권한 설정
+# 6 → owner(root): read + write
+# 4 → group(deploy): read
+# 0 → others(그 외 사용자): no access
+sudo chmod 640 /etc/luckylog/.env
+```
+
+3. `docker-compose.redis.yaml`
+
+- 어떤 서비스에 대한 docker compose 파일인지 표시하면 구분하기 좋음
+- docker compose 파일은 infra 폴더에서 한꺼번에 관리하는 것이 좋음
+
+```yaml
+services:
+  redis:
+    image: redis:7.2
+    container_name: redis-prod
+    restart: unless-stopped # 사용자가 ‘stop’으로 멈추지만 않으면 자동 재시작
+    ports:
+      - '6379:6379'
+    command: [
+        'redis-server',
+        '--appendonly',
+        'yes',
+        '--appendfsync',
+        'everysec', # 언제 디스크에 실제로 기록(sync)할지, 1초 마다
+        '--maxmemory',
+        '300mb',
+        '--maxmemory-policy', # Redis가 메모리를 넘지 않고 오래된 키부터 자동 제거
+        'allkeys-lru', # ⚠️주의: LRU 정책으로 인해 활성 사용자의 세션이 삭제될 수 있음, 대안: 'noeviction' (메모리 가득 차면 새 데이터 거부) 또는 ElastiCache 사용
+        '--protected-mode',
+        'yes',
+        '--requirepass',
+        '${REDIS_PASSWORD}', # .env 환경변수 주입
+      ]
+    environment:
+      - TZ=Asia/Seoul
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data: # Docker가 내부적으로 redis-data라는 persistent volume을 생성해서 데이터 유지
+```
+
+4. Docker Compose로 Redis 실행
+
+```bash
+# Redis 재시작
+cd /home/deploy/infra
+
+sudo docker compose -f docker-compose.redis.yaml up -d # 비밀번호가 설정되지 않았을 경우, 경고 발생
+# sudo docker compose -f docker-compose.redis.yaml down
+
+# 비밀번호 확인
+sudo docker exec redis-prod redis-cli CONFIG GET requirepass
+# sudo docker exec redis-prod redis-cli CONFIG GET requirepass NOAUTH Authentication required.
+# Redis에 비밀번호(requirepass)가 설정되어 있어서, redis-cli 명령을 실행하려면 먼저 AUTH(인증) 필요
+
+# Redis 조회
+sudo docker exec -it redis-prod redis-cli
+AUTH $REDIS_PASSWORD
+# 자동화: 환경변수 사용
+# 수작업: redis-cli --interactive AUTH <password>
+ping
+KEYS *
+HGETALL spring:session:sessions:<sessionId>
+```
+
+5. `application-prod.yaml`
+
+```yaml
+spring:
+  session:
+    store-type: redis
+    timeout: 30m
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+```
+
+6. 애플리케이션 정상 동작 확인
+
+```bash
+# 애플리케이션 재시작
+sudo systemctl restart luckylog
+sleep 5
+sudo systemctl status luckylog
+
+# Redis 연결 성공했는지 확인
+sudo journalctl -u luckylog -n 50 --no-pager | grep -i redis
+
+# Health check 확인
+# 정상: {"status":"UP"}
+curl http://localhost:8080/actuator/health
+
+# 해당 프로세스 환경 확인
+sudo cat /proc/$(pgrep -f luckylog.jar)/environ | tr '\0' '\n'
+
+REDIS_HOST=...
+REDIS_PORT=...
+REDIS_PASSWORD=...
+
+# systemd가 EnvironmentFile을 읽었는지 확인
+systemctl show luckylog --property=EnvironmentFiles
+EnvironmentFiles=/etc/luckylog/.env
+
+# systemd 서비스에 설정된 환경 변수 확인
+systemctl show luckylog --no-pager | grep -i environment
+
+# 실행 중인 Java 프로세스의 환경 변수 확인
+ps auxe | grep luckylog.jar | grep -v grep
+```
+
+7. CI/CD 파일에 Redis Health Check 추가
+
+- Redis Health Check
+- Restart luckylog
+- Luckylog Health Check
+
+```yaml
+- name: Check Redis Health
+  uses: appleboy/ssh-action@v1.0.3
+  with:
+    host: ${{ secrets.EC2_HOST }}
+    username: ${{ secrets.EC2_USERNAME }}
+    key: ${{ secrets.EC2_SSH_KEY }}
+    script: |
+      echo "🔐 Loading REDIS_PASSWORD from /etc/luckylog/.env..."
+
+      # /etc/luckylog/.env 파일에서 REDIS_PASSWORD= 로 시작하는 줄을 찾고 = 뒤 문자열(비밀번호)만 잘라서 가져옴
+      # xargs: 앞뒤 공백·개행을 자동 제거
+      # 소유자가 root, 그룹이 root인 파일로 sudo 명령어로 조회 
+      REDIS_PASSWORD=$(sudo grep '^REDIS_PASSWORD=' /etc/luckylog/.env | cut -d'=' -f2- | xargs)
+
+      # 비밀번호가 비어 있으면 실패 처리
+      if [ -z "$REDIS_PASSWORD" ]; then
+        echo "❌ REDIS_PASSWORD not found in /etc/luckylog/.env"
+        exit 1
+      fi
+
+      # Redis 컨테이너가 실행 중인지 확인
+      echo "🧪 Checking Redis container status..."
+      if ! docker ps --format '{{.Names}}' | grep -q 'redis-prod'; then
+        echo "❌ Redis container is NOT running!"
+        exit 1
+      fi
+
+      # Redis PING 테스트
+      echo "🧪 Testing Redis PING..."
+      PING_RESULT=$(docker exec redis-prod sh -c "timeout 3 redis-cli -a \"$REDIS_PASSWORD\" ping" 2>&1)
+      RET=$?
+
+      # exit code 실패면 바로 실패
+      if [ $RET -ne 0 ]; then
+        echo "❌ Redis PING failed (exit code $RET)"
+        exit 1
+      fi
+
+      # exit code는 0인데 PONG이 없으면 실패 처리
+      if ! echo "$PING_RESULT" | grep -q "PONG"; then
+        echo "❌ Redis PING failed (no PONG in output)"
+        exit 1
+      fi
+
+      echo "✅ Redis is healthy."
+```
+
+#### AWS ElastiCache for Redis 사용
+
+특징
+
+- connection endpoint 제공 → docker에서 사용하는 것보다 단순
+- 관리형 → 장애 자동 복구, 스냅샷 자동 백업, 패치 자동 적용
+- 비용 발생 (하지만 운영 부담 감소와 장애 감소로 대부분 가치 있음)
+- VPC/Subnet/Security Group 설정 필요
+
+> TODO: 이 외 내용 추가
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
