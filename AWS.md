@@ -1011,6 +1011,100 @@ promtail-1  | level=info ts=2025-11-17T11:40:53.07633742Z caller=tailer.go:145 c
   - apply
 - save dashboard
 
+### 운영 환경에서의 환경 변수 관리
+
+1. 하드 코딩
+
+- 보안적으로는 권장되지 않음
+- 터미널 history에 그대로 남음
+
+2. 전역 변수
+
+- export 명령어 history에 남을 수 있음
+- export 사용 시 다른 프로세스에서 환경변수 조회 가능성 있음
+
+```bash
+# 현재 셸 환경변수에 REDIS_PASSWORD 를 등록(현재 터미널 세션에서만 유효)
+export REDIS_PASSWORD="mypassword"
+
+docker exec redis-prod redis-cli -a "$REDIS_PASSWORD" ping
+# redis-cli의 -a 옵션: 비밀번호 직접 전달(auth) 옵션
+# -a "$REDIS_PASSWORD"를 쓰면 History에는 안 남지만, 프로세스 목록에는 남음(ps aux 명령어로 누구나 비밀번호 볼 수 있음)
+
+# 방금 export 했던 환경변수를 세션에서 제거
+# 터미널 히스토리에 password가 남지 않도록 정리
+unset REDIS_PASSWORD
+```
+
+3. export 없이 바로 접근
+
+- 환경변수가 현재 셸에 남지 않음
+- 해당 명령어 실행 시에만 임시로 사용됨
+- 여전히 터미널 history에는 남음
+- ps aux로 프로세스 목록 조회 시 보일 수 있음
+
+```bash
+REDIS_PASSWORD="mypassword" docker exec redis-prod redis-cli -a "$REDIS_PASSWORD" ping
+```
+
+4. .env 파일 사용
+
+- 비밀번호를 별도 파일로 관리
+- .gitignore에 추가하여 버전관리에서 제외
+- 파일 권한 설정으로 접근 제어 가능
+
+```bash
+# .env 파일을 source로 불러와서 환경변수 로드
+source .env
+# export REDIS_PASSWORD=mypassword export 선언이 되어있어야 함
+# export를 선언하지 않을 경우, set 활용
+# set -a: source .env 전에 선언, 그 이후에 정의되는 모든 변수는 자동으로 export
+# set +a: source .env 사용 후에 선언, 그 이후에 정의되는 모든 변수는 자동으로 export 동작 해제
+docker exec redis-prod redis-cli -a "$REDIS_PASSWORD" ping
+
+# 또는 docker-compose에서 직접 사용
+services:
+  redis:
+    image: redis
+    env_file:
+      - .env
+
+# 사용 후 환경변수 제거
+unset REDIS_PASSWORD
+```
+
+5. Docker Secrets⭐
+
+- Docker Swarm 또는 Docker Compose에서 사용
+- 암호화되어 저장되고 필요한 컨테이너에만 전달
+- 가장 안전한 방식
+
+```bash
+# 1. Docker Secret 생성
+echo "mypassword" | docker secret create redis_password -
+
+# 2. docker-compose.yml 설정
+services:
+  redis:
+    image: redis
+    secrets:
+      - redis_password
+    command: redis-server --requirepass /run/secrets/redis_password
+
+secrets:
+  redis_password:
+    external: true
+
+# 3. Secret은 컨테이너 내부에서 /run/secrets/redis_password 파일로 마운트됨
+docker exec redis-prod redis-cli -a $(cat /run/secrets/redis_password) ping
+
+# Secret 목록 확인
+docker secret ls
+
+# Secret 삭제
+docker secret rm redis_password
+```
+
 ### 📚 참고
 
 - [AWS 교과서](https://product.kyobobook.co.kr/detail/S000210532528)

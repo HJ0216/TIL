@@ -3219,10 +3219,7 @@ public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
 
 ```bash
 docker --version
-# Docker version 24.0.x, build ...
-
 docker compose version
-# Docker Compose version v2.23.x
 
 # 없을 경우,
 sudo yum update -y
@@ -3251,8 +3248,6 @@ sudo curl -SL "https://github.com/docker/compose/releases/latest/download/docker
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 docker compose version
 # Docker Compose version v5.0.0
-
-짜란
 ```
 
 2. `.env`
@@ -3286,13 +3281,13 @@ systemd에서 EnvironmentFile을 로드하는 과정
 
 ```bash
 # 파일의 소유자(owner) 를 root로, 그룹(group) 을 deploy로 변경
-sudo chown root:deploy /etc/luckylog/env
+sudo chown root:deploy /etc/luckylog/.env
 
 # 파일 권한 설정
 # 6 → owner(root): read + write
 # 4 → group(deploy): read
 # 0 → others(그 외 사용자): no access
-sudo chmod 640 /etc/luckylog/env
+sudo chmod 640 /etc/luckylog/.env
 ```
 
 3. `docker-compose.redis.yaml`
@@ -3321,7 +3316,7 @@ services:
         '--protected-mode',
         'yes',
         '--requirepass',
-        '${REDIS_PASSWORD}', # env 환경변수 주입
+        '${REDIS_PASSWORD}', # .env 환경변수 주입
       ]
     environment:
       - TZ=Asia/Seoul
@@ -3331,14 +3326,6 @@ services:
 volumes:
   redis-data: # Docker가 내부적으로 redis-data라는 persistent volume을 생성해서 데이터 유지
 ```
-
-`docker exec redis-prod redis-cli CONFIG SET requirepass "redis-password"`
-
-- 비밀번호 설정
-- Redis 컨테이너를 재시작하면 CONFIG SET으로 설정한 비밀번호가 사라질 수 있음
-- 영구적으로 유지하려면 Redis 컨테이너를 시작할 때 비밀번호를 설정하거나, redis.conf 파일에 requirepass를 추가
-- 일반적으로 `docker-compose.redis.yaml` 파일의 command에서 password 설정
-  - 인프라 정의에 포함됨 → 재시작해도 유지
 
 4. Docker Compose로 Redis 실행
 
@@ -3354,16 +3341,29 @@ sudo docker exec redis-prod redis-cli CONFIG GET requirepass
 # sudo docker exec redis-prod redis-cli CONFIG GET requirepass NOAUTH Authentication required.
 # Redis에 비밀번호(requirepass)가 설정되어 있어서, redis-cli 명령을 실행하려면 먼저 AUTH(인증) 필요
 
-# PING 테스트
-sudo docker exec redis-prod redis-cli -a 'redis-password' ping
-
 # Redis 조회
 sudo docker exec -it redis-prod redis-cli
 AUTH <password>
+ping
+KEYS *
 HGETALL spring:session:sessions:<sessionId>
 ```
 
-5. 애플리케이션 정상 동작 확인
+5. `application-prod.yaml`
+
+```yaml
+spring:
+  session:
+    store-type: redis
+    timeout: 30m
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+```
+
+6. 애플리케이션 정상 동작 확인
 
 ```bash
 # 애플리케이션 재시작
@@ -3377,9 +3377,20 @@ sudo journalctl -u luckylog -n 50 --no-pager | grep -i redis
 # Health check 확인
 # 정상: {"status":"UP"}
 curl http://localhost:8080/actuator/health
+
+# 해당 프로세스 환경 확인
+sudo cat /proc/$(pgrep -f luckylog.jar)/environ | tr '\0' '\n'
+
+REDIS_HOST=...
+REDIS_PORT=...
+REDIS_PASSWORD=...
+
+# systemd가 EnvironmentFile을 읽었는지 확인
+systemctl show luckylog --property=EnvironmentFiles
+EnvironmentFiles=/etc/luckylog/.env
 ```
 
-6. CI/CD 파일에 Redis Health Check 추가
+7. CI/CD 파일에 Redis Health Check 추가
 
 - Redis Health Check
 - Restart luckylog
@@ -3393,14 +3404,15 @@ curl http://localhost:8080/actuator/health
     username: ${{ secrets.EC2_USERNAME }}
     key: ${{ secrets.EC2_SSH_KEY }}
     script: |
-      echo "🔐 Loading REDIS_PASSWORD from /etc/luckylog/env..."
+      echo "🔐 Loading REDIS_PASSWORD from /etc/luckylog/.env..."
 
-      # /etc/luckylog/env 파일에서 REDIS_PASSWORD= 로 시작하는 줄을 찾고 = 뒤 문자열(비밀번호)만 잘라서 가져옴
-      REDIS_PASSWORD=$(grep '^REDIS_PASSWORD=' /etc/luckylog/env | cut -d'=' -f2)
+      # /etc/luckylog/.env 파일에서 REDIS_PASSWORD= 로 시작하는 줄을 찾고 = 뒤 문자열(비밀번호)만 잘라서 가져옴
+      # 소유자가 root, 그룹이 root인 파일로 sudo 명령어로 조회 
+      REDIS_PASSWORD=$(sudo grep '^REDIS_PASSWORD=' /etc/luckylog/.env | cut -d'=' -f2-)
 
       # 비밀번호가 비어 있으면 실패 처리
       if [ -z "$REDIS_PASSWORD" ]; then
-        echo "❌ REDIS_PASSWORD not found in /etc/luckylog/env"
+        echo "❌ REDIS_PASSWORD not found in /etc/luckylog/.env"
         exit 1
       fi
 
@@ -3433,8 +3445,6 @@ curl http://localhost:8080/actuator/health
 
 #### AWS ElastiCache for Redis 사용
 
-(추가 예정)
-
 특징
 
 - connection endpoint 제공 → docker에서 사용하는 것보다 단순
@@ -3442,34 +3452,7 @@ curl http://localhost:8080/actuator/health
 - 비용 발생 (하지만 운영 부담 감소와 장애 감소로 대부분 가치 있음)
 - VPC/Subnet/Security Group 설정 필요
 
-3. `application-prod.yaml`
-
-```yaml
-spring:
-  session:
-    store-type: redis
-    timeout: 30m
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
-```
-
-4. redis 관련 환경 변수 `.env` 업데이트
-
-```bash
-# 해당 프로세스 환경 확인
-sudo cat /proc/$(pgrep -f luckylog.jar)/environ | tr '\0' '\n'
-
-REDIS_HOST=...
-REDIS_PORT=...
-REDIS_PASSWORD=...
-
-# systemd가 EnvironmentFile을 읽었는지 확인
-systemctl show luckylog --property=EnvironmentFiles
-EnvironmentFiles=/etc/luckylog/.env
-```
+> TODO: 이 외 내용 추가
 
 ### 📚 참고
 
