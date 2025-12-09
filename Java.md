@@ -3340,7 +3340,7 @@ sudo docker exec redis-prod redis-cli CONFIG GET requirepass
 
 # Redis 조회
 sudo docker exec -it redis-prod redis-cli
-AUTH $REDIS-PASSWORD
+AUTH $REDIS_PASSWORD
 # 자동화: 환경변수 사용
 # 수작업: redis-cli --interactive AUTH <password>
 ping
@@ -3387,6 +3387,12 @@ REDIS_PASSWORD=...
 # systemd가 EnvironmentFile을 읽었는지 확인
 systemctl show luckylog --property=EnvironmentFiles
 EnvironmentFiles=/etc/luckylog/.env
+
+# systemd 서비스에 설정된 환경 변수 확인
+systemctl show luckylog --no-pager | grep -i environment
+
+# 실행 중인 Java 프로세스의 환경 변수 확인
+ps auxe | grep luckylog.jar | grep -v grep
 ```
 
 7. CI/CD 파일에 Redis Health Check 추가
@@ -3406,8 +3412,9 @@ EnvironmentFiles=/etc/luckylog/.env
       echo "🔐 Loading REDIS_PASSWORD from /etc/luckylog/.env..."
 
       # /etc/luckylog/.env 파일에서 REDIS_PASSWORD= 로 시작하는 줄을 찾고 = 뒤 문자열(비밀번호)만 잘라서 가져옴
+      # xargs: 앞뒤 공백·개행을 자동 제거
       # 소유자가 root, 그룹이 root인 파일로 sudo 명령어로 조회 
-      REDIS_PASSWORD=$(sudo grep '^REDIS_PASSWORD=' /etc/luckylog/.env | cut -d'=' -f2-)
+      REDIS_PASSWORD=$(sudo grep '^REDIS_PASSWORD=' /etc/luckylog/.env | cut -d'=' -f2- | xargs)
 
       # 비밀번호가 비어 있으면 실패 처리
       if [ -z "$REDIS_PASSWORD" ]; then
