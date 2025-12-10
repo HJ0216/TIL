@@ -3469,7 +3469,7 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-# $REDIS_HOST: EleastiCache의 기본 엔드 포인트, 뒤에 :6379 제외
+# $REDIS_HOST: ElastiCache의 기본 엔드 포인트, 뒤에 :6379 제외
 # $REDIS_PORT: 6379
 ```
 
@@ -3488,7 +3488,8 @@ RedirectAttributes의 FlashAttribute를 사용하는 경우, 명시적으로 ses
 
 - 메모리 기반 세션을 사용하면 세션 직렬화를 강제하지 않음
 - Redis Session 사용 시에는 직렬화 필수
-  - Redis는 네트워크를 통해 데이터를 전송하고 디스크에 저장하기 때문에, 모든 객체를 바이트 스트림으로 변환(직렬화) 해야함
+  - Java 애플리케이션(JVM)과 Redis 서버라는 별도의 프로세스 간에 '네트워크 통신'을 통해 데이터를 전달해야 하기 때문에, Java 객체를 바이트 스트림으로 변환(직렬화) 해야함
+  - **FlashAttribute에 포함될 객체들도 Serializable을 구현해야 함**
 
 ### 📚 참고
 

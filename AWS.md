@@ -1138,7 +1138,7 @@ AWS의 관리형 인 메모리 캐싱 서비스
 - 엔진: Redis OSS
 - 배포 옵션: 노드 기반 캐시
 - 생성 방법: 클러스터 캐시
-  - Redis에서 데이터를 Shading하여 여러 노드에 분산 저장하여 관리하는 기능
+  - Redis에서 데이터를 Sharding하여 여러 노드에 분산 저장하여 관리하는 기능
   - 큰 데이터 셋을 여러 노드에 나누어 저장하여 각 노드의 부담을 줄이고 처리 속도를 향상시킴
 - 이름: luckylog-redis-session-prod
 - 위치: AWS 클라우드
@@ -1187,7 +1187,7 @@ AWS의 관리형 인 메모리 캐싱 서비스
 
 - 이름
 - 설명(필수)
-- 엔진 버전: redis7.0
+- 엔진 버전: redis7
 - maxmemory-policy: allkeys-lru
 
 ElastiCache Redis Cluster → Modify → 파라미터 그룹 변경
@@ -1202,6 +1202,7 @@ sudo dnf update -y
 sudo dnf search redis
 
 # 레디스 설치
+# 설치 가능한 레디스 버전이 6이므로 redis6로 설치
 sudo dnf install redis6
 
 # 레디스 접속
