@@ -1075,7 +1075,7 @@ unset REDIS_PASSWORD
 
 5. Docker Secrets⭐
 
-- Docker Swarm 또는 Docker Compose에서 사용
+- Docker Swarm에서 사용
 - 암호화되어 저장되고 필요한 컨테이너에만 전달
 - 가장 안전한 방식
 
@@ -1105,6 +1105,109 @@ docker secret ls
 docker secret rm redis_password
 ```
 
+#### Docker Swarm vs Docker Compose
+
+Docker Swarm
+
+- 여러 Docker 호스트를 하나의 가상 클러스터로 묶어 컨테이너 배포, 확장 및 관리를 자동화하는 Docker의 기본 제공 컨테이너 오케스트레이션 도구
+- Secret 기능은 Swarm API 의 일부
+
+Docker Compose
+
+- 복수의 컨테이너를 정의하고 실행하기 위한 도구
+
+  | 실행 방식             | secret 동작 여부    | 설명                           |
+  | --------------------- | ------------------- | ------------------------------ |
+  | `docker compose up`   | ❌ (보안 기능 없음) | secret이 쉘처럼 file mount 됨  |
+  | `docker stack deploy` | ✔️                  | Swarm Secret API로 암호화 저장 |
+
+**YAML은 같더라도 실행 명령이 다르면 기능도 달라짐**
+
+- 개발은 Compose, 프로덕션은 Swarm으로 분리 권장
+
+### ElasticCache
+
+AWS의 관리형 인 메모리 캐싱 서비스
+
+- 실제 서버의 메모리를 사용하지 않고도 애플리케이션의 데이터 액세스 성능을 향상시키기 위해 인 메모리 캐시를 설정하고 관리할 수 있음
+
+#### 생성
+
+1. 설정
+
+- 엔진: Redis OSS
+- 배포 옵션: 노드 기반 캐시
+- 생성 방법: 클러스터 캐시
+  - Redis에서 데이터를 Shading하여 여러 노드에 분산 저장하여 관리하는 기능
+  - 큰 데이터 셋을 여러 노드에 나누어 저장하여 각 노드의 부담을 줄이고 처리 속도를 향상시킴
+- 이름: luckylog-redis-session-prod
+- 위치: AWS 클라우드
+- 다중AZ: 체크 해제
+  - 캐시 클러스터를 여러 가용 영역에 걸쳐 배포하여 장애 복구 속도를 높임(과금 유의)
+- 자동 장애 조치
+  - 장애 발생 시, 다른 AZ에 있는 복제본으로 자동 전환
+- 엔진 버전: 7.1
+  - 사용하는 Redis 버전
+- 포트: 6379
+- 파라미터 그룹: default.redis7
+- 노드 유형: cache.t3.micro (프리티어)
+  - CPU 아키텍쳐 x86(EC2 인스턴스 아키텍처 참고)
+- 복제본 개수: 0(과금 유의)
+- 네트워크 유형: IPv4
+- 서브넷 그룹: 새 서브넷 그룹 생성
+- 이름: luckylog-redis-session-subnet-group
+- VPC ID
+  - VPC: AWS에서 네트워크를 분리해놓은 독립된 가상 사설 네트워크
+  - ec2, rds 모두 연결되어 있는 vpc 선택
+    - 같은 VPC 안의 인스턴스, rds만 접근 가능
+- 서브넷
+  - EC2 → Redis, RDS → Redis 모두 내부 통신하므로 Private Subnet 선택
+  - 서브넷 이름에 Pvt라고 적혀 있음
+    - 또는 Private Subnet = 그 규칙이 없음 (또는 NAT Gateway로 나감)
+    - Public Subnet = 라우팅 테이블에 0.0.0.0/0 → Internet Gateway(igw-xxxx)로 나가는 규칙이 있음
+- 가용 영역 배치: 기본 설정 없음
+
+2. 고급 설정
+
+- 저장 중 암호화: 체크
+  - Redis에 세션/토큰 저장하는 경우 → 활성화가 일반적
+- 암호화 키: 기본키
+- 전송 중 암호화: 체크 해제
+  - 민감한 세션/토큰/개인정보를 Redis에 저장하는 경우 체크 O
+  - Redis OSS 3.2.6, 4.0.10 및 이후 버전을 실행 중인 복제 그룹에서만 지원
+  - 단일 노드에서는 안 되고, 복제 그룹(=primary + replica 형태)에서만 지원
+  - 과금을 피해 복제본 개수를 0개로 설정하여 프라이머리/복제본 역할을 가진 향상된 클러스터를 사용하지 않았으므로 설정 해제
+- 보안 그룹
+  - 인바운드 규칙 `6379`로, 소스-`사용자 지정`에서 EC2에서 사용 중인 보안 그룹 선택
+- 자동 백업 사용: 체크 해제(과금 유의)
+- 유지 관리 기간: 기본 설정 없음
+- 마이너 버전 업그레이드 사용: 체크 해제
+
+3. 파라미터 그룹 설정
+
+- 이름
+- 설명(필수)
+- 엔진 버전: redis7.0
+- maxmemory-policy: allkeys-lru
+
+ElastiCache Redis Cluster → Modify → 파라미터 그룹 변경
+
+4. 접속
+
+```bash
+# dnf 패키지 업데이트
+sudo dnf update -y
+
+# 레디스 패키지 검색
+sudo dnf search redis
+
+# 레디스 설치
+sudo dnf install redis6
+
+# 레디스 접속
+redis6-cli -h <ElastiCache 기본 endpoint> -p 6379
+```
+
 ### 📚 참고
 
 - [AWS 교과서](https://product.kyobobook.co.kr/detail/S000210532528)
@@ -1112,3 +1215,5 @@ docker secret rm redis_password
 - [[aws] EC2 Public instance(EIP) 생성 및 연결](https://minjii-ya.tistory.com/21)
 - [내 도메인을 만들어보자!](https://co-de.tistory.com/69)
 - [[AWS] 프리티어 RDS PostgreSQL DB생성과 연결하기](https://coasis.tistory.com/77)
+- [Amazon ElastiCache 요금](https://aws.amazon.com/ko/elasticache/pricing/)
+- [[AWS] EC2, RDS, ElastiCache 인스턴스 생성부터 배포까지](https://tao-tech.tistory.com/20#5-5.-rds,-elasticache-%EC%A0%95%EB%B3%B4-%08application.yml-%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98%EB%A1%9C-%EC%A3%BC%EC%9E%85)

@@ -3458,10 +3458,42 @@ ps auxe | grep luckylog.jar | grep -v grep
 - 비용 발생 (하지만 운영 부담 감소와 장애 감소로 대부분 가치 있음)
 - VPC/Subnet/Security Group 설정 필요
 
-> TODO: 이 외 내용 추가
+`application.yaml` 설정
+
+```yaml
+spring:
+  session:
+    store-type: redis
+    timeout: 30m
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+# $REDIS_HOST: EleastiCache의 기본 엔드 포인트, 뒤에 :6379 제외
+# $REDIS_PORT: 6379
+```
+
+### RedirectAttributes.FlashAttribute
+
+> Flash attributes are saved temporarily before the redirect (typically in the session) to be made available to the request after the redirect and are removed immediately.  
+> FlashMap is used to hold flash attributes, while FlashMapManager is used to store, retrieve, and manage FlashMap instances.
+
+Flash attributes는 내부적으로:
+
+1. Redirect 직전: FlashMap을 Session에 저장: (현재 요청의 output FlashMap에 저장)
+2. 리다이렉트 후 한 번만 사용 가능: (다음 요청에서 자동으로 Model에 추가)
+3. 사용 후 자동 삭제됨: (세션에서 제거)
+
+RedirectAttributes의 FlashAttribute를 사용하는 경우, 명시적으로 session에 추가하지 않더라도, 직렬화 오류가 발생할 수 있음
+
+- 메모리 기반 세션을 사용하면 세션 직렬화를 강제하지 않음
+- Redis Session 사용 시에는 직렬화 필수
+  - Redis는 네트워크를 통해 데이터를 전송하고 디스크에 저장하기 때문에, 모든 객체를 바이트 스트림으로 변환(직렬화) 해야함
 
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
 - [[gradle] implementation, api 차이](https://dkswnkk.tistory.com/759)
 - [[Gradle] Gradle Java 플러그인과 implementation와 api의 차이](https://mangkyu.tistory.com/296)
+- [Flash Attributes](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/flash-attributes.html?utm_source=chatgpt.com)
+- [[Redis] Amazon Linux 2023 EC2에 Redis 세팅하기](https://jinyshin.tistory.com/57)
