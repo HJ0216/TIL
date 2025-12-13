@@ -1367,6 +1367,7 @@ logback-spring.xml
             <fileNamePattern>${LOG_PATH}/luckylog-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>
             <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
 
         <encoder>
@@ -1390,6 +1391,7 @@ logback-spring.xml
             <fileNamePattern>${LOG_PATH}/luckylog-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>
             <maxHistory>90</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
         </rollingPolicy>
 
         <encoder>
