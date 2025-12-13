@@ -478,6 +478,14 @@ var db = DatabaseConnection.Create(connectionString);  // 완전히 초기화된
 db.ExecuteQuery();  // 안전하게 사용
 ```
 
+### 디렉터리에서 r/w/x 의미
+
+| 권한 | 디렉터리에서 의미            |
+| ---- | ---------------------------- |
+| `r`  | **목록 보기** (`ls`)         |
+| `w`  | **파일 생성/삭제/이름 변경** |
+| `x`  | **들어가기 (`cd`)**          |
+
 ### 📚 참고
 
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)

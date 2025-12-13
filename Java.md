@@ -1306,6 +1306,122 @@ user:password를 Base64로 인코딩한 문자열
 
 ### log 설정
 
+- logging.logback.rollingpolicy는 기본 appender 1개만 제어
+- 로그 레벨별 파일 분리를 위해서는 `logback-spring.xml`를 사용
+
+log 설정 구성
+
+```txt
+application.yml
+ ├─ logging.level.*      # 로그 레벨만 관리
+ └─ logging.path         # 경로 변수
+
+logback-spring.xml
+ ├─ appender 설계
+ ├─ rolling / filter
+ ├─ error log 분리
+ └─ profile별 로깅 전략
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ===================== -->
+    <!-- Spring Properties -->
+    <!-- ===================== -->
+    <springProperty name="LOG_PATH" source="logging.path" defaultValue="./logs"/>
+    <!-- source가 없으면 default value로 fallback 처리 -->
+
+    <!-- ===================== -->
+    <!-- Patterns -->
+    <!-- ===================== -->
+    <property name="FILE_PATTERN"
+              value="[%X{requestId:-NO-REQUEST-ID}] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{40} - %msg%n"/>
+
+    <property name="CONSOLE_PATTERN"
+              value="[%X{requestId:-NO-REQUEST-ID}] %d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n"/>
+
+    <!-- ===================== -->
+    <!-- Console Appender -->
+    <!-- ===================== -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===================== -->
+    <!-- File Appender -->
+    <!-- ===================== -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/luckylog.log</file>
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/luckylog-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===================== -->
+    <!-- Error File Appender -->
+    <!-- ===================== -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/luckylog-error.log</file>
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/luckylog-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===================== -->
+    <!-- Local Profile -->
+    <!-- ===================== -->
+    <springProfile name="local">
+        <root>
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- ===================== -->
+    <!-- Prod Profile -->
+    <!-- ===================== -->
+    <springProfile name="prod">
+        <root>
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>
+```
+
+#### log 관련 기타 참고 사항
+
 ```java
 log.error("예상치 못한 오류 발생: {}", e);
 // 예외 객체의 toString() 결과만 출력
