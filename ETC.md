@@ -486,8 +486,126 @@ db.ExecuteQuery();  // 안전하게 사용
 | `w`  | **파일 생성/삭제/이름 변경** |
 | `x`  | **들어가기 (`cd`)**          |
 
+### 클래스 다이어그램
+
+[Structural Relationship]
+
+- Association  
+  ├─ Aggregation  
+  └─ Composition
+
+[Usage Relationship]
+
+- Dependency
+
+[Type Relationship]
+
+- Generalization
+- Realization
+
+1. Association
+
+- 클래스 간에 구조적으로 연결되어 있고, 객체가 객체를 멤버로 참조하는 관계
+
+```java
+public class Order {
+  private Member member;
+}
+public class Member {
+  private List<Order> orders;
+}
+```
+
+2. Aggregation
+
+- Association 관계에서 생명 주기는 독립
+
+```java
+public class Group {
+  private List<Member> members;
+  // Member는 Group 없어져도 존재 가능
+}
+```
+
+3. Composition
+
+- Association 관계에서 생명 주기를 완전 공유
+
+```java
+public class Order {
+  private List<OrderItem> orderItems;
+  // orderItems는 Order없이 존재 불가능
+
+  public void addItem(Product product) {
+    items.add(new OrderItem(product));
+  }
+}
+```
+
+4. Dependency
+
+- 일시적으로 다른 클래스를 사용하는 관계
+- 구조적 소유 ❌, 사용 시점 의존 ⭕
+
+```java
+public class OrderService {
+  public void placeOrder(Member member) {
+    member.validate();
+  }
+
+  public Order findOrder(Long orderId) {
+    return repository.findById(orderId);
+  }
+}
+```
+
+5. Generalization
+
+- 상속
+
+```java
+class Group {
+    void add() {
+        System.out.println("member added");
+    }
+}
+
+class GroupA extends Group {
+    @Override
+    void add() {
+        System.out.println("GroupA member added");
+    }
+}
+class GroupB extends Group {
+    @Override
+    void add() {
+        System.out.println("GroupB member added");
+    }
+}
+```
+
+6. Realization
+
+- 구현
+
+```java
+interface BaseService {
+    void order();
+}
+
+class OrderService implements BaseService {
+    @Override
+    public void order() {
+        System.out.println("ordered");
+    }
+}
+```
+
+![uml class diagram](./images/ect-uml-class-diagram.png)
+
 ### 📚 참고
 
 [[HTTPS] - HTTPS 사설 인증서 발급 및 구현 & ngrok 사용법](https://velog.io/@donggoo/HTTPS-HTTPS-%EC%82%AC%EC%84%A4-%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B5%AC%ED%98%84-ngrok)
 [프로그래머를 위한 프롬프트 엔지니어링 플레이북](https://news.hada.io/topic?id=21303)
-[Claude로 실제 코드를 배포하며 얻은 실전 노트](https://news.hada.io/topic?id=21352)
+[Claude로 실제 코드를 배포하며 얻은 실전 노트](https://news.hada.io/topic?id=21352)  
+[시스템 분석 및 설계 with Visual Paradigm](https://wikidocs.net/292254)
