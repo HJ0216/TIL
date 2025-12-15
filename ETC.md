@@ -537,7 +537,7 @@ public class Order {
   // orderItems는 Order없이 존재 불가능
 
   public void addItem(Product product) {
-    items.add(new OrderItem(product));
+    orderItems.add(new OrderItem(product));
   }
 }
 ```
