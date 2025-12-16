@@ -3616,7 +3616,7 @@ org.hibernate.exception.JDBCConnectionException: unable to obtain isolated JDBC 
 1. JDBC가 MySQL에 로그인 요청
 2. MySQL 8.0: caching_sha2_password 방식의 비밀번호 암호화 사용
 
-- caching_sha2_password 방식으로 비밀번호 암호화해서 전달 JDBC에 요청
+- 클라이언트(JDBC)는 `caching_sha2_password` 방식에 따라 비밀번호를 암호화하여 서버에 전송해야 함
 
 3. JDBC는 암호화를 위해 공개키 필요 → MySQL에 공개키 요청
 4. JDBC는 서버로부터 공개키를 받아오는 것을 보안상의 이유로 허가하지 않음
@@ -3680,6 +3680,7 @@ public class FortuneRequest implements CacheKeyProvider {
                                  .sorted()
                                  .collect(Collectors.joining(","));
 
+    // key값에 들어간 내용을 기반으로 데이터를 캐싱
     return String.join(":",
         "GUEST",
         sessionId, // 비회원을 구분하기 위해 sessionId 사용
@@ -3692,9 +3693,8 @@ public class FortuneRequest implements CacheKeyProvider {
         city.name(),
         fortuneKeys,
         period.name(),
-        LocalDate.now().toString()
+        resultYear.toString()
     );
-    // key값에 들어간 내용을 기반으로 데이터를 캐싱
   }
 }
 ```
