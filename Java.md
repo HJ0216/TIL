@@ -3607,6 +3607,129 @@ RedirectAttributes의 FlashAttribute를 사용하는 경우, 명시적으로 ses
   - Java 애플리케이션(JVM)과 Redis 서버라는 별도의 프로세스 간에 '네트워크 통신'을 통해 데이터를 전달해야 하기 때문에, Java 객체를 바이트 스트림으로 변환(직렬화) 해야함
   - **FlashAttribute에 포함될 객체들도 Serializable을 구현해야 함**
 
+### Public Key Retrieval is not allowed
+
+```bash
+org.hibernate.exception.JDBCConnectionException: unable to obtain isolated JDBC connection [Public Key Retrieval is not allowed]
+```
+
+1. JDBC가 MySQL에 로그인 요청
+2. MySQL 8.0: caching_sha2_password 방식의 비밀번호 암호화 사용
+
+- caching_sha2_password 방식으로 비밀번호 암호화해서 전달 JDBC에 요청
+
+3. JDBC는 암호화를 위해 공개키 필요 → MySQL에 공개키 요청
+4. JDBC는 서버로부터 공개키를 받아오는 것을 보안상의 이유로 허가하지 않음
+
+- 가짜 서버로 부터 공개키를 받아, 비밀번호를 암호화할 경우 비밀번호 노출 위험
+
+5. `allowPublicKeyRetrieval=true`를 설정하여 공개키 수신 허용 설정
+
+- `allowPublicKeyRetrieval=true`
+
+  - MySQL 8의 기본 인증 방식에서 SSL 없이도 비밀번호를 안전하게 암호화하기 위해 JDBC에게 “공개키를 받아도 된다”고 명시적으로 허용하는 옵션
+
+- SSL을 쓰는 경우, 이미 통신 전체가 암호화되어 공개키를 굳이 받을 필요 없음 → allowPublicKeyRetrieval 필요 없음
+
+### 로컬 캐시 설정
+
+1. dependency 추가
+
+```gradle
+implementation 'com.github.ben-manes.caffeine:caffeine'
+```
+
+2. CacheConfig 추가
+
+```java
+@Configuration
+public class CacheConfig {
+
+  @Bean(name = "fortuneResultCache")
+  public Cache<String, List<FortuneResponse>> fortuneCache() {
+    return Caffeine.newBuilder()
+                   .expireAfterWrite(1, TimeUnit.DAYS) // 캐시에 저장된 시점 기준 1일이 지나면 자동으로 만료(expire)
+                   .maximumSize(300) // 캐시에 최대 300개의 key-value 엔트리만 유지
+                   .build();
+  }
+}
+```
+
+3. CacheKeyProvider Interface 생성
+
+- CacheKeyProvider = 키 생성 책임을 한 곳으로 모음
+
+```java
+public interface CacheKeyProvider {
+
+  String cacheKey();
+}
+```
+
+4. Interface 구현
+
+```java
+@Getter
+@RequiredArgsConstructor
+public class FortuneRequest implements CacheKeyProvider {
+
+  @Override
+  public String cacheKey() {
+    String fortuneKeys = fortunes.stream()
+                                 .map(Enum::name)
+                                 .sorted()
+                                 .collect(Collectors.joining(","));
+
+    return String.join(":",
+        "GUEST",
+        sessionId, // 비회원을 구분하기 위해 sessionId 사용
+        gender.name(),
+        calendar.name(),
+        year.toString(),
+        month.toString(),
+        day.toString(),
+        time.name(),
+        city.name(),
+        fortuneKeys,
+        period.name(),
+        LocalDate.now().toString()
+    );
+    // key값에 들어간 내용을 기반으로 데이터를 캐싱
+  }
+}
+```
+
+5. 로컬 캐시 적용
+
+```java
+@Service
+public class GeminiService {
+
+  private final Cache<String, List<FortuneResponse>> fortuneResultCache;
+
+  public GeminiService(
+      @Qualifier("fortuneResultCache")
+      Cache<String, List<FortuneResponse>> fortuneResultCache,
+  ) {
+    this.fortuneResultCache = fortuneResultCache;
+  }
+
+  public List<FortuneResponse> generateFortune(FortuneRequest request) {
+
+    return fortuneResultCache.get( // key가 캐시에 있으면 → 저장된 List<FortuneResponse> 즉시 반환
+    // key가 없으면 → mappingFunction 실행 + 반환값을 캐시에 저장 + 그 값을 반환
+        request.cacheKey(),
+        key -> {
+          log.info("[Gemini] 실제 AI 호출 발생 - key={}", key);
+
+          String prompt = buildPrompt(request);
+          return generateContent(prompt, request);
+        }
+    );
+  }
+}
+```
+
 ### 📚 참고
 
 - [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
